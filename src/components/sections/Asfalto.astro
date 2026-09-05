@@ -1,0 +1,174 @@
+---
+/**
+ * Asfalto — escena 15: dos fotografías entran deslizándose mientras los
+ * cantos de roca derivan; la segunda crece a sangre; la palabra la
+ * atraviesa letra a letra y remata la frase (asfalto.ts).
+ * IMÁGENES: niña con la roca (Quintas) y macro de la veta (Quintas).
+ */
+import { Image } from 'astro:assets';
+import { home } from '@/content/home';
+import Canto from '@/components/ui/Canto.astro';
+import mano from '@/assets/photos/asfalto-mano.jpg';
+import veta from '@/assets/photos/veta-asfalto.jpg';
+const { asfalto } = home;
+---
+<section class="section theme-light asfalto" data-bg="light" data-theme-trigger data-asfalto aria-labelledby="asfalto-title">
+  <div class="asfalto__stage" data-asfalto-stage>
+    <figure class="asfalto__fig asfalto__fig--a" data-asfalto-a>
+      <div><Image src={mano} alt="Una niña con casco sostiene un trozo de roca de asfalto en Mina Lucía" widths={[600, 1000, 1400]} sizes="(max-width: 991px) 70vw, 32vw" /></div>
+    </figure>
+    <figure class="asfalto__fig asfalto__fig--b" data-asfalto-b>
+      <div><Image src={veta} alt="Veta de asfalto natural sobre la caliza, con gotas brillantes de hidrocarburo" widths={[800, 1200, 1600, 2000]} sizes="100vw" /></div>
+    </figure>
+    <Canto n={1} class="asfalto__canto asfalto__canto--1" attrs={{ 'data-asfalto-canto': '' }} />
+    <Canto n={2} class="asfalto__canto asfalto__canto--2" attrs={{ 'data-asfalto-canto': '' }} />
+    <Canto n={3} class="asfalto__canto asfalto__canto--3" attrs={{ 'data-asfalto-canto': '' }} />
+    <h2 id="asfalto-title" class="asfalto__word" data-asfalto-word>{asfalto.word}</h2>
+    <div class="asfalto__foot">
+      <p class="asfalto__statement p1" data-asfalto-text>{asfalto.statement}</p>
+      <p class="l2 asfalto__credit" data-asfalto-text>{asfalto.credit}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  @layer components {
+    .asfalto__stage {
+      position: relative;
+      height: var(--vh-real);
+      overflow: hidden;
+    }
+    .asfalto__fig {
+      position: absolute;
+      margin: 0;
+      overflow: hidden;
+      transform-origin: center center;
+    }
+    .asfalto__fig > div {
+      width: 100%;
+      height: 100%;
+    }
+    .asfalto__fig :global(img) {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .asfalto__fig--a {
+      left: calc(var(--margin) + var(--col) * 1 + var(--gap));
+      top: 14%;
+      width: calc(var(--col) * 2.6 + var(--gap) * 2);
+      aspect-ratio: 4 / 5;
+      z-index: 1;
+    }
+    .asfalto__fig--b {
+      left: calc(var(--margin) + var(--col) * 4.4 + var(--gap) * 4);
+      top: 8%;
+      width: calc(var(--col) * 3.6 + var(--gap) * 3);
+      aspect-ratio: 3 / 4;
+      z-index: 2;
+    }
+    .asfalto__canto {
+      position: absolute;
+      z-index: 3;
+      pointer-events: none;
+    }
+    .asfalto__canto--1 {
+      left: calc(var(--margin) * -1);
+      bottom: 6%;
+      width: calc(var(--col) * 2.2);
+      --canto-x: 12%;
+      --canto-y: 0%;
+    }
+    .asfalto__canto--2 {
+      right: calc(var(--margin) * -0.5);
+      top: 10%;
+      width: calc(var(--col) * 1.7);
+      --canto-x: 50%;
+      --canto-y: 20%;
+    }
+    .asfalto__canto--3 {
+      left: calc(var(--margin) + var(--col) * 0.2);
+      top: 6%;
+      width: calc(var(--col) * 1.2);
+      --canto-x: 80%;
+      --canto-y: 60%;
+    }
+    .asfalto__word {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      z-index: 4;
+      margin: 0;
+      transform: translateY(-58%);
+      font-family: var(--font-display);
+      font-variation-settings: 'opsz' var(--font-display-opsz);
+      font-weight: 400;
+      font-size: calc(346 * var(--u));
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+      text-align: center;
+      text-transform: uppercase;
+      color: var(--c-bone);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .asfalto__word :global(.split-char) {
+      display: inline-block;
+      will-change: transform;
+    }
+    .asfalto__foot {
+      position: absolute;
+      left: var(--margin);
+      right: var(--margin);
+      bottom: var(--sp-48);
+      z-index: 4;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: var(--sp-32);
+      color: var(--c-bone);
+    }
+    .asfalto__statement {
+      max-width: calc(var(--col) * 3.5 + var(--gap) * 3);
+    }
+    .asfalto__credit {
+      color: rgb(var(--c-bone-rgb) / 0.62);
+      text-align: right;
+    }
+    @media (max-width: 991px) {
+      .asfalto__fig--a {
+        left: var(--margin);
+        top: 12%;
+        width: calc(var(--col) * 2 + var(--gap));
+      }
+      .asfalto__fig--b {
+        left: auto;
+        right: var(--margin);
+        top: 26%;
+        width: calc(var(--col) * 2.4 + var(--gap));
+      }
+      .asfalto__canto--1 {
+        bottom: 10%;
+        width: calc(var(--col) * 1.6);
+      }
+      .asfalto__canto--2 {
+        width: calc(var(--col) * 1.3);
+      }
+      .asfalto__canto--3 {
+        display: none;
+      }
+      .asfalto__word {
+        font-size: calc(78 * var(--u));
+      }
+      .asfalto__foot {
+        flex-direction: column;
+        align-items: flex-start;
+        bottom: var(--sp-32);
+      }
+      .asfalto__credit {
+        text-align: left;
+      }
+    }
+  }
+</style>

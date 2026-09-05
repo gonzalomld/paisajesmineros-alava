@@ -8,8 +8,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 import { CustomEase } from 'gsap/CustomEase';
 import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
+import { Draggable } from 'gsap/Draggable';
+import { InertiaPlugin } from 'gsap/InertiaPlugin';
 
-gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase, DrawSVGPlugin);
+gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase, DrawSVGPlugin, Draggable, InertiaPlugin);
 
 /* Las mismas curvas que --ease-era / --ease-era-out en tokens.css */
 CustomEase.create('era', '0.65, 0, 0.35, 1');
@@ -29,4 +31,4 @@ export const STAGGER = {
   line: 0.08,
 } as const;
 
-export { gsap, ScrollTrigger, SplitText, CustomEase, DrawSVGPlugin };
+export { gsap, ScrollTrigger, SplitText, CustomEase, DrawSVGPlugin, Draggable, InertiaPlugin };

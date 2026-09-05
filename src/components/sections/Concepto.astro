@@ -1,16 +1,12 @@
 ---
 /**
  * Concepto — escena 05: la geología en una frase, centrada, con dos
- * imágenes pequeñas en las esquinas (el equivalente de las buganvillas
- * de la referencia hasta que lleguen las capas con fondo transparente).
- * IMÁGENES: lágrimas de asfalto (asfaltokia.eus, provisional) y macro de
- * la veta (Quintas, definitiva).
+ * cantos de roca (ui/Canto.astro) que derivan por las esquinas con el
+ * scroll: el equivalente de las buganvillas de la referencia.
  */
-import { Image } from 'astro:assets';
 import ArchMask from '@/components/ui/ArchMask.astro';
+import Canto from '@/components/ui/Canto.astro';
 import { home } from '@/content/home';
-import drips from '@/assets/photos/web-geologia-img-1.jpg';
-import veta from '@/assets/photos/veta-asfalto.jpg';
 ---
 <section class="section theme-light concepto" data-bg="light" data-theme-trigger data-arch aria-labelledby="concepto-title">
   <ArchMask />
@@ -18,12 +14,8 @@ import veta from '@/assets/photos/veta-asfalto.jpg';
     <p id="concepto-title" class="l2 t-muted t-center" data-reveal="p">{home.concepto.eyebrow}</p>
     <p class="concepto__statement h4 t-center t-balance" data-reveal="line">{home.concepto.statement}</p>
     <p class="concepto__text p1 t-center" data-reveal="line">{home.concepto.text}</p>
-    <figure class="concepto__decor concepto__decor--l" data-reveal="ctn" data-parallax="w">
-      <div data-parallax="img"><Image src={drips} alt="Lágrimas de asfalto natural sobre la roca" widths={[480]} sizes="14vw" /></div>
-    </figure>
-    <figure class="concepto__decor concepto__decor--r" data-reveal="ctn" data-reveal-delay="0.2" data-parallax="w">
-      <div data-parallax="img"><Image src={veta} alt="Veta de asfalto impregnando la caliza en Mina Lucía" widths={[480, 800]} sizes="14vw" /></div>
-    </figure>
+    <Canto n={2} class="concepto__decor concepto__decor--l" attrs={{ 'data-drift': '', 'data-drift-y': '140', 'data-drift-x': '-30', 'data-drift-r': '10' }} />
+    <Canto n={3} class="concepto__decor concepto__decor--r" attrs={{ 'data-drift': '', 'data-drift-y': '-120', 'data-drift-x': '40', 'data-drift-r': '-8' }} />
   </div>
 </section>
 
@@ -48,8 +40,8 @@ import veta from '@/assets/photos/veta-asfalto.jpg';
     }
     .concepto__decor {
       position: absolute;
-      width: calc(var(--col) * 1 + var(--gap));
-      aspect-ratio: 4 / 5;
+      width: calc(var(--col) * 1.5 + var(--gap));
+      pointer-events: none;
     }
     .concepto__decor--l {
       left: 0;
@@ -65,8 +57,16 @@ import veta from '@/assets/photos/veta-asfalto.jpg';
         padding-block: var(--sp-120);
       }
       .concepto__decor {
-        position: static;
-        width: 50%;
+        width: calc(var(--col) * 1.3);
+      }
+      .concepto__decor--l {
+        left: calc(var(--margin) * -0.6);
+        top: calc(var(--sp-64) * -1);
+      }
+      .concepto__decor--r {
+        right: calc(var(--margin) * -0.6);
+        bottom: calc(var(--sp-64) * -1);
+        width: calc(var(--col) * 1.3);
       }
     }
   }

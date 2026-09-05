@@ -84,8 +84,9 @@ src/
   layouts/Base.astro          html, meta, fuentes, ClientRouter, globales
   components/global/          Preloader, Header, Footer, PageTransition, RotateDevice
   components/ui/              ButtonPill, ButtonCircle, Marquee, ArchMask, ScrollProgress
-  components/sections/        Hero, Puertas, Cita, Concepto, Ubicacion, Llegar, MapaVivo,
-                              Experiencias, Cifras, ArcoTexto, Estacion, Cierre (en orden de home)
+  components/sections/        Hero, Puertas, Cita, Concepto, Ubicacion, Llegar, Cielo, MapaVivo,
+                              Experiencias, Cifras, ArcoTexto, Estacion, Galeria, Asfalto, Cierre
+  components/ui/Canto.astro   fragmento de roca con máscara irregular (el «decorado»)
   styles/                     vendor, reset, tokens, themes, base, typography, components,
                               utilities, main; mapbox.css (subconjunto vendor de Mapbox GL)
   scripts/core/               gsap, lenis, registry, lifecycle, transitions, dom, anim
@@ -95,9 +96,20 @@ src/
   content/map.ts              token de Mapbox, estilo base, puntos de interés
   data/routes/*.json          las dos rutas (GeoJSON simplificado + perfil + estadísticas)
   assets/photos, assets/brand fotografías y marca (origen y estado en CREDITS.md)
+  assets/decor/               nubes con alfa y máscaras de canto, generadas (tools/)
 public/gpx/                   los GPX originales, descargables desde el mapa
 tools/gpx-to-geojson.mjs      GPX → src/data/routes (node tools/gpx-to-geojson.mjs)
+tools/make-clouds.mjs         tiras de nubes con alfa por ruido fractal (node tools/make-clouds.mjs)
+tools/make-cantos.mjs         máscaras de borde irregular para los cantos (node tools/make-cantos.mjs)
 ```
+
+## Medios en movimiento, sin vídeo
+
+Las nubes del cielo y los cantos de roca del concepto y de «Asfalto» no son
+vídeo: son imágenes con alfa generadas en el repositorio y movidas con GSAP
+(marquee con empujón por velocidad de scroll, deriva con scrub, secuencia
+fijada). Pesan poco, se recorren hacia atrás y no dependen de un códec.
+Cuando haya dron o capas alfa reales, entran por el mismo sitio.
 
 ## El mapa vivo (Mapbox)
 

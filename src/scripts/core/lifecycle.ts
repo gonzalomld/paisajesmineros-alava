@@ -31,6 +31,10 @@ import circleText from '../modules/circleText';
 import drawPath from '../modules/drawPath';
 import indexCounter from '../modules/indexCounter';
 import map from '../modules/map';
+import clouds from '../modules/clouds';
+import drift from '../modules/drift';
+import carousel from '../modules/carousel';
+import asfalto from '../modules/asfalto';
 
 const REVEAL_GUARD_MS = 5000;
 
@@ -70,6 +74,10 @@ function registerModules(): void {
   register('drawPath', drawPath);
   register('indexCounter', indexCounter);
   register('map', map);
+  register('asfalto', asfalto);
+  register('clouds', clouds);
+  register('drift', drift);
+  register('carousel', carousel);
 }
 
 /** Si un módulo no llegara a montar, nada se queda oculto. */

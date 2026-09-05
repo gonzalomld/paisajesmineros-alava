@@ -12,8 +12,11 @@ La pieza debe hablar de todo el territorio, no solo de Mina Lucía. Donde no hay
 | `casco-veta.jpg` | Tres puertas · Mina Lucía |
 | `grupo-galeria.jpg` | Experiencias · Mina Lucía |
 | `camino-casco.jpg` | Experiencias · La ruta |
-| `mina-lucia-galeria.jpg` | Reserva (galería, Fase 03) |
+| `mina-lucia-galeria.jpg` | Reserva |
 | `tren-antonana.jpg` | Tres puertas · La ruta |
+| `galeria-01.jpg` … `galeria-12.jpg` | La galería (carrusel): 0M3A1867, 0M3A1922, FJ_6861, FJ_6550, FJ_6652, FJ_6429, FJ_6757, FJ_6246, FJ_6833, FJ_6944, FJ_6907, FJ_6920 |
+| `asfalto-mano.jpg` | Asfalto (primera fotografía): FJ_6944 |
+| `veta-asfalto.jpg` | Asfalto (a sangre) y los cantos de roca (ui/Canto.astro) |
 
 ## Provisionales · Wikimedia Commons (CC BY-SA 4.0)
 
@@ -21,7 +24,7 @@ Sustituir por fotografía propia. Mientras estén publicadas requieren atribuci�
 
 | Fichero | Uso | Original |
 |---|---|---|
-| `hero-cielo-abierto.jpg` | Hero, «A cielo abierto» | Izki - Peña del Castillo 01 |
+| `hero-cielo-abierto.jpg` | Hero, «A cielo abierto» · Cielo (a sangre, bajo las nubes) | Izki - Peña del Castillo 01 |
 | `izki-pena-castillo.jpg` | Montaña Alavesa | Izki - Peña del Castillo 02 |
 | `izki-mirador.jpg` | Tres miradores (Fase 03) | Izki - Mirador de Izki 01 |
 | `izki-hojas.jpg` | Decorado (Fase 03) | Izki - Otoño 01 |
@@ -35,9 +38,16 @@ Baja resolución: valen para tarjetas pequeñas, no a sangre. Pedir originales.
 | Fichero | Uso |
 |---|---|
 | `web-atauri-galeria-1.jpg` | Estación (foto histórica) · Tres puertas · Experiencias |
-| `web-geologia-img-1.jpg` | El concepto (lágrimas de asfalto) |
 | `web-historia-img-1.jpg` | Cifras (mineros) |
+| `web-geologia-img-1.jpg` | Reserva (antes en El concepto; ahora son cantos de la veta) |
 | resto `web-*.jpg` | Reserva |
+
+## Generadas (sin origen fotográfico)
+
+| Fichero | Uso | Cómo |
+|---|---|---|
+| `decor/nubes-1.png`, `nubes-2.png` | Cielo: tiras de nubes con alfa que cruzan la imagen | `node tools/make-clouds.mjs` (ruido fractal periódico) |
+| `decor/canto-1..3.png` | Máscaras de los cantos de roca (Concepto, Asfalto) | `node tools/make-cantos.mjs` |
 
 ## Marca
 

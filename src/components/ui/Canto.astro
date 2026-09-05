@@ -1,0 +1,49 @@
+---
+/**
+ * Canto — un fragmento de roca con veta de asfalto: la macro de la veta
+ * recortada con una máscara de borde irregular (decor/canto-N.png,
+ * generadas en tools/make-cantos.mjs). Es el «decorado» del sistema, el
+ * equivalente de las buganvillas de la referencia.
+ *
+ *   n         máscara 1, 2 o 3
+ *   class     clases extra (posición y tamaño las pone quien lo usa)
+ *   attrs     atributos extra (data-drift, data-asfalto-canto…)
+ *   --canto-x / --canto-y   qué parte de la veta enseña (object-position)
+ */
+import { Image } from 'astro:assets';
+import veta from '@/assets/photos/veta-asfalto.jpg';
+import canto1 from '@/assets/decor/canto-1.png';
+import canto2 from '@/assets/decor/canto-2.png';
+import canto3 from '@/assets/decor/canto-3.png';
+interface Props {
+  n?: 1 | 2 | 3;
+  class?: string;
+  attrs?: Record<string, string>;
+  /* Astro pasa aquí el data-astro-cid del padre para que su CSS alcance al canto. */
+  [key: `data-${string}`]: string | undefined;
+}
+const { n = 1, class: cls = '', attrs = {}, ...rest } = Astro.props;
+const mask = [canto1, canto2, canto3][n - 1] ?? canto1;
+---
+<div class={`canto ${cls}`} style={`--mask: url(${mask.src})`} aria-hidden="true" {...rest} {...attrs}>
+  <Image src={veta} alt="" widths={[480, 800]} sizes="20vw" draggable="false" />
+</div>
+
+<style>
+  @layer components {
+    .canto {
+      aspect-ratio: 4 / 5;
+      mask: var(--mask) center / 100% 100% no-repeat;
+      -webkit-mask: var(--mask) center / 100% 100% no-repeat;
+      will-change: transform;
+    }
+    .canto :global(img) {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: var(--canto-x, 50%) var(--canto-y, 50%);
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+  }
+</style>

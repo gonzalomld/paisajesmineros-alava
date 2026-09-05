@@ -1,0 +1,185 @@
+---
+/**
+ * Galería — escena 14: la serie de Mina Lucía de Quintas, una foto tras
+ * otra, en un carrusel horizontal arrastrable con inercia (carousel.ts).
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { home } from '@/content/home';
+const { galeria } = home;
+const files = import.meta.glob<{ default: ImageMetadata }>('/src/assets/photos/galeria-*.jpg', { eager: true });
+const items = galeria.items.map((it) => ({ ...it, img: files[`/src/assets/photos/${it.file}.jpg`]?.default })).filter((it) => it.img);
+---
+<section class="section theme-light galeria" data-bg="light" data-theme-trigger aria-labelledby="galeria-title">
+  <div class="container galeria__head">
+    <div>
+      <p class="l2 t-muted" data-reveal="p">{galeria.eyebrow}</p>
+      <h2 id="galeria-title" class="h3 galeria__title" data-reveal="h">{galeria.display}</h2>
+    </div>
+    <div class="galeria__nav" data-reveal="p">
+      <p class="galeria__count l1" aria-live="polite"><span data-carousel-current>01</span><span class="t-muted"> / </span><span data-carousel-total>{String(items.length).padStart(2, '0')}</span></p>
+      <button class="galeria__arrow" type="button" data-carousel-prev aria-label="Fotografía anterior">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 4l-8 8 8 8" fill="none" stroke="currentColor" stroke-width="1.2" /></svg>
+      </button>
+      <button class="galeria__arrow" type="button" data-carousel-next aria-label="Fotografía siguiente">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 4l8 8-8 8" fill="none" stroke="currentColor" stroke-width="1.2" /></svg>
+      </button>
+    </div>
+  </div>
+  <div class="galeria__viewport" data-carousel tabindex="0" role="group" aria-roledescription="carrusel" aria-label={galeria.display} data-reveal="ctn" data-reveal-start="top 85%">
+    <ul class="galeria__track" data-carousel-track>
+      {
+        items.map((it, i) => (
+          <li class={`galeria__item ${it.img && it.img.height > it.img.width ? 'is-portrait' : ''}`} data-carousel-item>
+            <figure>
+              <div class="galeria__media">
+                <Image src={it.img!} alt={it.alt} widths={[480, 800, 1200]} sizes="(max-width: 991px) 80vw, 34vw" loading={i < 3 ? 'eager' : 'lazy'} draggable="false" />
+              </div>
+              <figcaption class="l2 t-muted">
+                <span class="galeria__num">{String(i + 1).padStart(2, '0')}</span> {it.caption}
+              </figcaption>
+            </figure>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="galeria__hint l2" aria-hidden="true">{galeria.hint}</p>
+  </div>
+</section>
+
+<style>
+  @layer components {
+    .galeria {
+      padding-block: var(--sp-160) var(--sp-120);
+    }
+    .galeria__head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: var(--sp-32);
+      margin-bottom: var(--sp-48);
+    }
+    .galeria__title {
+      margin-top: var(--sp-12);
+    }
+    .galeria__nav {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-8);
+      flex: none;
+    }
+    .galeria__count {
+      margin-right: var(--sp-16);
+      font-variant-numeric: tabular-nums;
+    }
+    .galeria__arrow {
+      display: grid;
+      place-items: center;
+      width: var(--sp-48);
+      height: var(--sp-48);
+      padding: 0;
+      border: var(--hairline) solid var(--line);
+      border-radius: 50%;
+      background: transparent;
+      color: var(--fg);
+      cursor: pointer;
+      transition: background-color var(--d-micro) var(--ease-era), color var(--d-micro) var(--ease-era), opacity var(--d-micro);
+    }
+    .galeria__arrow svg {
+      width: var(--sp-16);
+      height: var(--sp-16);
+    }
+    .galeria__arrow:disabled {
+      opacity: 0.3;
+      cursor: default;
+    }
+    @media (hover: hover) and (min-width: 992px) {
+      .galeria__arrow:not(:disabled):hover {
+        background: var(--fg);
+        color: var(--bg);
+      }
+    }
+    .galeria__viewport {
+      position: relative;
+      overflow: hidden;
+      cursor: grab;
+      padding-inline: var(--margin);
+    }
+    .galeria__viewport:active {
+      cursor: grabbing;
+    }
+    .galeria__track {
+      display: flex;
+      gap: var(--gap);
+      width: max-content;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      will-change: transform;
+    }
+    .galeria__item {
+      flex: none;
+      width: calc(var(--col) * 3.4 + var(--gap) * 2);
+    }
+    .galeria__item.is-portrait {
+      width: calc(var(--col) * 2.4 + var(--gap));
+    }
+    .galeria__item figure {
+      margin: 0;
+    }
+    .galeria__media {
+      overflow: hidden;
+      aspect-ratio: 3 / 2;
+      background: var(--bg-subtle);
+    }
+    .is-portrait .galeria__media {
+      aspect-ratio: 4 / 5;
+    }
+    .galeria__media :global(img) {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      user-select: none;
+      -webkit-user-drag: none;
+      transition: transform var(--d-section) var(--ease-era);
+    }
+    @media (hover: hover) and (min-width: 992px) {
+      .galeria__item:hover .galeria__media :global(img) {
+        transform: scale(1.04);
+      }
+    }
+    .galeria__item figcaption {
+      margin-top: var(--sp-12);
+    }
+    .galeria__num {
+      color: var(--fg);
+      margin-right: var(--sp-6);
+    }
+    .galeria__hint {
+      position: absolute;
+      right: var(--margin);
+      bottom: var(--sp-8);
+      color: var(--fg-muted);
+      letter-spacing: var(--ls-l2);
+      pointer-events: none;
+    }
+    @media (max-width: 991px) {
+      .galeria {
+        padding-block: var(--sp-120) var(--sp-96);
+      }
+      .galeria__head {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--sp-24);
+        margin-bottom: var(--sp-32);
+      }
+      .galeria__item,
+      .galeria__item.is-portrait {
+        width: calc(var(--col) * 3 + var(--gap) * 2);
+      }
+      .galeria__hint {
+        display: none;
+      }
+    }
+  }
+</style>

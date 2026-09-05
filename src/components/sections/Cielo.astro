@@ -1,0 +1,94 @@
+---
+/**
+ * Cielo — escena 08a: el territorio desde el aire, a sangre, con nubes
+ * que cruzan el cielo (tiras con alfa generadas en tools/make-clouds.mjs)
+ * y se funden con el fondo de la página. Sustituye al vídeo aéreo de la
+ * referencia hasta que haya dron.
+ * IMAGEN: Peña del Castillo, Izki (Wikimedia Commons, provisional).
+ */
+import { Picture } from 'astro:assets';
+import { home } from '@/content/home';
+import land from '@/assets/photos/hero-cielo-abierto.jpg';
+import nubes1 from '@/assets/decor/nubes-1.png';
+import nubes2 from '@/assets/decor/nubes-2.png';
+const { cielo } = home;
+---
+<section class="section theme-light cielo" data-bg="light" data-theme-trigger data-clouds aria-label={cielo.caption}>
+  <div class="cielo__frame" data-reveal="slide" data-reveal-start="top 80%">
+    <div class="cielo__img" data-parallax="w">
+      <div data-parallax="img">
+        <Picture src={land} formats={['avif', 'webp']} widths={[800, 1200, 1600, 2000, 2400]} sizes="100vw" alt={cielo.alt} loading="lazy" />
+      </div>
+    </div>
+    <div class="cielo__clouds cielo__clouds--far" data-cloud="0.55" aria-hidden="true">
+      <img src={nubes2.src} width={nubes2.width} height={nubes2.height} alt="" loading="lazy" decoding="async" />
+      <img src={nubes2.src} width={nubes2.width} height={nubes2.height} alt="" loading="lazy" decoding="async" />
+    </div>
+    <div class="cielo__clouds cielo__clouds--near" data-cloud="1" aria-hidden="true">
+      <img src={nubes1.src} width={nubes1.width} height={nubes1.height} alt="" loading="lazy" decoding="async" />
+      <img src={nubes1.src} width={nubes1.width} height={nubes1.height} alt="" loading="lazy" decoding="async" />
+    </div>
+  </div>
+  <p class="cielo__caption l2 t-muted" data-reveal="p">{cielo.caption}</p>
+</section>
+
+<style>
+  @layer components {
+    .cielo {
+      /* Aire debajo: el arco del mapa crece sobre el pie, no sobre la imagen. */
+      padding-block: 0 var(--sp-160);
+    }
+    .cielo__frame {
+      position: relative;
+      height: var(--vh-real);
+      overflow: hidden;
+      background: var(--bg);
+    }
+    .cielo__img {
+      position: absolute;
+      inset: 0;
+    }
+    .cielo__img :global(img) {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 60%;
+    }
+    /* Las tiras: dos copias, 200 % de ancho, translateX en bucle (clouds.ts) */
+    .cielo__clouds {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      width: 200%;
+      height: 58%;
+      pointer-events: none;
+      will-change: transform;
+    }
+    .cielo__clouds img {
+      flex: 0 0 50%;
+      width: 50%;
+      height: 100%;
+      object-fit: fill;
+    }
+    .cielo__clouds--far {
+      height: 46%;
+      opacity: 0.85;
+    }
+    .cielo__caption {
+      margin: var(--sp-16) var(--margin) 0;
+    }
+    @media (max-width: 991px) {
+      .cielo__frame {
+        height: calc(var(--vh-real) * 0.7);
+      }
+      .cielo__clouds {
+        width: 400%;
+        height: 50%;
+      }
+      .cielo__clouds--far {
+        height: 40%;
+      }
+    }
+  }
+</style>

@@ -127,6 +127,37 @@ export const home = {
     ] as const satisfies readonly Experiencia[],
   },
 
+  cielo: {
+    caption: 'Montaña Alavesa · Parque Natural de Izki',
+    alt: 'Peña del Castillo sobre los bosques del Parque Natural de Izki, bajo un cielo con nubes',
+  },
+
+  galeria: {
+    eyebrow: 'Mina Lucía · fotografías de Quintas',
+    display: 'Bajo tierra, con casco',
+    hint: 'Arrastra',
+    items: [
+      { file: 'galeria-01', caption: 'La entrada, entibada en madera', alt: 'Entrada de Mina Lucía con la galería entibada en madera' },
+      { file: 'galeria-02', caption: 'Galerías desde 1872', alt: 'Galería de Mina Lucía en penumbra con luces al fondo' },
+      { file: 'galeria-03', caption: 'En fila, con los frontales', alt: 'Visitantes con casco recorren una galería entibada' },
+      { file: 'galeria-04', caption: 'La sala grande', alt: 'Sala amplia excavada en la roca de Mina Lucía' },
+      { file: 'galeria-05', caption: 'La pasarela', alt: 'Un grupo de visitantes en la pasarela de madera de la mina' },
+      { file: 'galeria-06', caption: 'El grupo, a la luz de los cascos', alt: 'Grupo de visitantes con cascos en una galería' },
+      { file: 'galeria-07', caption: 'El guía y la piedra', alt: 'El guía explica junto a una pila de rocas de asfalto' },
+      { file: 'galeria-08', caption: 'Las vetas, de cerca', alt: 'Dos niñas observan las vetas de asfalto en la pared' },
+      { file: 'galeria-09', caption: 'Una roca en las manos', alt: 'Dos niñas con casco examinan una roca de asfalto' },
+      { file: 'galeria-10', caption: 'Asfalto natural', alt: 'Una niña sostiene un trozo de roca impregnada de asfalto' },
+      { file: 'galeria-11', caption: 'El camino a la mina', alt: 'Camino hacia Mina Lucía con un casco en primer plano' },
+      { file: 'galeria-12', caption: 'Por el bosque de Izki', alt: 'Un grupo llega a la mina por el bosque' },
+    ],
+  },
+
+  asfalto: {
+    word: 'Asfalto',
+    statement: 'Roca impregnada de hidrocarburo, acumulada durante millones de años en el borde del diapiro de Maeztu.',
+    credit: 'Mina Lucía · Atauri · Fotografía de Quintas',
+  },
+
   cifras: {
     statement: 'Desde 1855 se extrajo aquí asfalto natural. Hoy, 39 kilómetros de ruta unen tres centros de interpretación y una estación de 1928.',
     items: ['1855 · Primera explotación, en Loza', '1872 · Se abre Mina Lucía', '1928 · Estación de Atauri', '39 km · La ruta'],
