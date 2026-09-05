@@ -215,12 +215,14 @@ export default defineModule({
         pitch: reduced ? 0 : 52,
         bearing: reduced ? 0 : -18,
         interactive: false,
-        attributionControl: { compact: false },
+        attributionControl: false,
         logoPosition: 'bottom-right',
         antialias: false,
         fadeDuration: 0,
         language: 'es',
       });
+      /* Atribución siempre desplegada (sin el botón del modo compacto). */
+      map.addControl(new mapboxgl.AttributionControl({ compact: false }), 'bottom-right');
       map.on('load', () => {
         if (!map || destroyed) return;
         map.resize();
