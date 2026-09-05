@@ -1,0 +1,93 @@
+# Paisajes Mineros de Álava — sitio de marca
+
+Astro 5 + TypeScript strict · CSS nativo con `@layer` y tokens fluidos · GSAP 3.15 (ScrollTrigger, SplitText, CustomEase) · Lenis 1.3 · View Transitions de Astro.
+
+```bash
+npm install
+npm run dev      # http://localhost:4321
+npm run build    # astro check + build estático en dist/
+npm run preview
+```
+
+Páginas: `/` (hero + espaciador de prueba), `/descubrir` y `/contacto` (placeholders para validar la transición), `/_kit` (sistema de diseño, fuera del sitemap). `Ctrl+G` muestra la rejilla.
+
+## El sistema de unidades fluidas
+
+Todo el layout y la tipografía escalan en proporción al ancho del viewport, sin `clamp()` ni puntos de corte intermedios. La mecánica, en `src/styles/tokens.css`:
+
+```css
+html { font-size: 1vw; }                 /* 1rem = 1 % del ancho de viewport   */
+:root { --scale-ratio: 16; }             /* ancho de referencia 1600px → 16     */
+@media (max-width: 991px) {
+  :root { --scale-ratio: 4.16; }         /* ancho de referencia 416px → 4.16    */
+}
+:root { --u: calc(1rem / var(--scale-ratio)); }   /* un píxel de diseño */
+:root { --sp-48: calc(48 * var(--u)); }           /* 48px a 1600 · 103px a 3440 · 48px a 416 */
+```
+
+Cómo leerlo: **el número de un token son píxeles al ancho de referencia** (1600px en escritorio, 416px en móvil). `--sp-48` mide exactamente 48px a 1600 y escala linealmente a partir de ahí. Lo mismo para la tipografía (`--fs-h1: calc(192 * var(--u))`), la rejilla (`--col`, `--gap`, `--margin`, `--row`) y cualquier medida nueva.
+
+Reglas:
+
+- Ni un `px` en layout ni en tipografía. Solo tokens. Excepciones: bordes de 1px (`--hairline`), outline de foco y sombras.
+- `--vh-real` en lugar de `100vh` (la fija `lifecycle.ts` con `window.innerHeight`).
+- El override de `--scale-ratio` vive en `:root`, en el mismo elemento donde se declara `--u`: un custom property se resuelve donde se declara, así que un override en `body` no llegaría a los tokens.
+- En JS, `designPx(n)` (`src/scripts/core/dom.ts`) devuelve el valor real de `n` píxeles de diseño.
+- CSS de terceros va en la capa `vendor` (`src/styles/vendor.css`): como `html` está a 1vw, cualquier `rem` ajeno se descoloca y se neutraliza ahí.
+
+Orden de la cascada (`src/styles/main.css`): `vendor, reset, tokens, themes, base, components, utilities`. Cada fichero envuelve su contenido en su propia capa; los componentes `.astro` ponen su `<style>` en `@layer components`.
+
+Los cuatro temas (`.theme-light`, `.theme-sky`, `.theme-dark`, `.theme-plum`) redefinen los semánticos `--bg`, `--fg`, `--fg-muted`, `--fg-disabled`, `--line`, `--bg-subtle` (y los canales `--fg-rgb`, `--bg-rgb` para componer alfas). Los componentes solo consumen esos.
+
+## Cómo añadir un módulo al registro
+
+Cada comportamiento se declara en el HTML con un `data-attribute` y se implementa en `src/scripts/modules/`. El registro (`src/scripts/core/registry.ts`) lo monta si el atributo existe en la página y lo destruye al navegar.
+
+1. Crea `src/scripts/modules/miModulo.ts`:
+
+```ts
+import { defineModule } from '../core/registry';
+import { gsap } from '../core/gsap';
+
+export default defineModule({
+  selector: '[data-mi-modulo]',
+  init(el, ctx) {
+    if (ctx.reducedMotion) return;                       // estado final, sin animar
+
+    el.addEventListener('click', onClick, { signal: ctx.signal }); // se quita solo al navegar
+    const tween = gsap.to(el, { x: 10 });
+
+    void ctx.ready.then(() => { /* la cortina (preloader / transición) ya se abrió */ });
+
+    return () => tween.kill();                            // lo que no sea un listener
+  },
+});
+```
+
+2. Regístralo en `src/scripts/core/lifecycle.ts`:
+
+```ts
+import miModulo from '../modules/miModulo';
+register('miModulo', miModulo);
+```
+
+3. Úsalo en cualquier `.astro`: `<div data-mi-modulo>…</div>`.
+
+El contexto `ctx` trae `reducedMotion`, `signal` (un `AbortSignal` que se aborta en `destroyAll()`), `ready` (promesa resuelta cuando termina el preloader o la transición de página) e `isMobile` (por debajo de `--bp-mobile`). Un módulo puede declarar `order` para montar antes o después que los demás.
+
+Módulos de la Fase 01: `scrollReveal` (`data-reveal="h|line|p|ctn"`, `data-reveal-first`), `parallax` (`data-parallax="w|img"`), `themeSwitch` (`data-theme-trigger` + `data-bg`), `magnetic`, `marquee`, `textSwap`, `tabs`, `scrollProgress`, `archReveal` (`data-arch`), `hero`, `header`. El preloader es una función (`runPreloader`) que llama `lifecycle.ts`.
+
+## Estructura
+
+```
+src/
+  layouts/Base.astro          html, meta, fuentes, ClientRouter, globales
+  components/global/          Preloader, Header, Footer, PageTransition, RotateDevice
+  components/ui/              ButtonPill, ButtonCircle, Marquee, ArchMask, ScrollProgress
+  components/sections/Hero.astro
+  styles/                     vendor, reset, tokens, themes, base, typography, utilities, main
+  scripts/core/               gsap, lenis, registry, lifecycle, transitions, dom
+  scripts/modules/            un fichero por data-attribute
+  content/site.ts             brief, navegación, hero
+  assets/                     imágenes (placeholders generados con tools/make-placeholders.mjs)
+```

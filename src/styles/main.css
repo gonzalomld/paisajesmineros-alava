@@ -10,11 +10,16 @@
      reset       normalización mínima
      tokens      valores (tokens.css)
      themes      superficies → semánticos (themes.css)
-     base        html, body, foco, tipografía por defecto
-     components  componentes
-     utilities   utilidades (.grid, .col-*, visually-hidden…)
+     base        html, body, foco, tipografía (.h1 … .p2), primitivas globales
+     components  componentes (cada .astro aporta el suyo con <style>)
+     utilities   utilidades (.grid, .col-*, .sr-only, overlay de rejilla)
    ========================================================================== */
 @layer vendor, reset, tokens, themes, base, components, utilities;
 
+@import './vendor.css';
 @import './reset.css';
 @import './tokens.css';
+@import './themes.css';
+@import './base.css';
+@import './typography.css';
+@import './utilities.css';

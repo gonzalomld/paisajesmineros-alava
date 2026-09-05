@@ -1,0 +1,254 @@
+---
+/**
+ * Header — fijo, siempre visible, sin fondo. Tres zonas:
+ *   izquierda: insignia circular (logotipo + nombre en textPath girando)
+ *   derecha:   enlace principal en display a dos líneas con subrayado y
+ *              dos enlaces secundarios en l1
+ *   móvil:     botón de menú → overlay a pantalla completa con revelado en arco
+ * El color viene del tema activo (data-theme, lo cambia themeSwitch).
+ * Persiste entre navegaciones (transition:persist); header.ts lo anima.
+ */
+import type { Theme } from '@/content/site';
+import { site } from '@/content/site';
+
+interface Props {
+  theme?: Theme;
+}
+const { theme = 'light' } = Astro.props;
+const ring = `${site.brand.name} · ${site.brand.product} · `.toUpperCase();
+const { primary, secondary } = site.nav;
+---
+<div class="header-root" transition:persist="header">
+  <header class="header" data-header data-theme-target data-theme={theme}>
+    <a class="header__badge" href="/" aria-label={`${site.brand.product} de ${site.brand.name}, inicio`} data-magnetic="0.2">
+      <span class="header__badge-inner" data-magnetic-inner>
+        <svg class="header__ring" viewBox="0 0 100 100" aria-hidden="true" focusable="false" data-badge-ring>
+          <defs>
+            <path id="header-ring-path" d="M50,50 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"></path>
+          </defs>
+          <text class="header__ring-text">
+            <textPath href="#header-ring-path" textLength="251" lengthAdjust="spacing">{ring}{ring}</textPath>
+          </text>
+        </svg>
+        <svg class="header__mark" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+          <!-- Marca provisional: arco de galería sobre una veta. Se sustituye por el logotipo definitivo. -->
+          <path d="M9 30V21a11 11 0 0 1 22 0v9" fill="none" stroke="currentColor" stroke-width="1.2"></path>
+          <path d="M5 30h30" fill="none" stroke="currentColor" stroke-width="1.2"></path>
+          <path d="M14 30v-8a6 6 0 0 1 12 0v8" fill="none" stroke="currentColor" stroke-width="1.2"></path>
+          <circle cx="20" cy="33.5" r="1.4" fill="currentColor"></circle>
+        </svg>
+      </span>
+    </a>
+
+    <nav class="header__nav b-desk" aria-label="Principal">
+      <a class="header__primary h6" href={primary.href} data-text-swap>
+        <span class="swap">
+          <span class="swap__text">{primary.lines[0]}<br />{primary.lines[1]}</span>
+          <span class="swap__text swap__text--clone" aria-hidden="true">{primary.lines[0]}<br />{primary.lines[1]}</span>
+        </span>
+      </a>
+      <ul class="header__secondary">
+        {
+          secondary.map((item) => (
+            <li>
+              <a class="header__link l1" href={item.href} data-text-swap>
+                <span class="swap">
+                  <span class="swap__text">{item.label}</span>
+                  <span class="swap__text swap__text--clone" aria-hidden="true">{item.label}</span>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <button class="header__menu-btn b-mob l1" type="button" data-menu-btn aria-expanded="false" aria-controls="site-menu">
+      <span class="header__menu-label">Menú</span>
+      <span class="header__menu-label header__menu-label--close">Cerrar</span>
+    </button>
+  </header>
+
+  <div class="menu theme-plum" id="site-menu" data-menu hidden>
+    <div class="menu__arch arch" data-menu-arch aria-hidden="true"></div>
+    <nav class="menu__nav" aria-label="Menú">
+      <p class="menu__eyebrow l2" data-menu-item>{site.brand.product} · {site.brand.name}</p>
+      <ul class="menu__list">
+        <li data-menu-item>
+          <a class="menu__link h3" href={primary.href}>{primary.lines[0]} {primary.lines[1]}</a>
+        </li>
+        {
+          secondary.map((item) => (
+            <li data-menu-item>
+              <a class="menu__link h3" href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="menu__script a2" data-menu-item aria-hidden="true">{site.brand.region}</p>
+    </nav>
+  </div>
+</div>
+
+<style>
+  @layer components {
+    .header {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: var(--z-header);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: var(--sp-24) var(--margin);
+      color: var(--fg);
+      pointer-events: none;
+      transition: color 0.4s var(--ease-era);
+    }
+    .header > * {
+      pointer-events: auto;
+    }
+
+    /* insignia */
+    .header__badge {
+      display: block;
+      width: var(--sp-96);
+      height: var(--sp-96);
+      border-radius: 50%;
+      will-change: transform;
+    }
+    .header__badge-inner {
+      position: relative;
+      display: block;
+      width: 100%;
+      height: 100%;
+      will-change: transform;
+    }
+    .header__ring {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      will-change: transform;
+    }
+    .header__ring-text {
+      font-family: var(--font-text);
+      font-stretch: var(--font-text-stretch);
+      font-weight: 500;
+      font-size: 6.4px;
+      letter-spacing: 0.06em;
+      fill: currentColor;
+    }
+    .header__mark {
+      position: absolute;
+      inset: 30%;
+      width: 40%;
+      height: 40%;
+    }
+
+    /* navegación */
+    .header__nav {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--sp-48);
+    }
+    .header__primary {
+      display: inline-block;
+      padding-bottom: var(--sp-4);
+      border-bottom: var(--hairline) solid currentColor;
+    }
+    .header__secondary {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-8);
+      padding-top: var(--sp-4);
+    }
+    .header__link {
+      display: inline-block;
+    }
+
+    /* botón de menú (móvil) */
+    .header__menu-btn {
+      position: relative;
+      display: grid;
+      padding: var(--sp-8) 0;
+      color: inherit;
+    }
+    .header__menu-label {
+      grid-area: 1 / 1;
+      transition: opacity var(--d-micro) var(--ease-era);
+    }
+    .header__menu-label--close {
+      opacity: 0;
+    }
+    .header[aria-expanded='true'] .header__menu-label,
+    .header.is-menu-open .header__menu-label {
+      opacity: 0;
+    }
+    .header.is-menu-open .header__menu-label--close {
+      opacity: 1;
+    }
+
+    /* overlay del menú */
+    .menu {
+      position: fixed;
+      inset: 0;
+      z-index: var(--z-menu);
+      background: transparent;
+      overflow: hidden;
+    }
+    .menu[hidden] {
+      display: none;
+    }
+    .menu__arch {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      width: 190%;
+      height: calc(var(--vh-real) * 1.8);
+      margin-left: -95%;
+      background: var(--bg);
+      transform: scale(0.001);
+    }
+    .menu__nav {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: var(--sp-24);
+      min-height: var(--vh-real);
+      padding: var(--sp-120) var(--margin) var(--sp-64);
+    }
+    .menu__eyebrow {
+      color: var(--fg-muted);
+    }
+    .menu__list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-12);
+    }
+    .menu__link {
+      display: inline-block;
+    }
+    .menu__script {
+      margin-top: var(--sp-16);
+      color: var(--fg-muted);
+    }
+    @media (max-width: 991px) {
+      .menu__script {
+        font-size: calc(56 * var(--u));
+      }
+    }
+
+    @media (max-width: 991px) {
+      .header {
+        padding-block: var(--sp-16);
+        align-items: center;
+      }
+      .header__badge {
+        width: var(--sp-72);
+        height: var(--sp-72);
+      }
+    }
+  }
+</style>

@@ -1,0 +1,47 @@
+---
+/**
+ * PageTransition — panel plum con silueta de arco que cubre la pantalla al
+ * navegar, muestra el wordmark en script y sale hacia arriba. Lo controla
+ * scripts/core/transitions.ts sobre las View Transitions de Astro.
+ */
+import { site } from '@/content/site';
+---
+<div class="page-transition theme-plum" data-page-transition aria-hidden="true" transition:persist="page-transition">
+  <div class="page-transition__arch arch" data-page-transition-arch></div>
+  <p class="page-transition__word a2" data-page-transition-word>{site.hero.script}</p>
+</div>
+
+<style>
+  @layer components {
+    .page-transition {
+      position: fixed;
+      inset: 0;
+      z-index: var(--z-transition);
+      background: transparent;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .page-transition.is-active {
+      pointer-events: auto;
+    }
+    .page-transition__arch {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      width: 170%;
+      height: calc(var(--vh-real) * 1.7);
+      margin-left: -85%;
+      background: var(--bg);
+      transform: scale(0.001);
+    }
+    .page-transition__word {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+      opacity: 0;
+    }
+  }
+</style>

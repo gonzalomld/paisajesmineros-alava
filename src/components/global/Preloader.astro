@@ -1,0 +1,135 @@
+---
+/**
+ * Preloader — pantalla completa plum, z-index 11000. Wordmark del destino
+ * en display con el subtítulo en script montado encima, contador 00 → 100
+ * ligado a la carga real y barra de progreso fina. Al llegar a 100, la
+ * ventana en arco (máscara CSS) se abre hacia arriba revelando el hero.
+ * Solo en la primera visita de la sesión (html.is-visited lo oculta antes
+ * de pintar). Lógica en scripts/modules/preloader.ts.
+ */
+import { site } from '@/content/site';
+const { preloader } = site;
+---
+<div class="preloader theme-plum" data-preloader role="status" aria-live="polite" aria-label="Cargando" transition:persist="preloader">
+  <div class="preloader__ctn" data-preloader-ctn>
+    <p class="preloader__script a2" data-preloader-script>{preloader.script}</p>
+    <p class="preloader__word h2" data-preloader-word>{preloader.display}</p>
+    <p class="preloader__label l2" data-preloader-label>{preloader.label}</p>
+  </div>
+  <div class="preloader__meta" data-preloader-meta>
+    <span class="preloader__counter l2"><span data-preloader-counter>00</span></span>
+    <span class="preloader__bar"><span class="preloader__fill" data-preloader-fill></span></span>
+  </div>
+  <div class="preloader__outline" aria-hidden="true">
+    <span class="preloader__outline-inner"></span>
+  </div>
+</div>
+
+<style>
+  @layer components {
+    .preloader {
+      /* ventana en arco: ancho y altura de la línea de arranque de la cúpula */
+      --arch-w: 28vw;
+      --arch-y: 110vh;
+
+      position: fixed;
+      inset: 0;
+      z-index: var(--z-preloader);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+
+      /* Máscara: opaco en todas partes salvo en la ventana (fuste + cúpula).
+         Tres capas: fuera del fuste (A) ∪ por encima de la línea (B),
+         ∩ fuera de la cúpula (C). Ninguna capa se solapa con otra al
+         recortar, así no hay costuras de antialiasing. */
+      mask-image:
+        radial-gradient(circle calc(var(--arch-w) / 2) at 50% var(--arch-y), transparent calc(100% - 1px), #000 100%),
+        linear-gradient(to right, #000 calc(50% - var(--arch-w) / 2), transparent calc(50% - var(--arch-w) / 2), transparent calc(50% + var(--arch-w) / 2), #000 calc(50% + var(--arch-w) / 2)),
+        linear-gradient(to bottom, #000 var(--arch-y), transparent var(--arch-y));
+      mask-size: 100% 100%;
+      mask-repeat: no-repeat;
+      mask-composite: intersect, add, add;
+    }
+    html:not(.js) .preloader,
+    html.is-visited .preloader {
+      display: none;
+    }
+
+    .preloader__ctn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding-inline: var(--margin);
+    }
+    .preloader__script {
+      position: relative;
+      z-index: 1;
+      margin-bottom: calc(var(--fs-a2) * -0.42);
+      transform: translateX(12%);
+    }
+    .preloader__label {
+      margin-top: var(--sp-24);
+      color: var(--fg-muted);
+    }
+
+    .preloader__meta {
+      position: absolute;
+      left: var(--margin);
+      bottom: var(--sp-48);
+      display: flex;
+      align-items: center;
+      gap: var(--sp-16);
+    }
+    .preloader__counter {
+      min-width: 2.2em;
+      font-variant-numeric: tabular-nums;
+    }
+    .preloader__bar {
+      display: block;
+      width: var(--sp-136);
+      height: var(--hairline);
+      background: rgb(var(--fg-rgb) / 0.1);
+    }
+    .preloader__fill {
+      display: block;
+      height: 100%;
+      background: var(--fg);
+      transform: scaleX(0);
+      transform-origin: left center;
+    }
+
+    /* Doble contorno que acompaña a la ventana: dos arcos concéntricos,
+       1px de borde y 8px de separación, justo por fuera del recorte. */
+    .preloader__outline,
+    .preloader__outline-inner {
+      position: absolute;
+      border: var(--hairline) solid rgb(var(--fg-rgb) / 0.35);
+      border-bottom: 0;
+      pointer-events: none;
+    }
+    .preloader__outline {
+      left: 50%;
+      top: var(--arch-y);
+      width: calc(var(--arch-w) + 2px);
+      height: 300vh;
+      transform: translate(-50%, calc(var(--arch-w) / -2 - 1px));
+      border-radius: calc(var(--arch-w) / 2 + 1px) calc(var(--arch-w) / 2 + 1px) 0 0;
+    }
+    .preloader__outline-inner {
+      inset: -9px -9px auto;
+      height: 100%;
+      border-radius: calc(var(--arch-w) / 2 + 10px) calc(var(--arch-w) / 2 + 10px) 0 0;
+    }
+
+    @media (max-width: 991px) {
+      .preloader {
+        --arch-w: 60vw;
+      }
+      .preloader__meta {
+        bottom: var(--sp-32);
+      }
+    }
+  }
+</style>

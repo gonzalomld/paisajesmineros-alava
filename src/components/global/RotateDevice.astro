@@ -1,0 +1,39 @@
+---
+/**
+ * RotateDevice — en móvil en horizontal (pointer: coarse), una capa a
+ * pantalla completa pide girar el dispositivo. Solo CSS.
+ */
+---
+<div class="rotate theme-plum" role="status" aria-live="polite">
+  <svg class="rotate__icon" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+    <rect x="14" y="6" width="20" height="36" rx="3" fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke"></rect>
+    <path d="M6 24a18 18 0 0 1 8-15M42 24a18 18 0 0 1-8 15" fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke"></path>
+    <path d="M11 6.5 14 9l-3 2.5M37 41.5 34 39l3-2.5" fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke"></path>
+  </svg>
+  <p class="rotate__text l1">Gira el dispositivo para ver el paisaje en vertical</p>
+</div>
+
+<style>
+  @layer components {
+    .rotate {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: var(--z-rotate);
+      place-content: center;
+      justify-items: center;
+      gap: var(--sp-24);
+      padding: var(--margin);
+      text-align: center;
+    }
+    .rotate__icon {
+      width: var(--sp-48);
+      height: var(--sp-48);
+    }
+    @media (orientation: landscape) and (max-width: 991px) and (pointer: coarse) and (hover: none) {
+      .rotate {
+        display: grid;
+      }
+    }
+  }
+</style>

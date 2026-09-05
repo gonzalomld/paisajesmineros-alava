@@ -1,0 +1,100 @@
+---
+/**
+ * Footer — pie mínimo de la Fase 01: wordmark, datos del centro y enlaces.
+ * Superficie dark; participa en el cambio de tema del header.
+ */
+import { site } from '@/content/site';
+import ArchMask from '@/components/ui/ArchMask.astro';
+const year = new Date().getFullYear();
+---
+<footer class="footer theme-dark section" data-bg="dark" data-theme-trigger data-arch>
+  <ArchMask />
+  <div class="container">
+    <div class="grid footer__grid">
+      <div class="col-4 footer__brand">
+        <p class="footer__script a2" aria-hidden="true">{site.brand.region}</p>
+        <p class="footer__word h3">{site.brand.product}</p>
+        <p class="l2 t-muted">{site.brand.full}</p>
+      </div>
+      <div class="col-3 footer__block">
+        <p class="l2 t-muted">{site.brand.center}</p>
+        <p class="p2">{site.footer.place}</p>
+        <ul class="p2">
+          {site.footer.hours.map((h) => <li>{h}</li>)}
+        </ul>
+      </div>
+      <nav class="col-3 footer__block" aria-label="Pie">
+        <p class="l2 t-muted">Navegación</p>
+        <ul class="footer__links l1">
+          <li><a href={site.nav.primary.href}>{site.nav.primary.label}</a></li>
+          {site.nav.secondary.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+        </ul>
+      </nav>
+    </div>
+    <div class="footer__legal l2 t-muted">
+      <span>© {year} {site.brand.center} · {site.brand.full}</span>
+      <ul class="footer__legal-links">
+        {site.footer.legal.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  @layer components {
+    .footer {
+      padding-block: var(--sp-120) var(--sp-40);
+    }
+    .footer__grid {
+      row-gap: var(--sp-48);
+    }
+    .footer__brand {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-12);
+    }
+    .footer__script {
+      margin-bottom: calc(var(--fs-a2) * -0.55);
+      transform: translateX(6%);
+      position: relative;
+      z-index: 1;
+    }
+    .footer__block {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-12);
+    }
+    .footer__links {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-8);
+    }
+    .footer__links a:hover,
+    .footer__legal-links a:hover {
+      color: var(--fg);
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+    }
+    .footer__legal {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--sp-24);
+      flex-wrap: wrap;
+      margin-top: var(--sp-96);
+      padding-top: var(--sp-24);
+      border-top: var(--hairline) solid var(--line);
+    }
+    .footer__legal-links {
+      display: flex;
+      gap: var(--sp-24);
+    }
+    @media (max-width: 991px) {
+      .footer {
+        padding-block: var(--sp-80) var(--sp-32);
+      }
+      .footer__legal {
+        margin-top: var(--sp-48);
+      }
+    }
+  }
+</style>

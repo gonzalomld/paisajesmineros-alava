@@ -245,25 +245,32 @@
     --fs-p2: calc(11  * var(--u)); --lh-p2: 1.45; --ls-p2: -.024em;
   }
 
-  /* Móvil: el brief solo fija la escala de escritorio. Estos valores son
-     PROPUESTA (píxeles a 416px): los display bajan para no romper línea
-     cada dos letras; los párrafos suben por legibilidad en pantalla táctil. */
+  /* Móvil (píxeles a 416px). Valores tomados de la referencia, que define
+     una escala propia por debajo de 992px: los display bajan a la mitad
+     y cambian de interlínea; etiquetas y párrafos se mantienen. */
   @media (max-width: 991px) {
     :root {
-      --fs-h1: calc(72 * var(--u));
-      --fs-h2: calc(56 * var(--u));
-      --fs-h3: calc(44 * var(--u));
-      --fs-h4: calc(34 * var(--u));
-      --fs-h5: calc(26 * var(--u));
-      --fs-h6: calc(20 * var(--u));
-      --fs-a1: calc(72 * var(--u));
-      --fs-a2: calc(48 * var(--u));
-      --fs-c1: calc(18 * var(--u));
-      --fs-l1: calc(11 * var(--u));
-      --fs-l2: calc(10 * var(--u));
-      --fs-p1: calc(15 * var(--u));
-      --fs-p2: calc(13 * var(--u));
+      --fs-h1: calc(96 * var(--u)); --lh-h1: .917;
+      --fs-h2: calc(73 * var(--u)); --lh-h2: .877;
+      --fs-h3: calc(56 * var(--u)); --lh-h3: .929;
+      --fs-h4: calc(40 * var(--u)); --lh-h4: 1;
+      --fs-h5: calc(28 * var(--u));
+      --fs-h6: calc(28 * var(--u));
+      --fs-a1: calc(96 * var(--u));
+      --fs-a2: calc(72 * var(--u));
+      --fs-c1: calc(19 * var(--u)); --lh-c1: 1.263;
       --font-display-opsz: 48;
+    }
+  }
+
+  /* Campos de formulario en móvil: iOS hace zoom si el input baja de 16px.
+     Token aparte para no tocar la escala de párrafo. */
+  :root {
+    --fs-input: var(--fs-p1);
+  }
+  @media (max-width: 991px) {
+    :root {
+      --fs-input: calc(16 * var(--u));
     }
   }
 
@@ -336,7 +343,7 @@
     --z-content:      1;
     --z-progress:     900;
     --z-header:       1000;
-    --z-menu:         1100;
+    --z-menu:         950;   /* por debajo del header: su botón cierra el menú */
     --z-transition:   10500;
     --z-preloader:    11000;
     --z-rotate:       12000;

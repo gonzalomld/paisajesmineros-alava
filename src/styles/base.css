@@ -1,0 +1,195 @@
+/* ==========================================================================
+   base.css — html, body, foco, primitivas globales del sistema
+   Capa: base. Todo lo que no es un componente ni una utilidad.
+   ========================================================================== */
+@layer base {
+
+  html {
+    background-color: var(--c-bone);
+    color: var(--c-ink);
+    scroll-behavior: auto;            /* el scroll suave lo hace Lenis */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: var(--font-text);
+    font-stretch: var(--font-text-stretch);
+    font-size: var(--fs-p1);
+    line-height: var(--lh-p1);
+    letter-spacing: var(--ls-p1);
+    background-color: var(--bg);
+    color: var(--fg);
+  }
+
+  ::selection {
+    background: var(--fg);
+    color: var(--bg);
+  }
+
+  /* Foco visible en todo lo interactivo. No depende del tema:
+     el ámbar contrasta sobre bone, sky, ink y plum. */
+  :focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: 2px;
+  }
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  .skip-link {
+    position: fixed;
+    top: var(--sp-8);
+    left: var(--sp-8);
+    z-index: calc(var(--z-rotate) + 1);
+    padding: var(--sp-8) var(--sp-12);
+    background: var(--c-ink);
+    color: var(--c-bone);
+    transform: translateY(-300%);
+  }
+  .skip-link:focus {
+    transform: none;
+  }
+
+  /* La página: recorta el desbordamiento horizontal de los arcos escalados
+     sin convertir body en contenedor de scroll (Lenis usa window). */
+  .page {
+    overflow-x: clip;
+  }
+
+  /* --------------------------------------------------------------------
+     Anti-parpadeo de reveals. Solo con JS (html.js): el módulo fija el
+     estado inicial con GSAP y añade .is-ready. Sin JS todo es visible.
+     lifecycle.ts tiene un guardia por si un módulo no llega a montar.
+     -------------------------------------------------------------------- */
+  html.js [data-reveal]:not(.is-ready),
+  html.js [data-reveal-first]:not(.is-ready) {
+    visibility: hidden;
+  }
+
+  /* --------------------------------------------------------------------
+     SplitText. Las máscaras (.split-*-mask) recortan con overflow: clip;
+     como los display llevan interlínea < 100 %, acentos y colas quedarían
+     fuera del recorte: se reserva relleno arriba y abajo y se compensa
+     con margen negativo para no alterar el layout.
+     -------------------------------------------------------------------- */
+  .split-line,
+  .split-word,
+  .split-char {
+    display: inline-block;
+    will-change: transform;
+  }
+  /* una palabra hecha de inline-blocks se partiría por caracteres al no caber */
+  .split-word,
+  .split-word-mask {
+    white-space: nowrap;
+  }
+  .split-char-mask,
+  .split-word-mask,
+  .split-line-mask {
+    display: inline-block;
+    vertical-align: top;
+    line-height: inherit;
+    padding-block: .2em .14em;
+    margin-block: -.2em -.14em;
+  }
+
+  /* --------------------------------------------------------------------
+     El arco: motivo estructural del sistema.
+     -------------------------------------------------------------------- */
+  .arch {
+    border-radius: var(--r-arch);
+    transform-origin: bottom center;
+    will-change: transform;
+  }
+
+  /* Secciones: apiladas en orden de documento; cada una por encima de la
+     anterior para que su arco (.arch-section) cubra a la previa. */
+  .section {
+    position: relative;
+    z-index: 1;
+  }
+  .section > .arch-section {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    width: 140%;
+    height: calc(var(--vh-real) * 1.3);
+    margin-left: -70%;
+    z-index: -1;
+    background: var(--bg);
+    pointer-events: none;
+    transform: scale(0.001);
+  }
+
+  /* --------------------------------------------------------------------
+     Parallax: el wrapper recorta y la imagen sobra un 8 % por cada lado
+     para que el desplazamiento nunca enseñe bordes.
+     -------------------------------------------------------------------- */
+  [data-parallax="w"] {
+    position: relative;
+    overflow: hidden;
+  }
+  [data-parallax="img"] {
+    position: absolute;
+    inset: -8% 0;
+    width: 100%;
+    height: 116%;
+    will-change: transform;
+  }
+  [data-parallax="img"] img,
+  [data-parallax="img"] video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* --------------------------------------------------------------------
+     Text swap: dos copias apiladas en la misma celda; el módulo textSwap
+     las desplaza al unísono. Sin JS no pasa nada y se lee la primera.
+     -------------------------------------------------------------------- */
+  .swap {
+    display: inline-grid;
+    overflow: clip;
+    vertical-align: top;
+  }
+  .swap__text {
+    grid-area: 1 / 1;
+    display: block;
+    will-change: transform;
+  }
+  .swap__text--clone {
+    transform: translateY(100%);
+  }
+
+  /* --------------------------------------------------------------------
+     Tabs: el panel entrante barre desde el centro; tabs.ts anima
+     --tab-reveal de 50 a 0 (porcentaje recortado a cada lado).
+     -------------------------------------------------------------------- */
+  [data-tab-content] {
+    clip-path: inset(0 calc(var(--tab-reveal, 0) * 1%) 0 calc(var(--tab-reveal, 0) * 1%));
+  }
+
+  /* --------------------------------------------------------------------
+     Formularios (solo tamaño base: los componentes llegan en Fase 02)
+     -------------------------------------------------------------------- */
+  input,
+  select,
+  textarea {
+    font-size: var(--fs-input);
+  }
+
+  /* --------------------------------------------------------------------
+     Reduced motion: las animaciones CSS (arcos, pulsos, marquee) paran.
+     Las duraciones de transición ya son 0s desde tokens.css.
+     -------------------------------------------------------------------- */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: .01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

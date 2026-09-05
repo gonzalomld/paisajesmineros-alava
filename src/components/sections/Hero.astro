@@ -1,0 +1,328 @@
+---
+/**
+ * Hero — la tesis del sitio.
+ *   · imagen a sangre completa (100 % del viewport, --vh-real) con versión
+ *     de día y de noche (data-tabs) que entra con un clip-path desde el centro
+ *   · nombre en h1 a dos líneas con la interlínea comprimida; el subtítulo en
+ *     script se superpone a la segunda línea con margen negativo (intencionado)
+ *   · claim repartido a los lados del conmutador día / noche
+ *   · CTA circular en el tercio inferior
+ *   · marcadores de puntos de interés (datos estáticos en content/site.ts)
+ *
+ * IMÁGENES: placeholders generados (tools/make-placeholders.mjs), 16:10.
+ *   day.jpg   → fotografía diurna del paisaje minero (Dropbox, alta calidad)
+ *   night.jpg → misma composición nocturna
+ * astro:assets sirve AVIF con respaldo WebP; la de día se precarga en index.
+ */
+import { Picture } from 'astro:assets';
+import { site } from '@/content/site';
+import ButtonCircle from '@/components/ui/ButtonCircle.astro';
+import dayImg from '@/assets/hero/day.jpg';
+import nightImg from '@/assets/hero/night.jpg';
+
+const { hero, cta } = site;
+const widths = [832, 1280, 1600, 2400];
+---
+<section class="hero theme-dark" data-hero data-bg="dark" data-theme-trigger data-tabs="hero" aria-labelledby="hero-title">
+  <div class="hero__media" data-hero-media>
+    <div class="hero__scale" data-hero-scale>
+      <div class="hero__img" data-tab-content="day" role="tabpanel" id="hero-panel-day" aria-labelledby="hero-tab-day">
+        <Picture
+          src={dayImg}
+          formats={['avif', 'webp']}
+          widths={widths}
+          sizes="100vw"
+          alt={hero.tabs.day.alt}
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+          data-hero-img
+        />
+      </div>
+      <div class="hero__img" data-tab-content="night" role="tabpanel" id="hero-panel-night" aria-labelledby="hero-tab-night" hidden>
+        <Picture src={nightImg} formats={['avif', 'webp']} widths={widths} sizes="100vw" alt={hero.tabs.night.alt} loading="lazy" decoding="async" />
+      </div>
+      <div class="hero__shade" aria-hidden="true"></div>
+    </div>
+
+    <ul class="hero__pois" aria-label="Puntos de interés">
+      {
+        hero.pois.map((poi) => (
+          <li class="poi" style={`--x:${poi.x}%;--y:${poi.y}%`}>
+            <button class="poi__dot" type="button">
+              <span class="sr-only">{poi.label}</span>
+              <span class="poi__ring" aria-hidden="true" />
+              <span class="poi__ring" aria-hidden="true" />
+            </button>
+            <span class="poi__label l2" aria-hidden="true">{poi.label}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <div class="hero__content container">
+    <div class="hero__title">
+      <h1 id="hero-title" class="h1 t-center" data-reveal="h" data-reveal-first>
+        {hero.display[0]}<br />{hero.display[1]}
+      </h1>
+      <p class="hero__script a1" data-reveal="p" data-reveal-first data-reveal-delay="0.7" data-reveal-duration="0.6">
+        {hero.script}
+      </p>
+    </div>
+
+    <div class="hero__claim l1">
+      <span class="hero__claim-left" data-reveal="p" data-reveal-first data-reveal-delay="1.05">{hero.claim.left}</span>
+      <div class="hero__tabs" role="tablist" aria-label="Momento del día" data-reveal="p" data-reveal-first data-reveal-delay="1.15">
+        <button class="hero__tab l1" type="button" role="tab" id="hero-tab-day" data-tab-trigger="day" aria-selected="true" aria-controls="hero-panel-day" data-text-swap>
+          <span class="swap">
+            <span class="swap__text">{hero.tabs.day.label}</span>
+            <span class="swap__text swap__text--clone" aria-hidden="true">{hero.tabs.day.label}</span>
+          </span>
+        </button>
+        <span class="hero__rail" aria-hidden="true"></span>
+        <button class="hero__tab l1" type="button" role="tab" id="hero-tab-night" data-tab-trigger="night" aria-selected="false" aria-controls="hero-panel-night" tabindex="-1" data-text-swap>
+          <span class="swap">
+            <span class="swap__text">{hero.tabs.night.label}</span>
+            <span class="swap__text swap__text--clone" aria-hidden="true">{hero.tabs.night.label}</span>
+          </span>
+        </button>
+      </div>
+      <span class="hero__claim-right" data-reveal="p" data-reveal-first data-reveal-delay="1.05">{hero.claim.right}</span>
+    </div>
+
+    <div class="hero__cta" data-reveal="ctn" data-reveal-first data-reveal-delay="1.2">
+      <ButtonCircle href={cta.primary.href} lines={cta.primary.lines} label={cta.primary.label} />
+    </div>
+
+    <p class="hero__desc l1 t-center" data-reveal="p" data-reveal-first data-reveal-delay="1.35">{hero.description}</p>
+  </div>
+</section>
+
+<style>
+  @layer components {
+    .hero {
+      position: relative;
+      z-index: 0;
+      min-height: var(--vh-real);
+      overflow: hidden;
+    }
+    .hero__media,
+    .hero__scale,
+    .hero__img {
+      position: absolute;
+      inset: 0;
+    }
+    .hero__media,
+    .hero__scale {
+      will-change: transform;
+    }
+    .hero__img :global(picture),
+    .hero__img :global(img) {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .hero__img[hidden] {
+      display: none;
+    }
+    .hero__shade {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgb(var(--c-ink-rgb) / 0.5) 0%,
+        rgb(var(--c-ink-rgb) / 0) 32%,
+        rgb(var(--c-ink-rgb) / 0) 58%,
+        rgb(var(--c-ink-rgb) / 0.6) 100%
+      );
+      pointer-events: none;
+    }
+
+    /* puntos de interés */
+    .hero__pois {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .poi {
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      transform: translate(-50%, -50%);
+      pointer-events: auto;
+    }
+    .poi__dot {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: var(--sp-32);
+      height: var(--sp-32);
+      border-radius: 50%;
+      color: var(--fg);
+    }
+    .poi__dot::before {
+      content: '';
+      position: relative;
+      z-index: 1;
+      width: var(--sp-6);
+      height: var(--sp-6);
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .poi__ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: var(--hairline) solid rgb(var(--fg-rgb) / 0.8);
+      animation: poi-pulse 2.8s var(--ease-era) infinite;
+    }
+    .poi__ring:nth-of-type(2) {
+      animation-delay: 1.4s;
+    }
+    @keyframes poi-pulse {
+      0% { transform: scale(0.3); opacity: 1; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+    .poi__label {
+      position: absolute;
+      left: 100%;
+      top: 50%;
+      padding-left: var(--sp-8);
+      white-space: nowrap;
+      color: var(--fg);
+      opacity: 0;
+      transform: translate(var(--sp-8), -50%);
+      transition:
+        opacity var(--d-micro) var(--ease-era),
+        transform var(--d-micro) var(--ease-era);
+      pointer-events: none;
+    }
+    .poi:hover .poi__label,
+    .poi:focus-within .poi__label {
+      opacity: 1;
+      transform: translate(0, -50%);
+    }
+
+    /* contenido */
+    .hero__content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: var(--vh-real);
+      padding-top: var(--sp-112);
+      padding-bottom: var(--sp-36);
+      color: var(--fg);
+    }
+    .hero__title {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .hero__script {
+      position: relative;
+      z-index: 1;
+      margin-top: calc(var(--fs-a1) * -0.52);
+      transform: translateX(14%);
+      white-space: nowrap;
+      /* Su caja (192px de alto) se solapa con el conmutador día / noche:
+         es decorativo, no debe capturar el puntero. */
+      pointer-events: none;
+    }
+
+    .hero__claim {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      column-gap: var(--sp-24);
+      width: min(100%, calc(var(--col) * 6 + var(--gap) * 5));
+      margin-top: var(--sp-28);
+    }
+    .hero__claim-left {
+      text-align: right;
+    }
+    .hero__tabs {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-16);
+    }
+    .hero__tab {
+      padding-block: var(--sp-4);
+      color: var(--fg-muted);
+      transition: color var(--d-micro) var(--ease-era);
+    }
+    .hero__tab[aria-selected='true'] {
+      color: var(--fg);
+    }
+    .hero__rail {
+      position: relative;
+      width: var(--sp-64);
+      height: var(--hairline);
+      background: rgb(var(--fg-rgb) / 0.3);
+    }
+    .hero__rail::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: var(--sp-6);
+      height: var(--sp-6);
+      border-radius: 50%;
+      background: var(--fg);
+      transform: translate(0, -50%);
+      transition: transform var(--d-section) var(--ease-era);
+    }
+    .hero[data-active='night'] .hero__rail::after {
+      transform: translate(calc(var(--sp-64) - var(--sp-6)), -50%);
+    }
+
+    .hero__cta {
+      margin-top: auto;
+      padding-top: var(--sp-32);
+    }
+    .hero__desc {
+      margin-top: var(--sp-20);
+      color: var(--fg-muted);
+    }
+
+    @media (max-width: 991px) {
+      .hero__content {
+        padding-top: var(--sp-112);
+        padding-bottom: var(--sp-32);
+      }
+      /* Tamaños propios del hero en móvil: "PAISAJES" (8 caracteres, 0.53em
+         cada uno en Bodoni Moda) no cabe a 96px en 416, ni "Montaña Alavesa"
+         a 72px. Píxeles de diseño a 416. */
+      .hero__title .h1 {
+        font-size: calc(78 * var(--u));
+      }
+      .hero__script {
+        font-size: calc(60 * var(--u));
+        margin-top: calc(60 * var(--u) * -0.5);
+        transform: translateX(6%);
+      }
+      .hero__claim {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        row-gap: var(--sp-12);
+        text-align: center;
+        margin-top: var(--sp-24);
+      }
+      .hero__claim-left {
+        text-align: center;
+      }
+      .hero__cta {
+        padding-top: var(--sp-32);
+      }
+      .hero__desc {
+        margin-top: var(--sp-24);
+        max-width: 26ch;
+      }
+      .poi__label {
+        display: none;
+      }
+    }
+  }
+</style>

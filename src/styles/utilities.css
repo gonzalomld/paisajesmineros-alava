@@ -1,0 +1,119 @@
+/* ==========================================================================
+   utilities.css — rejilla, spans, visibilidad, espaciadores, overlay de rejilla
+   Capa: utilities (la más alta: gana a componentes).
+   ========================================================================== */
+@layer utilities {
+
+  /* contenedor: solo aporta los márgenes laterales del sistema */
+  .container {
+    padding-inline: var(--margin);
+  }
+
+  /* rejilla: 10 columnas en escritorio, 4 en móvil; gap 16 */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    column-gap: var(--gap);
+  }
+
+  /* El span va en grid-column-end: así .col-N y .start-N se combinan
+     (start explícito + fin en span) en vez de pisarse. */
+  .col-1  { grid-column-end: span 1; }
+  .col-2  { grid-column-end: span 2; }
+  .col-3  { grid-column-end: span 3; }
+  .col-4  { grid-column-end: span 4; }
+  .col-5  { grid-column-end: span 5; }
+  .col-6  { grid-column-end: span 6; }
+  .col-7  { grid-column-end: span 7; }
+  .col-8  { grid-column-end: span 8; }
+  .col-9  { grid-column-end: span 9; }
+  .col-10 { grid-column-end: span 10; }
+
+  /* inicio de columna explícito (1…10) */
+  .start-1  { grid-column-start: 1; }
+  .start-2  { grid-column-start: 2; }
+  .start-3  { grid-column-start: 3; }
+  .start-4  { grid-column-start: 4; }
+  .start-5  { grid-column-start: 5; }
+  .start-6  { grid-column-start: 6; }
+  .start-7  { grid-column-start: 7; }
+  .start-8  { grid-column-start: 8; }
+  .start-9  { grid-column-start: 9; }
+  .start-10 { grid-column-start: 10; }
+
+  /* En móvil la rejilla tiene 4 columnas: los spans grandes ocupan todo
+     y los .m-col-* permiten afinar por bloque. */
+  @media (max-width: 991px) {
+    /* Orden importante: el reset de .start-* va antes para que .col-* (que
+       fija inicio y fin) gane la cascada y ocupe las 4 columnas. */
+    .start-1, .start-2, .start-3, .start-4, .start-5,
+    .start-6, .start-7, .start-8, .start-9, .start-10 { grid-column-start: auto; }
+    .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10 { grid-column: 1 / -1; }
+    .m-col-1 { grid-column-end: span 1; }
+    .m-col-2 { grid-column-end: span 2; }
+    .m-col-3 { grid-column-end: span 3; }
+    .m-col-4 { grid-column: 1 / -1; }
+    .m-start-1 { grid-column-start: 1; }
+    .m-start-2 { grid-column-start: 2; }
+    .m-start-3 { grid-column-start: 3; }
+    .m-start-4 { grid-column-start: 4; }
+  }
+
+  /* visibilidad por dispositivo */
+  @media (max-width: 991px) { .b-desk { display: none !important; } }
+  @media (min-width: 992px) { .b-mob  { display: none !important; } }
+
+  /* alto de viewport real */
+  .vh     { min-height: var(--vh-real); }
+  .vh-2   { min-height: calc(var(--vh-real) * 2); }
+
+  /* espaciadores verticales en celdas (96 escritorio / 80 móvil) */
+  .row-1 { height: var(--row); }
+  .row-2 { height: calc(var(--row) * 2); }
+  .row-3 { height: calc(var(--row) * 3); }
+
+  /* accesible pero invisible */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Overlay de rejilla para depurar (Ctrl+G). Lo conmuta lifecycle.ts. */
+  .grid-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-grid-overlay);
+    display: none;
+    padding-inline: var(--margin);
+    pointer-events: none;
+  }
+  .grid-overlay.is-on { display: block; }
+  .grid-overlay__cols {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    column-gap: var(--gap);
+    height: 100%;
+  }
+  .grid-overlay__col {
+    background: color-mix(in srgb, var(--c-error) 8%, transparent);
+    border-inline: var(--hairline) solid color-mix(in srgb, var(--c-error) 25%, transparent);
+  }
+  .grid-overlay__rows {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--c-error) 30%, transparent) 0,
+      color-mix(in srgb, var(--c-error) 30%, transparent) var(--hairline),
+      transparent var(--hairline)
+    );
+    background-size: 100% var(--row);
+  }
+}

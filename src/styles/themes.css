@@ -1,0 +1,81 @@
+/* ==========================================================================
+   themes.css — cuatro superficies → tokens semánticos
+   Capa: themes. Los componentes consumen SOLO estos tokens:
+     --bg          fondo de la superficie
+     --bg-rgb      canales del fondo, para componer alfas
+     --fg          texto y trazos principales      (primary, 100 %)
+     --fg-rgb      canales del texto, para componer alfas
+     --fg-muted    texto secundario                 (gray-text, 60 %)
+     --fg-disabled estados inactivos                (disabled, 30 %)
+     --line        reglas y divisiones              (line, 10 %)
+     --bg-subtle   fondos sutiles de bloque         (bg, 5 %)
+
+   Se aplican como clase sobre cualquier <section> (.theme-*) y también
+   como atributo data-theme para elementos que cambian de tema por JS sin
+   pintar fondo (el header, la barra de progreso).
+   ========================================================================== */
+@layer themes {
+
+  /* tema por defecto: light (bone / ink) */
+  :root,
+  .theme-light,
+  [data-theme="light"] {
+    --bg:          var(--c-bone);
+    --bg-rgb:      var(--c-bone-rgb);
+    --fg:          var(--ink-primary);
+    --fg-rgb:      var(--c-ink-rgb);
+    --fg-muted:    var(--ink-gray-text);
+    --fg-disabled: var(--ink-disabled);
+    --line:        var(--ink-line);
+    --bg-subtle:   var(--ink-bg);
+    color-scheme: light;
+  }
+
+  .theme-sky,
+  [data-theme="sky"] {
+    --bg:          var(--c-sky);
+    --bg-rgb:      var(--c-sky-rgb);
+    --fg:          var(--ink-primary);
+    --fg-rgb:      var(--c-ink-rgb);
+    --fg-muted:    var(--ink-gray-text);
+    --fg-disabled: var(--ink-disabled);
+    --line:        var(--ink-line);
+    --bg-subtle:   var(--ink-bg);
+    color-scheme: light;
+  }
+
+  .theme-dark,
+  [data-theme="dark"] {
+    --bg:          var(--c-ink);
+    --bg-rgb:      var(--c-ink-rgb);
+    --fg:          var(--bone-primary);
+    --fg-rgb:      var(--c-bone-rgb);
+    --fg-muted:    var(--bone-gray-text);
+    --fg-disabled: var(--bone-disabled);
+    --line:        var(--bone-line);
+    --bg-subtle:   var(--bone-bg);
+    color-scheme: dark;
+  }
+
+  .theme-plum,
+  [data-theme="plum"] {
+    --bg:          var(--c-plum);
+    --bg-rgb:      var(--c-plum-rgb);
+    --fg:          var(--bone-primary);
+    --fg-rgb:      var(--c-bone-rgb);
+    --fg-muted:    var(--bone-gray-text);
+    --fg-disabled: var(--bone-disabled);
+    --line:        var(--bone-line);
+    --bg-subtle:   var(--bone-bg);
+    color-scheme: dark;
+  }
+
+  /* Las clases pintan; los data-theme no (el header no tiene fondo). */
+  .theme-light,
+  .theme-sky,
+  .theme-dark,
+  .theme-plum {
+    background-color: var(--bg);
+    color: var(--fg);
+  }
+}

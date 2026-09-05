@@ -1,0 +1,54 @@
+---
+/**
+ * ButtonPill — botón de texto en l1 mayúsculas con una regla de 1px debajo.
+ * En hover (data-text-swap) la etiqueta sube y sale y una copia idéntica
+ * entra desde abajo.
+ */
+interface Props {
+  label: string;
+  href?: string;
+  type?: 'button' | 'submit';
+  disabled?: boolean;
+  class?: string;
+}
+const { label, href, type = 'button', disabled = false, class: className } = Astro.props;
+const Tag = href ? 'a' : 'button';
+const attrs = href ? { href } : { type, disabled };
+---
+<Tag class:list={['btn-pill', 'l1', className]} data-text-swap {...attrs} aria-disabled={disabled ? 'true' : undefined}>
+  <span class="swap">
+    <span class="swap__text">{label}</span>
+    <span class="swap__text swap__text--clone" aria-hidden="true">{label}</span>
+  </span>
+</Tag>
+
+<style>
+  @layer components {
+    .btn-pill {
+      display: inline-flex;
+      flex-direction: column;
+      gap: var(--sp-6);
+      padding-block: var(--sp-4);
+      color: var(--fg);
+      cursor: pointer;
+      transition: color var(--d-micro) var(--ease-era);
+    }
+    .btn-pill::after {
+      content: '';
+      display: block;
+      height: var(--hairline);
+      background: currentColor;
+      opacity: 0.6;
+      transition: opacity var(--d-micro) var(--ease-era);
+    }
+    .btn-pill:hover::after,
+    .btn-pill:focus-visible::after {
+      opacity: 1;
+    }
+    .btn-pill[disabled],
+    .btn-pill[aria-disabled='true'] {
+      color: var(--fg-disabled);
+      pointer-events: none;
+    }
+  }
+</style>

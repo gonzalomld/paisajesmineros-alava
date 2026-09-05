@@ -1,0 +1,332 @@
+---
+/**
+ * /_kit — sistema de diseño: escala tipográfica, cuatro superficies,
+ * rejilla y botones en sus estados. Excluida del sitemap (astro.config)
+ * y con noindex.
+ *
+ * Astro no enruta ficheros de pages/ que empiecen por guion bajo, así que
+ * la URL /_kit se produce con una ruta dinámica de un solo valor.
+ */
+export function getStaticPaths() {
+  return [{ params: { kit: '_kit' } }];
+}
+
+import Base from '@/layouts/Base.astro';
+import ButtonPill from '@/components/ui/ButtonPill.astro';
+import ButtonCircle from '@/components/ui/ButtonCircle.astro';
+import Marquee from '@/components/ui/Marquee.astro';
+import ArchMask from '@/components/ui/ArchMask.astro';
+
+const type = [
+  { cls: 'h1', px: 192, note: 'display · 87.5 % · −0.024em', sample: 'Álava' },
+  { cls: 'h2', px: 136, note: 'display · 88.2 % · −0.024em', sample: 'Mineros' },
+  { cls: 'h3', px: 96, note: 'display · 91.7 % · −0.024em', sample: 'Mina Lucía' },
+  { cls: 'h4', px: 63, note: 'display · 88.9 % · −0.016em', sample: 'Montaña Alavesa' },
+  { cls: 'h5', px: 40, note: 'display · 100 % · −0.008em', sample: 'Asfaltos naturales' },
+  { cls: 'h6', px: 28, note: 'display · 100 % · 0', sample: 'Centro de interpretación' },
+  { cls: 'a1', px: 192, note: 'acento · 100 %', sample: 'Montaña Alavesa' },
+  { cls: 'a2', px: 120, note: 'acento · 100 %', sample: 'Atauri' },
+  { cls: 'c1', px: 25, note: 'display versalitas · 112 % · +0.8em', sample: 'Ruta' },
+  { cls: 'l1', px: 11, note: 'texto mayúsculas · 145 % · +0.048em', sample: 'Planifica tu visita' },
+  { cls: 'l2', px: 9, note: 'texto mayúsculas · 133 % · +0.32em', sample: 'Ruta de los paisajes mineros' },
+  { cls: 'p1', px: 13, note: 'texto · 138 % · −0.024em', sample: 'Explotada desde 1872, Mina Lucía cuenta con un complejo sistema de galerías con visibles niveles de asfalto impregnando la roca.' },
+  { cls: 'p2', px: 11, note: 'texto · 145 % · −0.024em', sample: 'La presencia de asfalto natural en las rocas de Montaña Alavesa se debe al diapiro de Maeztu.' },
+];
+
+const surfaces = [
+  { cls: 'theme-light', name: 'light', bg: 'bone #F3F3EC', fg: 'ink' },
+  { cls: 'theme-sky', name: 'sky', bg: 'sky #B5CEDB', fg: 'ink' },
+  { cls: 'theme-dark', name: 'dark', bg: 'ink #17233B', fg: 'bone' },
+  { cls: 'theme-plum', name: 'plum', bg: 'plum #340C24', fg: 'bone' },
+];
+const ramp = ['primary', 'gray-text', 'disabled', 'line', 'bg'];
+const spacing = [4, 8, 16, 24, 32, 48, 64, 96, 136, 192, 272];
+---
+<Base title="Kit de diseño" noindex>
+  <section class="section theme-light kit" data-bg="light" data-theme-trigger>
+    <div class="container">
+      <p class="l2 t-muted">Sistema de diseño · Fase 01</p>
+      <h1 class="h3 kit__title">Kit</h1>
+      <p class="p1 kit__lead">Unidades fluidas: 1rem = 1vw, ratio 16 (1600px) en escritorio y 4.16 (416px) en móvil. Ctrl+G muestra la rejilla.</p>
+    </div>
+  </section>
+
+  <!-- tipografía -->
+  <section class="section theme-light kit" data-bg="light" data-theme-trigger aria-labelledby="kit-type">
+    <div class="container">
+      <h2 id="kit-type" class="l2 t-muted kit__eyebrow">01 · Escala tipográfica</h2>
+      <ul class="kit__type">
+        {type.map((t) => (
+          <li class="kit__type-row">
+            <span class="l2 t-muted kit__type-meta">.{t.cls} · {t.px} · {t.note}</span>
+            <span class={t.cls}>{t.sample}</span>
+          </li>
+        ))}
+      </ul>
+      <div class="kit__lockup" aria-hidden="true">
+        <p class="l2 t-muted kit__type-meta">Montaje display + script (el script nunca va solo)</p>
+        <p class="h2">Paisajes<br />Mineros</p>
+        <p class="a1 kit__lockup-script">Montaña Alavesa</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- superficies -->
+  <section class="section theme-light kit" data-bg="light" data-theme-trigger aria-labelledby="kit-color">
+    <div class="container">
+      <h2 id="kit-color" class="l2 t-muted kit__eyebrow">02 · Cuatro superficies y su rampa</h2>
+    </div>
+    <div class="kit__surfaces">
+      {surfaces.map((s) => (
+        <div class:list={['kit__surface', s.cls]}>
+          <div class="container">
+            <p class="h5">.{s.cls}</p>
+            <p class="l2 t-muted">{s.bg} · texto {s.fg}</p>
+            <ul class="kit__ramp">
+              {ramp.map((r, i) => (
+                <li class="kit__ramp-item">
+                  <span class="kit__ramp-swatch" style={`opacity:${[1, 0.6, 0.3, 0.1, 0.05][i]}`}></span>
+                  <span class="l2">{r}</span>
+                </li>
+              ))}
+            </ul>
+            <p class="p1">Texto principal sobre la superficie. <span class="t-muted">Texto secundario al 60 %.</span> <span style="color: var(--fg-disabled)">Inactivo al 30 %.</span></p>
+            <span class="kit__line"></span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- rejilla y espacio -->
+  <section class="section theme-light kit" data-bg="light" data-theme-trigger aria-labelledby="kit-grid">
+    <div class="container">
+      <h2 id="kit-grid" class="l2 t-muted kit__eyebrow">03 · Rejilla (10 × 136 · gap 16 · márgenes 48) y escala de espacio</h2>
+      <div class="grid kit__grid">
+        {Array.from({ length: 10 }, (_, i) => <div class="col-1 kit__cell l2">{i + 1}</div>)}
+        <div class="col-2 kit__cell l2">col-2</div>
+        <div class="col-3 kit__cell l2">col-3</div>
+        <div class="col-5 kit__cell l2">col-5</div>
+        <div class="col-4 kit__cell l2">col-4</div>
+        <div class="col-6 kit__cell l2">col-6</div>
+      </div>
+      <ul class="kit__spacing">
+        {spacing.map((n) => (
+          <li class="kit__spacing-row">
+            <span class="l2 t-muted kit__spacing-name">--sp-{n}</span>
+            <span class="kit__spacing-bar" style={`width: var(--sp-${n})`}></span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- botones y piezas -->
+  <section class="section theme-sky kit" data-bg="sky" data-theme-trigger data-arch aria-labelledby="kit-buttons">
+    <ArchMask />
+    <div class="container">
+      <h2 id="kit-buttons" class="l2 t-muted kit__eyebrow">04 · Botones y piezas</h2>
+      <div class="grid kit__buttons">
+        <div class="col-2 kit__state">
+          <p class="l2 t-muted">Pill · reposo</p>
+          <ButtonPill label="Quiero saber más" href="#" />
+        </div>
+        <div class="col-2 kit__state">
+          <p class="l2 t-muted">Pill · foco (Tab)</p>
+          <ButtonPill label="Quiero saber más" href="#" />
+        </div>
+        <div class="col-2 kit__state">
+          <p class="l2 t-muted">Pill · inactivo</p>
+          <ButtonPill label="Quiero saber más" disabled />
+        </div>
+        <div class="col-4 kit__state">
+          <p class="l2 t-muted">Circular · magnético, arcos en rotación</p>
+          <ButtonCircle href="#" lines={['Planifica', 'tu visita']} />
+        </div>
+      </div>
+      <div class="grid kit__pieces">
+        <div class="col-3 kit__state">
+          <p class="l2 t-muted">Arco de doble contorno</p>
+          <ArchMask variant="outline" class="kit__arch" />
+        </div>
+        <div class="col-3 kit__state">
+          <p class="l2 t-muted">Punto de interés</p>
+          <span class="kit__poi">
+            <span class="kit__poi-ring"></span>
+            <span class="kit__poi-ring"></span>
+          </span>
+        </div>
+        <div class="col-4 kit__state">
+          <p class="l2 t-muted">Text swap (hover)</p>
+          <a href="#" class="h6" data-text-swap>
+            <span class="swap"><span class="swap__text">Descubrir</span><span class="swap__text swap__text--clone" aria-hidden="true">Descubrir</span></span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="kit__marquee">
+      <Marquee speed={40} label="Marquee de prueba">
+        {['Asfaltokia', 'Mina Lucía', 'Antoñana', 'Izki', 'Korres', 'Atauri', 'Maeztu'].map((n) => <span class="c1">{n}</span>)}
+      </Marquee>
+    </div>
+  </section>
+</Base>
+
+<style>
+  @layer components {
+    .kit {
+      padding-block: var(--sp-120) var(--sp-96);
+    }
+    .kit:first-of-type {
+      padding-top: var(--sp-192);
+    }
+    .kit__title {
+      margin-top: var(--sp-16);
+    }
+    .kit__lead {
+      max-width: 52ch;
+      margin-top: var(--sp-24);
+    }
+    .kit__eyebrow {
+      margin-bottom: var(--sp-48);
+    }
+    .kit__type {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-40);
+    }
+    .kit__type-row {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-8);
+      padding-bottom: var(--sp-24);
+      border-bottom: var(--hairline) solid var(--line);
+      overflow: hidden;
+    }
+    .kit__type-meta {
+      display: block;
+    }
+    .kit__lockup {
+      margin-top: var(--sp-96);
+    }
+    .kit__lockup-script {
+      margin-top: calc(var(--fs-a1) * -0.5);
+      margin-left: var(--sp-192);
+      position: relative;
+    }
+    .kit__surfaces {
+      display: grid;
+    }
+    .kit__surface {
+      padding-block: var(--sp-64);
+    }
+    .kit__ramp {
+      display: flex;
+      gap: var(--sp-24);
+      margin-block: var(--sp-24);
+    }
+    .kit__ramp-item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-8);
+    }
+    .kit__ramp-swatch {
+      display: block;
+      width: var(--sp-64);
+      height: var(--sp-64);
+      background: var(--fg);
+    }
+    .kit__line {
+      display: block;
+      height: var(--hairline);
+      margin-top: var(--sp-24);
+      background: var(--line);
+    }
+    .kit__grid {
+      row-gap: var(--gap);
+    }
+    .kit__cell {
+      display: grid;
+      place-items: center;
+      height: var(--row);
+      background: var(--bg-subtle);
+      border: var(--hairline) solid var(--line);
+    }
+    .kit__spacing {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-8);
+      margin-top: var(--sp-64);
+    }
+    .kit__spacing-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-16);
+    }
+    .kit__spacing-name {
+      width: var(--sp-64);
+    }
+    .kit__spacing-bar {
+      display: block;
+      height: var(--sp-8);
+      background: var(--fg);
+    }
+    .kit__buttons,
+    .kit__pieces {
+      row-gap: var(--sp-64);
+      margin-bottom: var(--sp-64);
+    }
+    .kit__state {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--sp-24);
+    }
+    .kit__arch {
+      width: var(--sp-136);
+    }
+    .kit__poi {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: var(--sp-32);
+      height: var(--sp-32);
+    }
+    .kit__poi::before {
+      content: '';
+      width: var(--sp-6);
+      height: var(--sp-6);
+      border-radius: 50%;
+      background: var(--fg);
+    }
+    .kit__poi-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: var(--hairline) solid rgb(var(--fg-rgb) / 0.8);
+      animation: kit-pulse 2.8s var(--ease-era) infinite;
+    }
+    .kit__poi-ring:nth-of-type(2) {
+      animation-delay: 1.4s;
+    }
+    @keyframes kit-pulse {
+      0% { transform: scale(0.3); opacity: 1; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+    .kit__marquee {
+      padding-block: var(--sp-24);
+      border-block: var(--hairline) solid var(--line);
+    }
+    @media (max-width: 991px) {
+      .kit {
+        padding-block: var(--sp-80) var(--sp-64);
+      }
+      .kit__lockup-script {
+        margin-left: var(--sp-48);
+      }
+      .kit__ramp {
+        flex-wrap: wrap;
+      }
+    }
+  }
+</style>

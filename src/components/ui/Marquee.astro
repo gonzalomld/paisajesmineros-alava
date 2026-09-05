@@ -1,0 +1,36 @@
+---
+/**
+ * Marquee — data-marquee: el módulo duplica el track y lo anima con
+ * translateX infinito; pausa en hover y con foco. Los hijos van en el slot.
+ */
+interface Props {
+  speed?: number;
+  class?: string;
+  label?: string;
+}
+const { speed = 60, class: className, label } = Astro.props;
+---
+<div class:list={['marquee', className]} data-marquee data-marquee-speed={speed} aria-label={label} role={label ? 'marquee' : undefined}>
+  <div class="marquee__track" data-marquee-track>
+    <slot />
+  </div>
+</div>
+
+<style>
+  @layer components {
+    .marquee {
+      display: flex;
+      overflow: clip;
+      white-space: nowrap;
+      width: 100%;
+    }
+    .marquee__track {
+      display: flex;
+      flex: none;
+      align-items: center;
+      gap: var(--sp-48);
+      padding-right: var(--sp-48);
+      will-change: transform;
+    }
+  }
+</style>

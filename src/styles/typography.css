@@ -1,0 +1,69 @@
+/* ==========================================================================
+   typography.css — clases .h1 … .p2
+   Capa: base. Cada clase consume la tripleta --fs/--lh/--ls de tokens.css.
+   Reglas de composición del sistema:
+     · display en mayúsculas con interlínea < 100 %: las líneas casi se tocan
+     · etiquetas diminutas con muchísimo tracking
+     · el script nunca va solo: se monta sobre un display con margen negativo
+   ========================================================================== */
+@layer base {
+
+  .h1, .h2, .h3, .h4, .h5, .h6, .c1 {
+    font-family: var(--font-display);
+    font-weight: var(--font-display-weight);
+    font-variation-settings: "opsz" var(--font-display-opsz);
+    text-transform: uppercase;
+    font-kerning: normal;
+  }
+
+  .h1 { font-size: var(--fs-h1); line-height: var(--lh-h1); letter-spacing: var(--ls-h1); }
+  .h2 { font-size: var(--fs-h2); line-height: var(--lh-h2); letter-spacing: var(--ls-h2); }
+  .h3 { font-size: var(--fs-h3); line-height: var(--lh-h3); letter-spacing: var(--ls-h3); }
+  .h4 { font-size: var(--fs-h4); line-height: var(--lh-h4); letter-spacing: var(--ls-h4); }
+  .h5 { font-size: var(--fs-h5); line-height: var(--lh-h5); letter-spacing: var(--ls-h5); }
+  .h6 { font-size: var(--fs-h6); line-height: var(--lh-h6); letter-spacing: var(--ls-h6); }
+
+  /* caption display: tracking .8em y opsz bajo para que no se afile */
+  .c1 {
+    font-size: var(--fs-c1);
+    line-height: var(--lh-c1);
+    letter-spacing: var(--ls-c1);
+    font-variation-settings: "opsz" 24;
+  }
+
+  /* acento caligráfico */
+  .a1, .a2 {
+    font-family: var(--font-accent);
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .a1 { font-size: var(--fs-a1); line-height: var(--lh-a1); }
+  .a2 { font-size: var(--fs-a2); line-height: var(--lh-a2); }
+
+  /* etiquetas: texto ancho, mayúsculas */
+  .l1, .l2 {
+    font-family: var(--font-text);
+    font-stretch: var(--font-text-stretch);
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+  .l1 { font-size: var(--fs-l1); line-height: var(--lh-l1); letter-spacing: var(--ls-l1); }
+  .l2 { font-size: var(--fs-l2); line-height: var(--lh-l2); letter-spacing: var(--ls-l2); }
+
+  /* párrafo */
+  .p1, .p2 {
+    font-family: var(--font-text);
+    font-stretch: var(--font-text-stretch);
+    font-weight: 400;
+  }
+  .p1 { font-size: var(--fs-p1); line-height: var(--lh-p1); letter-spacing: var(--ls-p1); }
+  .p2 { font-size: var(--fs-p2); line-height: var(--lh-p2); letter-spacing: var(--ls-p2); }
+
+  /* modificadores de composición */
+  .t-center { text-align: center; }
+  .t-right  { text-align: right; }
+  .t-muted  { color: var(--fg-muted); }
+  .t-strong { font-weight: var(--font-display-weight-strong); }
+  .t-balance { text-wrap: balance; }
+}

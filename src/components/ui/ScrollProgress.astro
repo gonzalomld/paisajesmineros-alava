@@ -1,0 +1,78 @@
+---
+/**
+ * ScrollProgress — columna fija a la izquierda, ancho igual al margen:
+ * línea vertical de 1px al 20 % que crece con el scroll, contador de dos
+ * dígitos en l2 y la palabra SCROLL en vertical con una flecha.
+ * Desaparece en el último 10 % (módulo scrollProgress). Solo escritorio.
+ */
+import type { Theme } from '@/content/site';
+interface Props {
+  theme?: Theme;
+}
+const { theme = 'light' } = Astro.props;
+---
+<div class="progress-root" transition:persist="progress">
+  <aside class="progress b-desk" data-scroll-progress data-theme-target data-theme={theme} aria-hidden="true">
+    <span class="progress__line"><span class="progress__fill"></span></span>
+    <span class="progress__count l2"><span data-progress-count>00</span></span>
+    <span class="progress__scroll l2">
+      <span>Scroll</span>
+      <svg class="progress__arrow" viewBox="0 0 8 12" aria-hidden="true" focusable="false">
+        <path d="M4 0v11M.5 7.5 4 11l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke"></path>
+      </svg>
+    </span>
+  </aside>
+</div>
+
+<style>
+  @layer components {
+    .progress {
+      --progress: 0;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: var(--z-progress);
+      width: var(--margin);
+      display: grid;
+      grid-template-rows: 1fr auto auto;
+      justify-items: center;
+      align-items: center;
+      row-gap: var(--sp-16);
+      padding-block: var(--sp-160) var(--sp-40);
+      color: var(--fg);
+      pointer-events: none;
+      transition: color 0.4s var(--ease-era);
+    }
+    .progress__line {
+      position: relative;
+      width: var(--hairline);
+      height: 100%;
+      background: rgb(var(--fg-rgb) / 0.2);
+    }
+    .progress__fill {
+      position: absolute;
+      inset: 0;
+      background: var(--fg);
+      transform: scaleY(var(--progress));
+      transform-origin: top center;
+    }
+    .progress__count {
+      font-variant-numeric: tabular-nums;
+    }
+    .progress__scroll {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sp-8);
+      padding-top: var(--sp-8);
+    }
+    .progress__scroll > span {
+      writing-mode: vertical-rl;
+    }
+    .progress__arrow {
+      width: var(--sp-8);
+      height: var(--sp-12);
+    }
+  }
+</style>

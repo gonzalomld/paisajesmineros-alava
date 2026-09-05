@@ -1,0 +1,62 @@
+---
+/**
+ * /contacto — placeholder de la Fase 01 para validar la transición de página.
+ * El formulario llega en fases posteriores (sin CMS ni formularios ahora).
+ */
+import Base from '@/layouts/Base.astro';
+import ButtonPill from '@/components/ui/ButtonPill.astro';
+import { site } from '@/content/site';
+---
+<Base title="Planifica tu visita" description="Horarios de Asfaltokia y de las visitas guiadas a Mina Lucía, y cómo llegar a Atauri, en Montaña Alavesa." headerTheme="plum">
+  <section class="section theme-plum page-intro vh" data-bg="plum" data-theme-trigger aria-labelledby="contacto-title">
+    <div class="container">
+      <p class="l2 t-muted" data-reveal="p" data-reveal-first>Página en construcción · Fase 02</p>
+      <h1 id="contacto-title" class="h2 page-intro__title" data-reveal="h" data-reveal-first>Planifica<br />tu visita</h1>
+      <p class="page-intro__script a2" data-reveal="p" data-reveal-first data-reveal-delay="0.5" data-reveal-duration="0.6" aria-hidden="true">{site.brand.center}</p>
+      <dl class="page-intro__hours p1" data-reveal="line" data-reveal-first data-reveal-delay="0.6">
+        <dt class="l2 t-muted">Asfaltokia · Atauri</dt>
+        {site.footer.hours.map((h) => <dd>{h}</dd>)}
+      </dl>
+      <div data-reveal="p" data-reveal-first data-reveal-delay="0.8">
+        <ButtonPill label="Volver al inicio" href="/" />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  @layer components {
+    .page-intro {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-block: var(--sp-192) var(--sp-96);
+    }
+    .page-intro__title {
+      margin-top: var(--sp-24);
+    }
+    .page-intro__script {
+      margin-top: calc(var(--fs-a2) * -0.5);
+      margin-left: var(--sp-96);
+      position: relative;
+      z-index: 1;
+    }
+    .page-intro__hours {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-8);
+      margin-block: var(--sp-48) var(--sp-32);
+    }
+    .page-intro__hours dt {
+      margin-bottom: var(--sp-8);
+    }
+    @media (max-width: 991px) {
+      .page-intro {
+        padding-block: var(--sp-136) var(--sp-64);
+      }
+      .page-intro__script {
+        margin-left: var(--sp-32);
+      }
+    }
+  }
+</style>

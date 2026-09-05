@@ -1,0 +1,43 @@
+---
+/**
+ * ArchMask — el arco reutilizable.
+ *   variant="section"  (por defecto) arco de sección: lo anima archReveal
+ *                      cuando la sección lleva data-arch. Toma el color de
+ *                      fondo de la sección (--bg) y se ancla a su borde superior.
+ *   variant="outline"  doble contorno (dos arcos concéntricos, 1px, 8px de
+ *                      separación): decorativo, para /_kit y composiciones.
+ */
+interface Props {
+  variant?: 'section' | 'outline';
+  class?: string;
+}
+const { variant = 'section', class: className } = Astro.props;
+---
+{
+  variant === 'section' ? (
+    <div class:list={['arch', 'arch-section', className]} aria-hidden="true" />
+  ) : (
+    <div class:list={['arch', 'arch-outline', className]} aria-hidden="true">
+      <span class="arch-outline__inner" />
+    </div>
+  )
+}
+
+<style>
+  @layer components {
+    .arch-outline {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1.6;
+      border: var(--hairline) solid rgb(var(--fg-rgb) / 0.3);
+      border-bottom: 0;
+    }
+    .arch-outline__inner {
+      position: absolute;
+      inset: 8px 8px 0;
+      border: var(--hairline) solid rgb(var(--fg-rgb) / 0.3);
+      border-bottom: 0;
+      border-radius: var(--r-arch);
+    }
+  }
+</style>

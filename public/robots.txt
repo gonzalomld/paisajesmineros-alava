@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /_kit
+Sitemap: https://asfaltokia.eus/sitemap-index.xml

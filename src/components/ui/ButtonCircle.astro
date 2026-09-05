@@ -1,0 +1,87 @@
+---
+/**
+ * ButtonCircle — círculo de --sp-192 con borde de 1px al 30 %, etiqueta a
+ * dos líneas centrada y dos arcos SVG (stroke-dasharray) que rotan en
+ * sentidos opuestos de forma continua. Magnético; la etiqueta hace swap.
+ */
+interface Props {
+  href: string;
+  lines: readonly [string, string];
+  label?: string;
+  class?: string;
+}
+const { href, lines, label = lines.join(' '), class: className } = Astro.props;
+---
+<a class:list={['btn-circle', className]} href={href} aria-label={label} data-magnetic="0.25" data-text-swap-trigger>
+  <span class="btn-circle__inner" data-magnetic-inner>
+    <span class="btn-circle__label l1" data-text-swap aria-hidden="true">
+      <span class="swap">
+        <span class="swap__text">{lines[0]}<br />{lines[1]}</span>
+        <span class="swap__text swap__text--clone">{lines[0]}<br />{lines[1]}</span>
+      </span>
+    </span>
+  </span>
+  <svg class="btn-circle__arcs" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+    <circle class="btn-circle__arc btn-circle__arc--1" cx="50" cy="50" r="46" pathLength="100"></circle>
+    <circle class="btn-circle__arc btn-circle__arc--2" cx="50" cy="50" r="46" pathLength="100"></circle>
+  </svg>
+</a>
+
+<style>
+  @layer components {
+    .btn-circle {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: var(--sp-192);
+      height: var(--sp-192);
+      border-radius: 50%;
+      border: var(--hairline) solid rgb(var(--fg-rgb) / 0.3);
+      color: var(--fg);
+      text-align: center;
+      will-change: transform;
+      transition: border-color var(--d-micro) var(--ease-era);
+    }
+    .btn-circle:hover,
+    .btn-circle:focus-visible {
+      border-color: rgb(var(--fg-rgb) / 0.6);
+    }
+    .btn-circle__inner {
+      display: grid;
+      place-items: center;
+      will-change: transform;
+    }
+    .btn-circle__label {
+      display: block;
+      text-align: center;
+    }
+    .btn-circle__arcs {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      pointer-events: none;
+    }
+    .btn-circle__arc {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1;
+      vector-effect: non-scaling-stroke;
+      stroke-dasharray: 22 78;
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: btn-circle-spin 26s linear infinite;
+    }
+    .btn-circle__arc--2 {
+      stroke-dashoffset: 50;
+      animation-duration: 34s;
+      animation-direction: reverse;
+    }
+    @keyframes btn-circle-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  }
+</style>
