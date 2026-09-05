@@ -84,10 +84,34 @@ src/
   layouts/Base.astro          html, meta, fuentes, ClientRouter, globales
   components/global/          Preloader, Header, Footer, PageTransition, RotateDevice
   components/ui/              ButtonPill, ButtonCircle, Marquee, ArchMask, ScrollProgress
-  components/sections/Hero.astro
-  styles/                     vendor, reset, tokens, themes, base, typography, utilities, main
-  scripts/core/               gsap, lenis, registry, lifecycle, transitions, dom
+  components/sections/        Hero, Puertas, Cita, Concepto, Ubicacion, Llegar, MapaVivo,
+                              Experiencias, Cifras, ArcoTexto, Estacion, Cierre (en orden de home)
+  styles/                     vendor, reset, tokens, themes, base, typography, components,
+                              utilities, main; mapbox.css (subconjunto vendor de Mapbox GL)
+  scripts/core/               gsap, lenis, registry, lifecycle, transitions, dom, anim
   scripts/modules/            un fichero por data-attribute
-  content/site.ts             brief, navegación, hero
-  assets/                     imágenes (placeholders generados con tools/make-placeholders.mjs)
+  content/site.ts             brief, navegación, hero, contacto, footer
+  content/home.ts             textos de cada escena de la home
+  content/map.ts              token de Mapbox, estilo base, puntos de interés
+  data/routes/*.json          las dos rutas (GeoJSON simplificado + perfil + estadísticas)
+  assets/photos, assets/brand fotografías y marca (origen y estado en CREDITS.md)
+public/gpx/                   los GPX originales, descargables desde el mapa
+tools/gpx-to-geojson.mjs      GPX → src/data/routes (node tools/gpx-to-geojson.mjs)
 ```
+
+## El mapa vivo (Mapbox)
+
+`[data-map]` (scripts/modules/map.ts) fija la sección tres pantallas y dibuja la
+ruta con el scroll sobre un estilo `light-v11` recoloreado al sistema (base ink,
+relieve insinuado, un solo acento). Mapbox GL se importa en diferido cuando la
+sección está a una pantalla; su CSS es un subconjunto propio en la capa `vendor`
+(styles/mapbox.css), porque el CSS completo sin capa pisaba el contenedor.
+
+El token es público (`pk.`) y va restringido por URL en la cuenta de Mapbox:
+solo sirve teselas a los dominios dados de alta. Vive en `src/content/map.ts`
+y se puede sobrescribir con la variable `PUBLIC_MAPBOX_TOKEN` (Vercel o `.env`).
+Para desarrollar en local, añade `http://localhost:4321` a las restricciones
+del token (Mapbox → Tokens → URL restrictions).
+
+Para regenerar las rutas a partir de nuevos GPX: déjalos en `public/gpx/` y
+ejecuta `node tools/gpx-to-geojson.mjs`.

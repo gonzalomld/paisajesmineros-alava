@@ -1,0 +1,102 @@
+---
+/**
+ * Experiencias — escena 09: slider con los datos prácticos de cada
+ * experiencia (dónde, cuándo, cómo reservar) y su llamada a la acción.
+ * IMÁGENES: exposición del centro (asfaltokia.eus, provisional), grupo
+ * en galería y camino con casco (Quintas, definitivas).
+ */
+import { Image } from 'astro:assets';
+import ButtonPill from '@/components/ui/ButtonPill.astro';
+import { home } from '@/content/home';
+import imgAsfaltokia from '@/assets/photos/web-atauri-galeria-1.jpg';
+import imgMina from '@/assets/photos/grupo-galeria.jpg';
+import imgRuta from '@/assets/photos/camino-casco.jpg';
+
+const images = {
+  asfaltokia: { src: imgAsfaltokia, alt: 'La estación de Atauri, sede de Asfaltokia' },
+  mina: { src: imgMina, alt: 'Grupo de visitantes con casco en una galería de Mina Lucía' },
+  ruta: { src: imgRuta, alt: 'Visitantes recorriendo el camino hacia Mina Lucía con el casco en la mano' },
+} as const;
+const { items } = home.experiencias;
+---
+<section class="section theme-light experiencias" data-bg="light" data-theme-trigger aria-labelledby="experiencias-title">
+  <div class="container">
+    <p id="experiencias-title" class="l2 t-muted" data-reveal="p">{home.experiencias.eyebrow}</p>
+    <div class="slider experiencias__slider" data-slider data-slider-auto="8">
+      <div class="slider__stack">
+        {
+          items.map((item, i) => (
+            <article class="slide" data-slide aria-roledescription="diapositiva" aria-label={`${i + 1} de ${items.length}`}>
+              <h3 class="h2 experiencias__title"><span data-part="h" set:html={item.display.join('<br />')} /></h3>
+              <div class="grid experiencias__grid">
+                <dl class="col-3 specs experiencias__specs" data-part="p">
+                  {item.specs.map(([k, v]) => (
+                    <div><dt class="l2">{k}</dt><dd class="p1">{v}</dd></div>
+                  ))}
+                </dl>
+                <figure class="col-3 start-4 slide__figure experiencias__figure" data-part="slide">
+                  <div><Image src={images[item.id as keyof typeof images].src} alt={images[item.id as keyof typeof images].alt} widths={[480, 800, 1200]} sizes="(max-width: 991px) 100vw, 26vw" /></div>
+                </figure>
+                <div class="col-3 start-8 experiencias__body">
+                  <p class="p1" data-part="line">{item.text}</p>
+                  <div data-part="p"><ButtonPill label={item.cta.label} href={item.cta.href} /></div>
+                </div>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+      <div class="slider__nav">
+        <button class="slider__btn" type="button" data-slider-prev aria-label="Anterior">
+          <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M11 6H1M5 1 1 6l4 5" fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke"></path></svg>
+        </button>
+        <span class="slider__count l2" aria-live="polite"><span data-slider-current>01</span> / <span data-slider-total>03</span></span>
+        <span class="slider__progress" aria-hidden="true"><span data-slider-progress></span></span>
+        <button class="slider__btn" type="button" data-slider-next aria-label="Siguiente">
+          <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6h10M7 1l4 5-4 5" fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke"></path></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  @layer components {
+    .experiencias {
+      padding-block: var(--sp-160);
+    }
+    .experiencias__slider {
+      margin-top: var(--sp-24);
+    }
+    .experiencias__title {
+      overflow: hidden;
+      margin-bottom: var(--sp-64);
+    }
+    .experiencias__grid {
+      row-gap: var(--sp-40);
+      align-items: start;
+    }
+    .experiencias__figure {
+      aspect-ratio: 4 / 5;
+    }
+    .experiencias__body {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-32);
+      padding-top: var(--sp-8);
+    }
+    @media (max-width: 991px) {
+      .experiencias {
+        padding-block: var(--sp-120);
+      }
+      .experiencias__title {
+        font-size: calc(56 * var(--u));
+        margin-bottom: var(--sp-32);
+      }
+      .experiencias__figure {
+        grid-column: 1 / -1;
+        aspect-ratio: 4 / 3;
+      }
+    }
+  }
+</style>

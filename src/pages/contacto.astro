@@ -16,6 +16,9 @@ import { site } from '@/content/site';
       <dl class="page-intro__hours p1" data-reveal="line" data-reveal-first data-reveal-delay="0.6">
         <dt class="l2 t-muted">Asfaltokia · Atauri</dt>
         {site.footer.hours.map((h) => <dd>{h}</dd>)}
+        <dt class="l2 t-muted">Visitas guiadas a Mina Lucía</dt>
+        <dd>{site.contact.mina.days} · {site.contact.mina.shifts.join(' · ')}</dd>
+        <dd>Reserva previa: <a href={site.contact.phoneHref}>{site.contact.phone}</a></dd>
       </dl>
       <div data-reveal="p" data-reveal-first data-reveal-delay="0.8">
         <ButtonPill label="Volver al inicio" href="/" />
@@ -49,6 +52,13 @@ import { site } from '@/content/site';
     }
     .page-intro__hours dt {
       margin-bottom: var(--sp-8);
+    }
+    .page-intro__hours dt + dd ~ dt {
+      margin-top: var(--sp-24);
+    }
+    .page-intro__hours a {
+      text-decoration: underline;
+      text-underline-offset: 0.16em;
     }
     @media (max-width: 991px) {
       .page-intro {

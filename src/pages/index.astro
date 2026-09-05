@@ -1,19 +1,25 @@
 ---
 /**
- * Home — Fase 01: solo el hero, seguido de un espaciador de dos pantallas
- * para probar scroll, parallax, cambio de tema del header y el arco entre
- * secciones. Las secciones de contenido llegan en la Fase 02.
+ * Home — Fase 02: el hero y las once escenas de contenido, en el orden del
+ * storyboard. Cada sección declara su superficie (data-bg) para el header
+ * y, cuando entra con arco, data-arch.
  */
 import { getImage } from 'astro:assets';
 import Base from '@/layouts/Base.astro';
 import Hero from '@/components/sections/Hero.astro';
-import ArchMask from '@/components/ui/ArchMask.astro';
-import ButtonPill from '@/components/ui/ButtonPill.astro';
-import Marquee from '@/components/ui/Marquee.astro';
+import Puertas from '@/components/sections/Puertas.astro';
+import Cita from '@/components/sections/Cita.astro';
+import Concepto from '@/components/sections/Concepto.astro';
+import Ubicacion from '@/components/sections/Ubicacion.astro';
+import Llegar from '@/components/sections/Llegar.astro';
+import MapaVivo from '@/components/sections/MapaVivo.astro';
+import Experiencias from '@/components/sections/Experiencias.astro';
+import Cifras from '@/components/sections/Cifras.astro';
+import ArcoTexto from '@/components/sections/ArcoTexto.astro';
+import Estacion from '@/components/sections/Estacion.astro';
+import Cierre from '@/components/sections/Cierre.astro';
 import { site } from '@/content/site';
-import dayImg from '@/assets/hero/day.jpg';
-import landscapeImg from '@/assets/placeholder/landscape.jpg';
-import { Image } from 'astro:assets';
+import dayImg from '@/assets/photos/hero-cielo-abierto.jpg';
 
 /* Precarga del LCP: el mismo srcset AVIF que genera <Picture> en el hero. */
 const widths = [832, 1280, 1600, 2400];
@@ -26,90 +32,15 @@ const imagesrcset = preload.map((img) => `${img.src} ${img.attributes.width}w`).
   </Fragment>
 
   <Hero />
-
-  <!-- ESPACIADOR DE PRUEBA · pantalla 1 de 2 (sky).
-       Valida: arco entre secciones, tema del header, reveals por caracteres
-       y por líneas, parallax de imagen. Se sustituye en la Fase 02. -->
-  <section class="section theme-sky spacer vh" data-bg="sky" data-theme-trigger data-arch aria-labelledby="spacer-1-title">
-    <ArchMask />
-    <div class="container">
-      <div class="grid spacer__grid">
-        <p class="col-2 l2 t-muted spacer__eyebrow" data-reveal="p">Espaciador de prueba · 01</p>
-        <h2 id="spacer-1-title" class="col-8 h3" data-reveal="h">Un paisaje<br />que se descubre despacio</h2>
-        <p class="col-4 start-3 p1 spacer__text" data-reveal="line">
-          Bajo la Montaña Alavesa, el diapiro de Maeztu empujó durante millones de años una roca menos densa hacia
-          la superficie. En su borde se acumularon los asfaltos naturales que desde 1872 se extrajeron en Mina Lucía.
-        </p>
-        <div class="col-3 start-8 spacer__cta" data-reveal="p" data-reveal-delay="0.2">
-          <ButtonPill label={site.cta.secondary.label} href={site.cta.secondary.href} />
-        </div>
-        <figure class="col-6 start-3 spacer__figure" data-parallax="w" data-reveal="ctn">
-          <!-- PLACEHOLDER 16:10 → fotografía de las galerías de Mina Lucía o del centro (Dropbox). -->
-          <div data-parallax="img">
-            <Image src={landscapeImg} widths={[832, 1280, 1600]} sizes="(max-width: 991px) 100vw, 60vw" alt="" />
-          </div>
-        </figure>
-      </div>
-    </div>
-  </section>
-
-  <!-- ESPACIADOR DE PRUEBA · pantalla 2 de 2 (dark).
-       Valida: segundo arco, tema dark del header, marquee. -->
-  <section class="section theme-dark spacer vh" data-bg="dark" data-theme-trigger data-arch aria-labelledby="spacer-2-title">
-    <ArchMask />
-    <div class="container">
-      <div class="grid spacer__grid">
-        <p class="col-2 l2 t-muted spacer__eyebrow" data-reveal="p">Espaciador de prueba · 02</p>
-        <h2 id="spacer-2-title" class="col-8 h3" data-reveal="h">Asfaltokia,<br />la estación que vuelve</h2>
-        <p class="col-4 start-3 p1 spacer__text" data-reveal="line">
-          La antigua estación del ferrocarril vasco-navarro de Atauri cumple cien años y abre como centro de
-          interpretación: tres plantas, tres miradores y un vuelo virtual sobre las minas y el diapiro.
-        </p>
-      </div>
-    </div>
-    <div class="spacer__marquee">
-      <Marquee speed={50} label="Lugares de la ruta">
-        {['Asfaltokia', 'Mina Lucía', 'Antoñana', 'Izki', 'Korres', 'Atauri', 'Maeztu'].map((name) => (
-          <span class="c1">{name}</span>
-        ))}
-      </Marquee>
-    </div>
-  </section>
+  <Puertas />
+  <Cita />
+  <Concepto />
+  <Ubicacion />
+  <Llegar />
+  <MapaVivo />
+  <Experiencias />
+  <Cifras />
+  <ArcoTexto />
+  <Estacion />
+  <Cierre />
 </Base>
-
-<style>
-  @layer components {
-    .spacer {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding-block: var(--sp-160);
-    }
-    .spacer__grid {
-      row-gap: var(--sp-48);
-    }
-    .spacer__eyebrow {
-      align-self: end;
-    }
-    .spacer__text {
-      max-width: 44ch;
-    }
-    .spacer__cta {
-      align-self: start;
-    }
-    .spacer__figure {
-      aspect-ratio: 16 / 10;
-      margin-top: var(--sp-48);
-    }
-    .spacer__marquee {
-      margin-top: var(--sp-96);
-      padding-block: var(--sp-24);
-      border-block: var(--hairline) solid var(--line);
-    }
-    @media (max-width: 991px) {
-      .spacer {
-        padding-block: var(--sp-120) var(--sp-96);
-      }
-    }
-  }
-</style>

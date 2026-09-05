@@ -1,0 +1,49 @@
+---
+/**
+ * ArcoTexto — escena 12: el arco de sección sube y trae dentro el claim
+ * de la marca (display + script). El bloque de texto se sitúa por encima
+ * del borde superior de la sección, en la zona que cubre el arco, y se
+ * revela cuando el arco ya lo envuelve (data-reveal-start).
+ */
+import ArchMask from '@/components/ui/ArchMask.astro';
+import { home } from '@/content/home';
+---
+<section class="section theme-light arco" data-bg="light" data-theme-trigger data-arch aria-label={`${home.arco.display} ${home.arco.script}`}>
+  <ArchMask />
+  <div class="container arco__inner">
+    <p class="h2 t-center arco__display" data-reveal="h" data-reveal-start="top 62%" data-reveal-start-mobile="top 42%">{home.arco.display}</p>
+    <p class="a1 t-center arco__script" data-reveal="p" data-reveal-start="top 62%" data-reveal-start-mobile="top 42%" data-reveal-delay="0.5" data-reveal-duration="0.6" aria-hidden="true">{home.arco.script}</p>
+  </div>
+</section>
+
+<style>
+  @layer components {
+    .arco {
+      /* Flex para que el margen negativo de .arco__inner no se fusione con
+         el de la sección: el texto sube sobre el borde, la sección no. */
+      display: flex;
+      flex-direction: column;
+      padding-block: 0 var(--sp-64);
+    }
+    .arco__inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: calc(var(--vh-real) * -0.34);
+      padding-bottom: var(--sp-48);
+    }
+    .arco__script {
+      margin-top: calc(var(--fs-a1) * -0.5);
+      transform: translateX(16%);
+    }
+    @media (max-width: 991px) {
+      .arco__inner {
+        margin-top: calc(var(--vh-real) * -0.22);
+      }
+      .arco__script {
+        font-size: var(--fs-a2);
+        margin-top: calc(var(--fs-a2) * -0.5);
+      }
+    }
+  }
+</style>

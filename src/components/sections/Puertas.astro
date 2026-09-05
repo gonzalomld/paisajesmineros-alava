@@ -1,0 +1,165 @@
+---
+/**
+ * Puertas — escenas 02 y 03: el arco de sección con el texto circular
+ * alrededor del símbolo y, debajo, el slider de las tres puertas
+ * (Asfaltokia, Mina Lucía, la ruta).
+ * IMÁGENES: la de Asfaltokia es la foto histórica de la estación de
+ * asfaltokia.eus (provisional, 480px); las otras dos son de la serie de
+ * Mina Lucía y del tren de Antoñana (definitivas).
+ */
+import { Image } from 'astro:assets';
+import ArchMask from '@/components/ui/ArchMask.astro';
+import { home } from '@/content/home';
+import symbol from '@/assets/brand/asfaltokia-simbolo.png';
+import imgAsfaltokia from '@/assets/photos/web-atauri-galeria-1.jpg';
+import imgMina from '@/assets/photos/casco-veta.jpg';
+import imgRuta from '@/assets/photos/tren-antonana.jpg';
+
+const images = {
+  asfaltokia: { src: imgAsfaltokia, alt: 'La estación de Atauri en los años del asfalto, con los panes apilados junto a la vía' },
+  mina: { src: imgMina, alt: 'Visitantes con casco ante una veta de asfalto en Mina Lucía' },
+  ruta: { src: imgRuta, alt: 'El trenico recreado en Antoñana, sede del Centro del Ferrocarril Vasco-Navarro' },
+} as const;
+const ring = home.puertas.ring.toUpperCase();
+const { items } = home.puertas;
+---
+<section class="section theme-sky puertas" data-bg="sky" data-theme-trigger data-arch aria-labelledby="puertas-title">
+  <ArchMask />
+  <div class="container">
+    <div class="puertas__ring" data-circle-text="70">
+      <svg viewBox="0 0 400 400" aria-hidden="true" focusable="false">
+        <defs>
+          <path id="puertas-circle" d="M200,200 m-152,0 a152,152 0 1,1 304,0 a152,152 0 1,1 -304,0"></path>
+        </defs>
+        <g data-circle-ring>
+          <text class="puertas__ring-text">
+            <textPath href="#puertas-circle" textLength="955" lengthAdjust="spacing">{ring}{ring}</textPath>
+          </text>
+        </g>
+      </svg>
+      <span class="puertas__symbol brand-symbol" style={`--symbol: url(${symbol.src})`}></span>
+      <h2 id="puertas-title" class="sr-only">Tres puertas al asfalto</h2>
+    </div>
+
+    <p class="l2 t-muted t-center puertas__eyebrow" data-reveal="p">{home.puertas.eyebrow}</p>
+
+    <div class="slider puertas__slider" data-slider data-slider-auto="7">
+      <div class="slider__stack">
+        {
+          items.map((item, i) => (
+            <article class="slide" data-slide aria-roledescription="diapositiva" aria-label={`${i + 1} de ${items.length}`}>
+              <div class="grid puertas__grid">
+                <h3 class="col-10 h2 t-center puertas__title">
+                  <span data-part="h" set:html={item.display.join('<br />')} />
+                </h3>
+                <figure class="col-2 start-2 slide__figure puertas__figure" data-part="slide">
+                  <div>
+                    <Image src={images[item.id].src} alt={images[item.id].alt} widths={[400, 800]} sizes="(max-width: 991px) 60vw, 18vw" />
+                  </div>
+                </figure>
+                <div class="col-4 start-5 puertas__body">
+                  <p class="l2 t-muted" data-part="p">{item.label}</p>
+                  <p class="p1" data-part="line">{item.text}</p>
+                </div>
+                <p class="col-2 start-9 c1 puertas__num" data-part="p">0{i + 1}</p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+      <div class="slider__nav">
+        <button class="slider__btn" type="button" data-slider-prev aria-label="Anterior">
+          <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M11 6H1M5 1 1 6l4 5" fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke"></path></svg>
+        </button>
+        <span class="slider__count l2" aria-live="polite"><span data-slider-current>01</span> / <span data-slider-total>03</span></span>
+        <span class="slider__progress" aria-hidden="true"><span data-slider-progress></span></span>
+        <button class="slider__btn" type="button" data-slider-next aria-label="Siguiente">
+          <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6h10M7 1l4 5-4 5" fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke"></path></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  @layer components {
+    .puertas {
+      padding-block: var(--sp-120) var(--sp-160);
+    }
+    .puertas__ring {
+      position: relative;
+      width: calc(var(--col) * 3 + var(--gap) * 2);
+      margin: 0 auto;
+      color: var(--fg);
+    }
+    .puertas__ring svg {
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+    .puertas__ring-text {
+      font-family: var(--font-display);
+      font-variation-settings: 'opsz' 24;
+      font-size: 26px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      fill: currentColor;
+    }
+    .puertas__symbol {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: var(--sp-72);
+      height: var(--sp-72);
+      transform: translate(-50%, -50%);
+    }
+    .puertas__eyebrow {
+      margin-top: var(--sp-64);
+    }
+    .puertas__slider {
+      margin-top: var(--sp-48);
+    }
+    .puertas__grid {
+      row-gap: var(--sp-48);
+    }
+    .puertas__title {
+      overflow: hidden;
+    }
+    .puertas__figure {
+      aspect-ratio: 3 / 4;
+    }
+    .puertas__body {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-16);
+      align-self: center;
+    }
+    .puertas__num {
+      align-self: center;
+      text-align: right;
+    }
+    @media (max-width: 991px) {
+      .puertas {
+        padding-block: var(--sp-96) var(--sp-120);
+      }
+      /* «ASFALTOKIA» ocupa 6 em en Bodoni: a 56 cabe en 390 de ancho. */
+      .puertas__title {
+        font-size: calc(56 * var(--u));
+      }
+      .puertas__ring {
+        width: calc(var(--col) * 3 + var(--gap) * 2);
+      }
+      .puertas__figure {
+        grid-column: 1 / span 2;
+        aspect-ratio: 3 / 4;
+      }
+      .puertas__body {
+        grid-column: 1 / -1;
+      }
+      .puertas__num {
+        grid-column: 3 / span 2;
+        grid-row: 2;
+      }
+    }
+  }
+</style>

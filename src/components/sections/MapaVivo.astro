@@ -1,0 +1,269 @@
+---
+/**
+ * MapaVivo — escena 08: mapa Mapbox a sangre fijado tres alturas de scroll.
+ * La ruta se dibuja con el scroll, un punto avanza por la cabeza y la
+ * cámara lo sigue. Conmutador «A pie / En bici» con el raíl del hero.
+ * Datos: GeoJSON generados por tools/gpx-to-geojson.mjs. Lógica: map.ts.
+ */
+import ArchMask from '@/components/ui/ArchMask.astro';
+import { home } from '@/content/home';
+import { MAPBOX_TOKEN, MAPBOX_STYLE, pois } from '@/content/map';
+import aPie from '@/data/routes/a-pie.json';
+import enBici from '@/data/routes/en-bici.json';
+
+const routes = [aPie, enBici];
+const data = { token: MAPBOX_TOKEN, style: MAPBOX_STYLE, routes, pois, labels: { start: 'Antoñana' } };
+const { mapa } = home;
+
+/* perfil de elevación → polyline en un viewBox 400×80 */
+function profilePoints(route: typeof aPie): string {
+  const min = route.stats.min;
+  const max = route.stats.max;
+  const span = Math.max(1, max - min);
+  const last = route.profile.length - 1;
+  return route.profile.map((pt, i) => `${((i / last) * 400).toFixed(1)},${(76 - (((pt[1] ?? min) - min) / span) * 68).toFixed(1)}`).join(' ');
+}
+const fmt = (n: number): string => n.toFixed(1).replace('.', ',');
+---
+<section id="mapa" class="section theme-dark mapa" data-bg="dark" data-theme-trigger data-arch data-map aria-labelledby="mapa-title">
+  <ArchMask />
+  <div class="mapa__stage" data-map-stage>
+    <div class="mapa__canvas" data-map-canvas aria-hidden="true"></div>
+    <div class="mapa__vignette" aria-hidden="true"></div>
+
+    <div class="mapa__ui container" data-tabs>
+      <header class="mapa__head">
+        <p class="l2 mapa__eyebrow">{mapa.eyebrow}</p>
+        <h2 id="mapa-title" class="h3">{mapa.display[0]}<br />{mapa.display[1]}</h2>
+        <p class="p2 mapa__text">{mapa.text}</p>
+      </header>
+
+      <div class="mapa__side">
+        <div class="mapa__tabs" role="tablist" aria-label="Modo de la ruta">
+          <button class="mapa__tab l1" type="button" role="tab" id="mapa-tab-a-pie" data-tab-trigger="a-pie" aria-selected="true" aria-controls="mapa-panel-a-pie" data-text-swap>
+            <span class="swap"><span class="swap__text">{mapa.tabs['a-pie']}</span><span class="swap__text swap__text--clone" aria-hidden="true">{mapa.tabs['a-pie']}</span></span>
+          </button>
+          <span class="mapa__rail" aria-hidden="true"></span>
+          <button class="mapa__tab l1" type="button" role="tab" id="mapa-tab-en-bici" data-tab-trigger="en-bici" aria-selected="false" aria-controls="mapa-panel-en-bici" tabindex="-1" data-text-swap>
+            <span class="swap"><span class="swap__text">{mapa.tabs['en-bici']}</span><span class="swap__text swap__text--clone" aria-hidden="true">{mapa.tabs['en-bici']}</span></span>
+          </button>
+        </div>
+
+        {
+          routes.map((route, i) => (
+            <div class="mapa__panel" id={`mapa-panel-${route.slug}`} role="tabpanel" aria-labelledby={`mapa-tab-${route.slug}`} data-tab-content={route.slug} hidden={i !== 0}>
+              <dl class="mapa__stats">
+                <div><dt class="l2">Distancia</dt><dd class="h5">{fmt(route.stats.km)} km</dd></div>
+                <div><dt class="l2">Desnivel</dt><dd class="h5">+{route.stats.gain} m</dd></div>
+                <div><dt class="l2">Cota</dt><dd class="h5">{route.stats.min}–{route.stats.max} m</dd></div>
+              </dl>
+              <div class="mapa__profile" aria-hidden="true">
+                <svg viewBox="0 0 400 80" preserveAspectRatio="none">
+                  <polyline points={profilePoints(route)} fill="none" stroke="currentColor" stroke-opacity="0.25" stroke-width="1" vector-effect="non-scaling-stroke"></polyline>
+                </svg>
+                <div class="mapa__profile-fill" data-map-profile-clip>
+                  <svg viewBox="0 0 400 80" preserveAspectRatio="none">
+                    <polyline points={profilePoints(route)} fill="none" stroke="currentColor" stroke-width="1.5" vector-effect="non-scaling-stroke"></polyline>
+                  </svg>
+                </div>
+              </div>
+              <a class="mapa__download l1" href={`/gpx/ruta-asfaltos-${route.slug}.gpx`} download>{mapa.download} · {route.name}</a>
+            </div>
+          ))
+        }
+
+        <p class="mapa__live l2" aria-live="off">
+          <span data-map-km>0,0</span> km recorridos · <span data-map-ele>{aPie.stats.min}</span> m
+        </p>
+      </div>
+    </div>
+
+    <div class="map-head" data-map-head aria-hidden="true"></div>
+    <p class="mapa__hint l2" aria-hidden="true">Sigue bajando para recorrer la ruta</p>
+  </div>
+  <script is:inline type="application/json" data-map-data set:html={JSON.stringify(data)} />
+</section>
+
+<style>
+  @layer components {
+    .mapa__stage {
+      position: relative;
+      height: var(--vh-real);
+      overflow: hidden;
+      color: var(--fg);
+    }
+    .mapa__canvas {
+      position: absolute;
+      inset: 0;
+      background: var(--bg);
+    }
+    .mapa__canvas :global(.mapboxgl-canvas) {
+      outline: none;
+    }
+    .mapa__vignette {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgb(var(--c-ink-rgb) / 0.75) 0%, rgb(var(--c-ink-rgb) / 0) 42%),
+        linear-gradient(180deg, rgb(var(--c-ink-rgb) / 0.6) 0%, rgb(var(--c-ink-rgb) / 0) 30%, rgb(var(--c-ink-rgb) / 0) 70%, rgb(var(--c-ink-rgb) / 0.6) 100%);
+    }
+    .mapa__ui {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+      column-gap: var(--gap);
+      align-content: space-between;
+      padding-block: var(--sp-144) var(--sp-64);
+      pointer-events: none;
+    }
+    .mapa__ui > * {
+      pointer-events: auto;
+    }
+    .mapa__head {
+      grid-column: 1 / span 4;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-16);
+      align-self: start;
+    }
+    .mapa__eyebrow {
+      color: var(--fg-muted);
+    }
+    .mapa__text {
+      max-width: 38ch;
+      color: var(--fg-muted);
+    }
+    .mapa__side {
+      grid-column: 1 / span 4;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-24);
+      align-self: end;
+    }
+    .mapa__tabs {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-16);
+    }
+    .mapa__tab {
+      padding-block: var(--sp-4);
+      color: var(--fg-muted);
+      transition: color var(--d-micro) var(--ease-era);
+    }
+    .mapa__tab[aria-selected='true'] {
+      color: var(--fg);
+    }
+    .mapa__rail {
+      position: relative;
+      width: var(--sp-64);
+      height: var(--hairline);
+      background: rgb(var(--fg-rgb) / 0.3);
+    }
+    .mapa__rail::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: var(--sp-6);
+      height: var(--sp-6);
+      border-radius: 50%;
+      background: var(--fg);
+      transform: translate(0, -50%);
+      transition: transform var(--d-section) var(--ease-era);
+    }
+    .mapa__ui[data-active='en-bici'] .mapa__rail::after {
+      transform: translate(calc(var(--sp-64) - var(--sp-6)), -50%);
+    }
+    .mapa__panel {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-20);
+    }
+    .mapa__panel[hidden] {
+      display: none;
+    }
+    .mapa__stats {
+      display: grid;
+      grid-template-columns: repeat(3, auto);
+      gap: var(--sp-24);
+      margin: 0;
+    }
+    .mapa__stats div {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-6);
+    }
+    .mapa__stats dt {
+      color: var(--fg-muted);
+    }
+    .mapa__stats dd {
+      margin: 0;
+      font-variant-numeric: tabular-nums;
+    }
+    .mapa__profile {
+      position: relative;
+      height: var(--sp-64);
+      color: var(--c-sky);
+    }
+    .mapa__profile svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+    .mapa__profile-fill {
+      position: absolute;
+      inset: 0;
+      clip-path: inset(0 100% 0 0);
+    }
+    .mapa__download {
+      display: inline-flex;
+      gap: var(--sp-6);
+      align-self: flex-start;
+      padding-bottom: var(--sp-4);
+      border-bottom: var(--hairline) solid rgb(var(--fg-rgb) / 0.6);
+    }
+    .mapa__live {
+      color: var(--fg-muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .mapa__hint {
+      position: absolute;
+      right: var(--margin);
+      bottom: var(--sp-64);
+      color: var(--fg-muted);
+      opacity: 0;
+      transition: opacity var(--d-el) var(--ease-era);
+    }
+    .is-map-ready .mapa__hint {
+      opacity: 0.7;
+    }
+    .is-map-ready.is-moving .mapa__hint {
+      opacity: 0;
+    }
+    @media (max-width: 991px) {
+      .mapa__ui {
+        padding-block: var(--sp-96) var(--sp-24);
+      }
+      .mapa__head,
+      .mapa__side {
+        grid-column: 1 / -1;
+      }
+      .mapa__text {
+        display: none;
+      }
+      .mapa__stats {
+        gap: var(--sp-16);
+      }
+      .mapa__profile {
+        height: var(--sp-48);
+      }
+      .mapa__hint {
+        display: none;
+      }
+    }
+  }
+</style>

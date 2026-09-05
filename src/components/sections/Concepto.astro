@@ -1,0 +1,73 @@
+---
+/**
+ * Concepto — escena 05: la geología en una frase, centrada, con dos
+ * imágenes pequeñas en las esquinas (el equivalente de las buganvillas
+ * de la referencia hasta que lleguen las capas con fondo transparente).
+ * IMÁGENES: lágrimas de asfalto (asfaltokia.eus, provisional) y macro de
+ * la veta (Quintas, definitiva).
+ */
+import { Image } from 'astro:assets';
+import ArchMask from '@/components/ui/ArchMask.astro';
+import { home } from '@/content/home';
+import drips from '@/assets/photos/web-geologia-img-1.jpg';
+import veta from '@/assets/photos/veta-asfalto.jpg';
+---
+<section class="section theme-light concepto" data-bg="light" data-theme-trigger data-arch aria-labelledby="concepto-title">
+  <ArchMask />
+  <div class="container concepto__inner">
+    <p id="concepto-title" class="l2 t-muted t-center" data-reveal="p">{home.concepto.eyebrow}</p>
+    <p class="concepto__statement h4 t-center t-balance" data-reveal="line">{home.concepto.statement}</p>
+    <p class="concepto__text p1 t-center" data-reveal="line">{home.concepto.text}</p>
+    <figure class="concepto__decor concepto__decor--l" data-reveal="ctn" data-parallax="w">
+      <div data-parallax="img"><Image src={drips} alt="Lágrimas de asfalto natural sobre la roca" widths={[480]} sizes="14vw" /></div>
+    </figure>
+    <figure class="concepto__decor concepto__decor--r" data-reveal="ctn" data-reveal-delay="0.2" data-parallax="w">
+      <div data-parallax="img"><Image src={veta} alt="Veta de asfalto impregnando la caliza en Mina Lucía" widths={[480, 800]} sizes="14vw" /></div>
+    </figure>
+  </div>
+</section>
+
+<style>
+  @layer components {
+    .concepto {
+      padding-block: var(--sp-192);
+    }
+    .concepto__inner {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sp-32);
+    }
+    .concepto__statement {
+      max-width: calc(var(--col) * 6 + var(--gap) * 5);
+    }
+    .concepto__text {
+      max-width: calc(var(--col) * 4 + var(--gap) * 3);
+      color: var(--fg-muted);
+    }
+    .concepto__decor {
+      position: absolute;
+      width: calc(var(--col) * 1 + var(--gap));
+      aspect-ratio: 4 / 5;
+    }
+    .concepto__decor--l {
+      left: 0;
+      top: calc(var(--sp-96) * -1);
+    }
+    .concepto__decor--r {
+      right: 0;
+      bottom: calc(var(--sp-120) * -1);
+      width: calc(var(--col) * 1.5 + var(--gap));
+    }
+    @media (max-width: 991px) {
+      .concepto {
+        padding-block: var(--sp-120);
+      }
+      .concepto__decor {
+        position: static;
+        width: 50%;
+      }
+    }
+  }
+</style>

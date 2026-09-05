@@ -1,0 +1,213 @@
+/* ==========================================================================
+   components.css — piezas compartidas por varias secciones: slider,
+   marcador de mapa, símbolo de marca, listas de datos.
+   Capa: components. (Cada .astro añade el resto en su propio <style>.)
+   ========================================================================== */
+@layer components {
+
+  /* símbolo de marca: PNG como máscara → toma currentColor */
+  .brand-symbol {
+    display: inline-block;
+    background: currentColor;
+    mask: var(--symbol) center / contain no-repeat;
+    -webkit-mask: var(--symbol) center / contain no-repeat;
+  }
+
+  /* ------------------------------------------------------------------
+     Slider: la diapositiva activa define la altura; durante el cambio,
+     la entrante se apila encima (slider.ts).
+     ------------------------------------------------------------------ */
+  .slider {
+    position: relative;
+  }
+  .slider__stack {
+    position: relative;
+  }
+  .slide {
+    position: relative;
+    width: 100%;
+  }
+  .slide[hidden] {
+    display: none;
+  }
+  .slide__figure {
+    overflow: hidden;
+    will-change: clip-path;
+  }
+  .slide__figure > * {
+    width: 100%;
+    height: 100%;
+  }
+  .slide__figure img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .slider__nav {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-24);
+    margin-top: var(--sp-48);
+  }
+  .slider__btn {
+    display: grid;
+    place-items: center;
+    width: var(--sp-48);
+    height: var(--sp-48);
+    border-radius: 50%;
+    border: var(--hairline) solid rgb(var(--fg-rgb) / 0.3);
+    color: var(--fg);
+    transition: border-color var(--d-micro) var(--ease-era), background-color var(--d-micro) var(--ease-era), color var(--d-micro) var(--ease-era);
+  }
+  .slider__btn svg {
+    width: var(--sp-12);
+    height: var(--sp-12);
+  }
+  .slider__btn:hover,
+  .slider__btn:focus-visible {
+    background: var(--fg);
+    color: var(--bg);
+    border-color: var(--fg);
+  }
+  .slider__count {
+    font-variant-numeric: tabular-nums;
+    color: var(--fg-muted);
+  }
+  .slider__progress {
+    position: relative;
+    flex: 1;
+    max-width: var(--sp-136);
+    height: var(--hairline);
+    background: rgb(var(--fg-rgb) / 0.15);
+  }
+  .slider__progress > span {
+    position: absolute;
+    inset: 0;
+    background: var(--fg);
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
+  /* pares de datos (Dónde · Horario · …) */
+  .specs {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-16);
+  }
+  .specs > div {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+    padding-bottom: var(--sp-12);
+    border-bottom: var(--hairline) solid var(--line);
+  }
+  .specs dt {
+    color: var(--fg-muted);
+  }
+  .specs dd {
+    margin: 0;
+  }
+
+  /* ------------------------------------------------------------------
+     Marcadores del mapa (los crea map.ts). Viven dentro del contenedor
+     de Mapbox: aquí todo en tokens salvo el 1px de las líneas.
+     ------------------------------------------------------------------ */
+  .map-poi {
+    /* El propio nodo recibe .mapboxgl-marker (position: absolute, capa
+       vendor): no se le da position aquí para que encoja al punto. */
+    color: var(--c-bone);
+    cursor: default;
+  }
+  .map-poi__dot {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: var(--sp-28);
+    height: var(--sp-28);
+  }
+  .map-poi__dot::before {
+    content: '';
+    position: relative;
+    z-index: 1;
+    width: var(--sp-6);
+    height: var(--sp-6);
+    border-radius: 50%;
+    background: var(--c-sky);
+  }
+  .map-poi__ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: var(--hairline) solid rgb(var(--c-sky-rgb) / 0.7);
+    animation: map-pulse 3s var(--ease-era) infinite;
+  }
+  .map-poi__ring:nth-of-type(2) {
+    animation-delay: 1.5s;
+  }
+  @keyframes map-pulse {
+    0% { transform: scale(0.3); opacity: 1; }
+    100% { transform: scale(1.4); opacity: 0; }
+  }
+  .map-poi__label {
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    padding-left: var(--sp-8);
+    white-space: nowrap;
+    opacity: 0;
+    transform: translate(var(--sp-8), -50%);
+    transition: opacity var(--d-micro) var(--ease-era), transform var(--d-micro) var(--ease-era);
+  }
+  .map-poi__label .p2 {
+    color: rgb(var(--c-bone-rgb) / 0.62);
+  }
+  .map-poi.is-near .map-poi__label,
+  .map-poi:hover .map-poi__label {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
+  /* Móvil: la etiqueta bajo el punto, centrada y con salto de línea, para
+     que no se corte contra el borde de la pantalla. */
+  @media (max-width: 991px) {
+    .map-poi__label {
+      left: 50%;
+      top: 100%;
+      width: max-content;
+      max-width: var(--sp-192);
+      padding-left: 0;
+      align-items: center;
+      text-align: center;
+      white-space: normal;
+      transform: translate(-50%, var(--sp-8));
+    }
+    .map-poi.is-near .map-poi__label,
+    .map-poi:hover .map-poi__label {
+      transform: translate(-50%, 0);
+    }
+  }
+  .map-head {
+    width: var(--sp-16);
+    height: var(--sp-16);
+    border-radius: 50%;
+    background: var(--c-bone);
+    box-shadow: 0 0 0 var(--sp-6) rgb(var(--c-bone-rgb) / 0.18);
+  }
+
+  /* Mapbox: la atribución y el logotipo son obligatorios; se integran discretos. */
+  .mapboxgl-map {
+    font: var(--fs-l2) / 1.6 var(--font-text);
+  }
+  .mapboxgl-ctrl.mapboxgl-ctrl-attrib {
+    background: transparent;
+    color: rgb(var(--c-bone-rgb) / 0.5);
+  }
+  .mapboxgl-ctrl-attrib a {
+    color: inherit;
+  }
+  .mapboxgl-ctrl-logo {
+    opacity: 0.45;
+  }
+}

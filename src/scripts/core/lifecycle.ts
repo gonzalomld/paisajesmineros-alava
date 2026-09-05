@@ -26,6 +26,11 @@ import scrollProgress from '../modules/scrollProgress';
 import archReveal from '../modules/archReveal';
 import hero from '../modules/hero';
 import header from '../modules/header';
+import slider from '../modules/slider';
+import circleText from '../modules/circleText';
+import drawPath from '../modules/drawPath';
+import indexCounter from '../modules/indexCounter';
+import map from '../modules/map';
 
 const REVEAL_GUARD_MS = 5000;
 
@@ -60,6 +65,11 @@ function registerModules(): void {
   register('archReveal', archReveal);
   register('hero', hero);
   register('header', header);
+  register('slider', slider);
+  register('circleText', circleText);
+  register('drawPath', drawPath);
+  register('indexCounter', indexCounter);
+  register('map', map);
 }
 
 /** Si un módulo no llegara a montar, nada se queda oculto. */
@@ -120,8 +130,18 @@ function boot(): void {
   });
 
   mountAll();
+  /* Los triggers se crean en orden de módulo, no de documento; el pin del
+     mapa reserva tres pantallas y desplaza todo lo que viene detrás. */
+  ScrollTrigger.sort();
+  ScrollTrigger.refresh();
   revealGuard();
   if (import.meta.env.DEV) console.debug('[asfaltokia] módulos', summary());
+  /* Las fuentes web llegan después del primer refresh y cambian la altura
+     de todo el texto: sin este segundo cálculo, cada pin y cada disparador
+     quedarían desplazados hasta el primer resize. */
+  void document.fonts.ready.then(() => {
+    ScrollTrigger.refresh();
+  });
 
   void runPreloader(() => {
     initialLoad = false;
@@ -140,6 +160,7 @@ function boot(): void {
     restoreRoot();
     scrollToTop();
     mountAll();
+    ScrollTrigger.sort();
     ScrollTrigger.refresh();
     revealGuard();
     if (import.meta.env.DEV) console.debug('[asfaltokia] módulos', summary());

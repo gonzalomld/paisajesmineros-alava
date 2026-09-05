@@ -4,7 +4,9 @@
  * Superficie dark; participa en el cambio de tema del header.
  */
 import { site } from '@/content/site';
+import { Image } from 'astro:assets';
 import ArchMask from '@/components/ui/ArchMask.astro';
+import logo from '@/assets/brand/asfaltokia-logo-blanco.png';
 const year = new Date().getFullYear();
 ---
 <footer class="footer theme-dark section" data-bg="dark" data-theme-trigger data-arch>
@@ -15,10 +17,12 @@ const year = new Date().getFullYear();
         <p class="footer__script a2" aria-hidden="true">{site.brand.region}</p>
         <p class="footer__word h3">{site.brand.product}</p>
         <p class="l2 t-muted">{site.brand.full}</p>
+        <Image class="footer__logo" src={logo} alt="Asfaltokia, Paisajes Mineros de Asfaltos Naturales de Montaña Alavesa" width={300} height={74} />
       </div>
       <div class="col-3 footer__block">
         <p class="l2 t-muted">{site.brand.center}</p>
         <p class="p2">{site.footer.place}</p>
+        <p class="p2"><a href={site.contact.phoneHref}>{site.contact.phone}</a> · {site.contact.phoneNote}</p>
         <ul class="p2">
           {site.footer.hours.map((h) => <li>{h}</li>)}
         </ul>
@@ -58,6 +62,12 @@ const year = new Date().getFullYear();
       transform: translateX(6%);
       position: relative;
       z-index: 1;
+    }
+    .footer__logo {
+      width: var(--sp-160);
+      height: auto;
+      margin-top: var(--sp-24);
+      opacity: 0.9;
     }
     .footer__block {
       display: flex;

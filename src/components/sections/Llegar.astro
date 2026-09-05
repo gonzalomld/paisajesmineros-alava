@@ -1,0 +1,143 @@
+---
+/**
+ * Llegar — escena 07: display con script montado y una línea dibujada a
+ * mano con los tiempos en coche desde Atauri (API de direcciones de Mapbox).
+ */
+import { home } from '@/content/home';
+import symbol from '@/assets/brand/asfaltokia-simbolo.png';
+const { llegar } = home;
+/* x en el viewBox (1600) de cada parada; el símbolo va en el centro */
+const xs = [64, 352, 608, 992, 1248, 1504];
+const stops = llegar.places.map((p, i) => ({ ...p, x: xs[i] ?? 0 }));
+const path =
+  'M 0 132 C 30 132, 44 120, 64 120 C 140 120, 200 70, 262 88 S 332 120, 352 120 C 420 120, 480 162, 540 150 S 598 120, 608 120 C 660 120, 720 92, 760 102 S 796 120, 800 120 C 850 120, 900 150, 942 140 S 984 120, 992 120 C 1060 120, 1120 72, 1180 86 S 1238 120, 1248 120 C 1320 120, 1380 160, 1440 150 S 1496 120, 1504 120 C 1540 120, 1562 112, 1600 114';
+---
+<section class="section theme-light llegar" data-bg="light" data-theme-trigger aria-labelledby="llegar-title">
+  <div class="container">
+    <div class="llegar__lockup">
+      <h2 id="llegar-title" class="h3 t-center" data-reveal="h">{llegar.display}</h2>
+      <p class="llegar__script a2 t-center" data-reveal="p" data-reveal-delay="0.5" data-reveal-duration="0.6" aria-hidden="true">{llegar.script}</p>
+    </div>
+    <p class="l2 t-muted t-center llegar__from" data-reveal="p">{llegar.from}</p>
+
+    <div class="llegar__path" data-draw>
+      <svg class="llegar__svg" viewBox="0 0 1600 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+        <path d={path} data-draw-path fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke" stroke-linecap="round"></path>
+      </svg>
+      <ol class="llegar__stops">
+        {
+          stops.map((s) => (
+            <li class="llegar__stop" style={`--x:${(s.x / 16).toFixed(2)}%`} data-draw-label>
+              <span class="llegar__dot" aria-hidden="true" />
+              <span class="l1">{s.name}</span>
+              <span class="l2 t-muted">{s.time}</span>
+            </li>
+          ))
+        }
+      </ol>
+      <span class="llegar__symbol brand-symbol" style={`--symbol: url(${symbol.src})`} data-draw-label aria-hidden="true"></span>
+    </div>
+  </div>
+</section>
+
+<style>
+  @layer components {
+    .llegar {
+      /* Una pantalla como mínimo: el arco del mapa crece por encima de esta
+         sección y no debe tapar los tiempos mientras aún se leen. */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: var(--vh-real);
+      padding-block: var(--sp-96) var(--sp-160);
+    }
+    .llegar__lockup {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .llegar__script {
+      margin-top: calc(var(--fs-a2) * -0.45);
+      transform: translateX(18%);
+      position: relative;
+      z-index: 1;
+    }
+    .llegar__from {
+      margin-top: var(--sp-32);
+    }
+    .llegar__path {
+      position: relative;
+      margin-top: var(--sp-64);
+      height: calc(var(--row) * 2);
+      color: var(--fg);
+    }
+    .llegar__svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+    .llegar__stops {
+      position: absolute;
+      inset: 0;
+    }
+    .llegar__stop {
+      position: absolute;
+      left: var(--x);
+      top: 60%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sp-4);
+      transform: translate(-50%, 0);
+      padding-top: var(--sp-16);
+      white-space: nowrap;
+    }
+    .llegar__dot {
+      position: absolute;
+      top: 0;
+      width: var(--sp-6);
+      height: var(--sp-6);
+      border-radius: 50%;
+      background: currentColor;
+      transform: translateY(-50%);
+    }
+    .llegar__symbol {
+      position: absolute;
+      left: 50%;
+      top: 60%;
+      width: var(--sp-40);
+      height: var(--sp-40);
+      transform: translate(-50%, -50%);
+      background: var(--fg);
+    }
+    @media (max-width: 991px) {
+      .llegar {
+        padding-block: var(--sp-80) var(--sp-120);
+      }
+      .llegar__path {
+        height: auto;
+        margin-top: var(--sp-40);
+      }
+      .llegar__svg,
+      .llegar__symbol,
+      .llegar__dot {
+        display: none;
+      }
+      .llegar__stops {
+        position: static;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--sp-16);
+      }
+      .llegar__stop {
+        position: static;
+        transform: none;
+        align-items: flex-start;
+        padding: var(--sp-12) 0 0;
+        border-top: var(--hairline) solid var(--line);
+      }
+    }
+  }
+</style>

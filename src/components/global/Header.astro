@@ -10,6 +10,7 @@
  */
 import type { Theme } from '@/content/site';
 import { site } from '@/content/site';
+import symbol from '@/assets/brand/asfaltokia-simbolo.png';
 
 interface Props {
   theme?: Theme;
@@ -30,13 +31,7 @@ const { primary, secondary } = site.nav;
             <textPath href="#header-ring-path" textLength="251" lengthAdjust="spacing">{ring}{ring}</textPath>
           </text>
         </svg>
-        <svg class="header__mark" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
-          <!-- Marca provisional: arco de galería sobre una veta. Se sustituye por el logotipo definitivo. -->
-          <path d="M9 30V21a11 11 0 0 1 22 0v9" fill="none" stroke="currentColor" stroke-width="1.2"></path>
-          <path d="M5 30h30" fill="none" stroke="currentColor" stroke-width="1.2"></path>
-          <path d="M14 30v-8a6 6 0 0 1 12 0v8" fill="none" stroke="currentColor" stroke-width="1.2"></path>
-          <circle cx="20" cy="33.5" r="1.4" fill="currentColor"></circle>
-        </svg>
+        <span class="header__mark brand-symbol" style={`--symbol: url(${symbol.src})`} aria-hidden="true"></span>
       </span>
     </a>
 
@@ -141,9 +136,11 @@ const { primary, secondary } = site.nav;
     }
     .header__mark {
       position: absolute;
-      inset: 30%;
-      width: 40%;
-      height: 40%;
+      left: 50%;
+      top: 50%;
+      width: 34%;
+      height: 34%;
+      transform: translate(-50%, -50%);
     }
 
     /* navegación */

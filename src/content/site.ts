@@ -55,14 +55,15 @@ export const site = {
     script: 'Montaña Alavesa',
     /** Claim repartido a los lados del conmutador día / noche */
     claim: { left: 'Un paisaje para recorrer', right: 'y volver a recorrer' },
+    /* Conmutador del hero: el paisaje abierto de Izki frente a la galería de Mina Lucía. */
     tabs: {
       day: {
-        label: 'De día',
-        alt: 'Paisaje minero de asfaltos naturales en Montaña Alavesa, de día',
+        label: 'A cielo abierto',
+        alt: 'Peña del Castillo entre los robledales del Parque Natural de Izki, en Montaña Alavesa',
       },
       night: {
-        label: 'De noche',
-        alt: 'Paisaje minero de asfaltos naturales en Montaña Alavesa, de noche',
+        label: 'Bajo tierra',
+        alt: 'Galería de Mina Lucía, con las paredes impregnadas de asfalto bajo la luz de las linternas',
       },
     },
     description: 'Ruta de los paisajes mineros · Asfaltos naturales de Montaña Alavesa',
@@ -73,6 +74,13 @@ export const site = {
       { id: 'ruta', label: 'Ruta de los Asfaltos Naturales · 39 km', x: 72, y: 66 },
       { id: 'diapiro', label: 'Diapiro de Maeztu', x: 22, y: 41 },
     ],
+  },
+
+  contact: {
+    phone: '945 405 424',
+    phoneHref: 'tel:+34945405424',
+    phoneNote: 'Reserva de visitas guiadas a Mina Lucía',
+    mina: { days: 'Sábados y domingos', shifts: ['10:00', '11:15', '12:30'] },
   },
 
   footer: {

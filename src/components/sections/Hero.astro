@@ -9,16 +9,18 @@
  *   · CTA circular en el tercio inferior
  *   · marcadores de puntos de interés (datos estáticos en content/site.ts)
  *
- * IMÁGENES: placeholders generados (tools/make-placeholders.mjs), 16:10.
- *   day.jpg   → fotografía diurna del paisaje minero (Dropbox, alta calidad)
- *   night.jpg → misma composición nocturna
- * astro:assets sirve AVIF con respaldo WebP; la de día se precarga en index.
+ * IMÁGENES: «A cielo abierto» es una foto de Izki de Wikimedia Commons
+ * (CC BY-SA 4.0), provisional hasta tener fotografía propia del valle;
+ * «Bajo tierra» es la galería de Mina Lucía de la serie de Quintas.
+ * astro:assets sirve AVIF con respaldo WebP; la primera se precarga en index.
  */
 import { Picture } from 'astro:assets';
 import { site } from '@/content/site';
 import ButtonCircle from '@/components/ui/ButtonCircle.astro';
-import dayImg from '@/assets/hero/day.jpg';
-import nightImg from '@/assets/hero/night.jpg';
+/* A cielo abierto: Izki (Wikimedia Commons, CC BY-SA 4.0, PROVISIONAL).
+   Bajo tierra: Mina Lucía (Quintas, definitiva). */
+import dayImg from '@/assets/photos/hero-cielo-abierto.jpg';
+import nightImg from '@/assets/photos/hero-bajo-tierra.jpg';
 
 const { hero, cta } = site;
 const widths = [832, 1280, 1600, 2400];

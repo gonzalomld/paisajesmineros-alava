@@ -1,0 +1,83 @@
+---
+/**
+ * Ubicación — escena 06: el nombre de la comarca a lo grande con la
+ * etiqueta girada, una imagen que entra por la derecha y el párrafo.
+ * IMAGEN: Peña del Castillo, Parque Natural de Izki (Wikimedia Commons,
+ * CC BY-SA 4.0). Provisional: sustituir por fotografía propia del valle.
+ */
+import { Image } from 'astro:assets';
+import { home } from '@/content/home';
+import img from '@/assets/photos/izki-pena-castillo.jpg';
+const { ubicacion } = home;
+---
+<section class="section theme-light ubicacion" data-bg="light" data-theme-trigger aria-labelledby="ubicacion-title">
+  <div class="container">
+    <div class="grid ubicacion__grid">
+      <div class="col-6 ubicacion__title">
+        <p class="ubicacion__tag l2 t-muted" data-reveal="p">{ubicacion.tag}</p>
+        <h2 id="ubicacion-title" class="h1" data-reveal="h">{ubicacion.display[0]}<br />{ubicacion.display[1]}</h2>
+      </div>
+      <figure class="col-4 start-7 ubicacion__figure" data-reveal="slide">
+        <div>
+          <Image src={img} alt="Peña del Castillo entre los robledales del Parque Natural de Izki" widths={[600, 900, 1400]} sizes="(max-width: 991px) 100vw, 36vw" />
+        </div>
+      </figure>
+      <div class="col-4 start-2 ubicacion__body">
+        <p class="l1" data-reveal="p">{ubicacion.sub}</p>
+        <p class="p1 t-muted" data-reveal="line">{ubicacion.text}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  @layer components {
+    .ubicacion {
+      padding-block: var(--sp-160) var(--sp-192);
+    }
+    .ubicacion__grid {
+      row-gap: var(--sp-64);
+      align-items: start;
+    }
+    .ubicacion__title {
+      position: relative;
+      padding-left: var(--sp-40);
+    }
+    .ubicacion__tag {
+      position: absolute;
+      left: 0;
+      top: var(--sp-8);
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+    }
+    .ubicacion__figure {
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+      margin-top: var(--sp-64);
+    }
+    .ubicacion__figure > div,
+    .ubicacion__figure img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .ubicacion__body {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-16);
+    }
+    @media (max-width: 991px) {
+      .ubicacion {
+        padding-block: var(--sp-120);
+      }
+      .ubicacion__figure {
+        margin-top: 0;
+        aspect-ratio: 4 / 3;
+      }
+      /* "MONTAÑA" (7 caracteres) no cabe a 96px en 416: píxeles de diseño a 416 */
+      .ubicacion__title .h1 {
+        font-size: calc(80 * var(--u));
+      }
+    }
+  }
+</style>

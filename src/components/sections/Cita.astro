@@ -1,0 +1,64 @@
+---
+/**
+ * Cita — escena 04: galería entibada de Mina Lucía a sangre, con parallax,
+ * y una frase editorial en display sobre la imagen.
+ */
+import { Image } from 'astro:assets';
+import { home } from '@/content/home';
+import img from '@/assets/photos/galeria-entibada.jpg';
+---
+<section class="section theme-dark cita" data-bg="dark" data-theme-trigger aria-label="Mina Lucía">
+  <div class="cita__media" data-parallax="w">
+    <div data-parallax="img">
+      <Image src={img} alt="Galería entibada con madera en Mina Lucía, iluminada por las linternas de los visitantes" widths={[832, 1280, 1600, 2400]} sizes="100vw" />
+    </div>
+    <div class="cita__shade" aria-hidden="true"></div>
+  </div>
+  <div class="container cita__content">
+    <p class="cita__text h4 t-center t-balance" data-reveal="line">“{home.cita.text}”</p>
+    <p class="l2 t-center cita__where" data-reveal="p" data-reveal-delay="0.3">{home.cita.where}</p>
+  </div>
+</section>
+
+<style>
+  @layer components {
+    .cita {
+      position: relative;
+      min-height: var(--vh-real);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    .cita__media {
+      position: absolute;
+      inset: 0;
+    }
+    .cita__shade {
+      position: absolute;
+      inset: 0;
+      background: rgb(var(--c-ink-rgb) / 0.45);
+    }
+    .cita__content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sp-32);
+      padding-block: var(--sp-160);
+    }
+    .cita__text {
+      max-width: calc(var(--col) * 7 + var(--gap) * 6);
+      text-transform: none;
+      font-variation-settings: 'opsz' 72;
+    }
+    .cita__where {
+      color: var(--fg-muted);
+    }
+    @media (max-width: 991px) {
+      .cita__content {
+        padding-block: var(--sp-120);
+      }
+    }
+  }
+</style>

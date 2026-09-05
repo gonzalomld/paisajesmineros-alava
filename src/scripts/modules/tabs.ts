@@ -38,7 +38,10 @@ export default defineModule({
         t.classList.toggle('is-active', on);
       });
       const name = triggers[index]?.dataset.tabTrigger;
-      if (name) el.dataset.active = name;
+      if (name) {
+        el.dataset.active = name;
+        el.dispatchEvent(new CustomEvent<string>('tabs:change', { detail: name }));
+      }
     };
 
     const go = (index: number): void => {

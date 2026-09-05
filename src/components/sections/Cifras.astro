@@ -1,0 +1,97 @@
+---
+/**
+ * Cifras — escena 10: los números que definen el lugar, en una frase, y
+ * un índice tipográfico (1.0 · 2.0 · …) con los hitos.
+ * IMAGEN: mineros, foto histórica (asfaltokia.eus, provisional).
+ */
+import { Image } from 'astro:assets';
+import ArchMask from '@/components/ui/ArchMask.astro';
+import { home } from '@/content/home';
+import img from '@/assets/photos/web-historia-img-1.jpg';
+---
+<section class="section theme-sky cifras" data-bg="sky" data-theme-trigger data-arch aria-labelledby="cifras-title">
+  <ArchMask />
+  <div class="container cifras__inner">
+    <h2 id="cifras-title" class="cifras__statement h4 t-center t-balance" data-reveal="line">{home.cifras.statement}</h2>
+    <ol class="cifras__index" data-index>
+      {
+        home.cifras.items.map((item) => (
+          <li class="cifras__item" data-reveal="p">
+            <span class="c1" data-index-item>1.0</span>
+            <span class="l1">{item}</span>
+          </li>
+        ))
+      }
+    </ol>
+    <figure class="cifras__figure" data-reveal="ctn">
+      <Image src={img} alt="Dos mineros descansan a la puerta de una casa, fotografía histórica de Montaña Alavesa" widths={[480]} sizes="16vw" />
+    </figure>
+  </div>
+</section>
+
+<style>
+  @layer components {
+    .cifras {
+      /* Una pantalla como mínimo, por el arco de la sección siguiente. */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: var(--vh-real);
+      padding-block: var(--sp-192) var(--sp-160);
+    }
+    .cifras__inner {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sp-64);
+    }
+    .cifras__statement {
+      max-width: calc(var(--col) * 7 + var(--gap) * 6);
+    }
+    .cifras__index {
+      display: grid;
+      grid-template-columns: repeat(4, auto);
+      gap: var(--sp-48);
+    }
+    .cifras__item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-8);
+      padding-top: var(--sp-12);
+      border-top: var(--hairline) solid var(--line);
+    }
+    .cifras__figure {
+      position: absolute;
+      right: 0;
+      bottom: calc(var(--sp-120) * -1);
+      width: calc(var(--col) * 1.5 + var(--gap));
+      aspect-ratio: 8 / 5;
+      overflow: hidden;
+    }
+    .cifras__figure img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(1);
+      opacity: 0.85;
+    }
+    @media (max-width: 991px) {
+      .cifras {
+        padding-block: var(--sp-120);
+      }
+      /* La foto pequeña no tiene sitio bajo el arco en móvil. */
+      .cifras__figure {
+        display: none;
+      }
+      .cifras__index {
+        grid-template-columns: 1fr 1fr;
+        gap: var(--sp-24);
+      }
+      .cifras__figure {
+        position: static;
+        width: 60%;
+      }
+    }
+  }
+</style>

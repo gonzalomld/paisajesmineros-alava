@@ -1,0 +1,88 @@
+---
+/**
+ * Cierre — escena 18: el bloque de contacto antes del pie, en plum.
+ * Dónde, cuándo y el teléfono de reserva de Mina Lucía, con la CTA circular.
+ */
+import ButtonCircle from '@/components/ui/ButtonCircle.astro';
+import { home } from '@/content/home';
+import { site } from '@/content/site';
+const { cierre } = home;
+---
+<section class="section theme-plum cierre" data-bg="plum" data-theme-trigger data-arch aria-labelledby="cierre-title">
+  <div class="arch arch-section" aria-hidden="true"></div>
+  <div class="container cierre__inner">
+    <div class="cierre__lockup">
+      <h2 id="cierre-title" class="h2 t-center" data-reveal="h">{cierre.display[0]}<br />{cierre.display[1]}</h2>
+      <p class="a2 t-center cierre__script" data-reveal="p" data-reveal-delay="0.5" data-reveal-duration="0.6" aria-hidden="true">{cierre.script}</p>
+    </div>
+    <div class="cierre__lines" data-reveal="p" data-reveal-delay="0.2">
+      {cierre.lines.map((line) => <p class="l1 t-center">{line}</p>)}
+    </div>
+    <p class="cierre__phone" data-reveal="p" data-reveal-delay="0.3">
+      <span class="l2 t-muted">{cierre.phoneLabel}</span>
+      <a class="h4" href={cierre.phoneHref}>{cierre.phone}</a>
+    </p>
+    <div class="cierre__cta" data-reveal="ctn" data-reveal-delay="0.4">
+      <ButtonCircle href={site.cta.primary.href} lines={site.cta.primary.lines} label={site.cta.primary.label} />
+    </div>
+  </div>
+</section>
+
+<style>
+  @layer components {
+    .cierre {
+      padding-block: var(--sp-192) var(--sp-160);
+    }
+    .cierre__inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sp-40);
+    }
+    .cierre__lockup {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .cierre__script {
+      margin-top: calc(var(--fs-a2) * -0.45);
+      transform: translateX(22%);
+      position: relative;
+      z-index: 1;
+    }
+    .cierre__lines {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-8);
+    }
+    .cierre__phone {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sp-8);
+      text-align: center;
+    }
+    .cierre__phone a {
+      font-variant-numeric: tabular-nums;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.16em;
+      text-decoration-color: rgb(var(--fg-rgb) / 0.4);
+    }
+    .cierre__cta {
+      margin-top: var(--sp-24);
+    }
+    @media (max-width: 991px) {
+      .cierre {
+        padding-block: var(--sp-120) var(--sp-96);
+      }
+      /* «Montaña Alavesa» en una sola línea sobre la última del título. */
+      .cierre__script {
+        font-size: calc(56 * var(--u));
+        margin-top: calc(56 * var(--u) * -0.4);
+        transform: translateX(8%);
+        white-space: nowrap;
+      }
+    }
+  }
+</style>
