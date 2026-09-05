@@ -1,0 +1,360 @@
+/* ==========================================================================
+   tokens.css — la fuente de verdad del sistema de diseño
+   Capa: tokens. Este fichero NO pinta nada: solo declara valores.
+   Consumidores: themes.css (mapea superficies → semánticos),
+   typography.css (clases .h1 … .p2), componentes y utilidades.
+
+   Índice
+     1. Unidad fluida (--u) y --scale-ratio
+     2. Escala de espacio (--sp-*)
+     3. Viewport real (--vh-real)
+     4. Color: canales, superficies y rampas de opacidad
+     5. Tipografía: familias, ejes y escala (tamaño / interlínea / tracking)
+     6. Rejilla
+     7. Movimiento (duraciones, easings, staggers)
+     8. Capas (z-index), trazos, foco, radios
+   ========================================================================== */
+
+@layer tokens {
+
+  /* ------------------------------------------------------------------------
+     1. UNIDAD FLUIDA — el corazón del sistema
+
+     html { font-size: 1vw } convierte el rem en un porcentaje del ancho del
+     viewport: 1rem = 1 % del ancho. A partir de ahí NO se usa ni un px en
+     layout ni en tipografía; todo se deriva de --u.
+
+     --scale-ratio es el ancho de referencia dividido entre 100:
+       · escritorio: diseño a 1600px → 16
+       · móvil:      diseño a  416px → 4.16
+
+     --u ("una unidad") es un píxel de diseño: mide exactamente 1px cuando el
+     viewport tiene el ancho de referencia y escala en proporción lineal a
+     partir de ahí. Ejemplo con --sp-48 = 48 * --u:
+       1600px → 48px · 1920px → 57.6px · 3440px → 103.2px · 416px → 48px
+
+     Así se lee cualquier token: "el número es píxeles a 1600px de ancho"
+     (o a 416px en móvil).
+
+     NOTA DE IMPLEMENTACIÓN (no obvia): el override de --scale-ratio en móvil
+     se declara en :root, no en body. Un custom property se resuelve en el
+     elemento donde se declara; como --u vive en :root, si el ratio se
+     cambiase en body, --u seguiría valiendo calc(1rem / 16) y todos los
+     tokens derivados ignorarían el cambio. Mismo elemento, o no funciona.
+     ------------------------------------------------------------------------ */
+
+  html {
+    font-size: 1vw;
+  }
+
+  :root {
+    --scale-ratio: 16;
+    --u: calc(1rem / var(--scale-ratio));
+
+    /* Punto de corte único. CSS no admite var() en @media, así que aquí es
+       informativo y sirve de fuente de verdad para JS (registry.ts lo lee
+       con getComputedStyle). Si cambia, cambia también en las @media de abajo. */
+    --bp-mobile: 991px;
+  }
+
+  @media (max-width: 991px) {
+    :root {
+      --scale-ratio: 4.16;
+    }
+  }
+
+  /* ------------------------------------------------------------------------
+     2. ESCALA DE ESPACIO
+     El nombre es el valor en píxeles de diseño. Se usa para márgenes,
+     paddings, gaps, tamaños de iconos, anchos de columna… todo.
+     ------------------------------------------------------------------------ */
+  :root {
+    --sp-1:   calc(1   * var(--u));
+    --sp-2:   calc(2   * var(--u));
+    --sp-4:   calc(4   * var(--u));
+    --sp-6:   calc(6   * var(--u));
+    --sp-8:   calc(8   * var(--u));
+    --sp-10:  calc(10  * var(--u));
+    --sp-12:  calc(12  * var(--u));
+    --sp-16:  calc(16  * var(--u));
+    --sp-20:  calc(20  * var(--u));
+    --sp-24:  calc(24  * var(--u));
+    --sp-28:  calc(28  * var(--u));
+    --sp-32:  calc(32  * var(--u));
+    --sp-36:  calc(36  * var(--u));
+    --sp-40:  calc(40  * var(--u));
+    --sp-44:  calc(44  * var(--u));
+    --sp-48:  calc(48  * var(--u));
+    --sp-52:  calc(52  * var(--u));
+    --sp-56:  calc(56  * var(--u));
+    --sp-60:  calc(60  * var(--u));
+    --sp-64:  calc(64  * var(--u));
+    --sp-68:  calc(68  * var(--u));
+    --sp-72:  calc(72  * var(--u));
+    --sp-80:  calc(80  * var(--u));
+    --sp-88:  calc(88  * var(--u));
+    --sp-96:  calc(96  * var(--u));
+    --sp-104: calc(104 * var(--u));
+    --sp-112: calc(112 * var(--u));
+    --sp-120: calc(120 * var(--u));
+    --sp-136: calc(136 * var(--u));
+    --sp-144: calc(144 * var(--u));
+    --sp-160: calc(160 * var(--u));
+    --sp-168: calc(168 * var(--u));
+    --sp-192: calc(192 * var(--u));
+    --sp-240: calc(240 * var(--u));
+    --sp-272: calc(272 * var(--u));
+  }
+
+  /* ------------------------------------------------------------------------
+     3. VIEWPORT REAL
+     100vh en móvil incluye la barra del navegador y provoca saltos.
+     lifecycle.ts sobrescribe --vh-real con window.innerHeight (en px, única
+     excepción a la regla "sin px": es un valor medido, no diseñado).
+     Usa siempre var(--vh-real) en lugar de 100vh.
+     ------------------------------------------------------------------------ */
+  :root {
+    --vh-real: 100vh;
+  }
+
+  /* ------------------------------------------------------------------------
+     4. COLOR
+     Los colores se declaran como canales R G B para poder componer alfas
+     con la sintaxis moderna: rgb(var(--c-ink-rgb) / .6).
+
+     Cada superficie expone la misma rampa semántica con alfas fijos:
+       primary    100 %  texto y trazos principales
+       gray-text   60 %  texto secundario
+       disabled    30 %  estados inactivos
+       line        10 %  reglas y divisiones
+       bg           5 %  fondos sutiles de bloque
+
+     Los componentes NO consumen esto directamente: consumen los semánticos
+     (--fg, --fg-muted, --fg-disabled, --line, --bg-subtle, --bg) que
+     themes.css mapea por superficie. Ningún componente conoce un literal.
+     ------------------------------------------------------------------------ */
+  :root {
+    /* canales */
+    --c-bone-rgb:  243 243 236;   /* #F3F3EC  fondo claro principal */
+    --c-ink-rgb:   23  35  59;    /* #17233B  azul marino profundo, texto */
+    --c-sky-rgb:   181 206 219;   /* #B5CEDB  azul de marca */
+    --c-plum-rgb:  52  12  36;    /* #340C24  granate: preloader y transiciones */
+    --c-white-rgb: 255 255 255;   /* #FFFFFF */
+
+    /* superficies sólidas */
+    --c-bone:  rgb(var(--c-bone-rgb));
+    --c-ink:   rgb(var(--c-ink-rgb));
+    --c-sky:   rgb(var(--c-sky-rgb));
+    --c-plum:  rgb(var(--c-plum-rgb));
+    --c-white: rgb(var(--c-white-rgb));
+
+    /* estado (no tienen rampa: se usan tal cual) */
+    --c-success: #1BA64B;
+    --c-alert:   #FFA800;
+    --c-error:   #E23D3D;
+
+    /* rampa: bone */
+    --bone-primary:   rgb(var(--c-bone-rgb) / 1);
+    --bone-gray-text: rgb(var(--c-bone-rgb) / .6);
+    --bone-disabled:  rgb(var(--c-bone-rgb) / .3);
+    --bone-line:      rgb(var(--c-bone-rgb) / .1);
+    --bone-bg:        rgb(var(--c-bone-rgb) / .05);
+
+    /* rampa: ink */
+    --ink-primary:    rgb(var(--c-ink-rgb) / 1);
+    --ink-gray-text:  rgb(var(--c-ink-rgb) / .6);
+    --ink-disabled:   rgb(var(--c-ink-rgb) / .3);
+    --ink-line:       rgb(var(--c-ink-rgb) / .1);
+    --ink-bg:         rgb(var(--c-ink-rgb) / .05);
+
+    /* rampa: sky */
+    --sky-primary:    rgb(var(--c-sky-rgb) / 1);
+    --sky-gray-text:  rgb(var(--c-sky-rgb) / .6);
+    --sky-disabled:   rgb(var(--c-sky-rgb) / .3);
+    --sky-line:       rgb(var(--c-sky-rgb) / .1);
+    --sky-bg:         rgb(var(--c-sky-rgb) / .05);
+
+    /* rampa: plum */
+    --plum-primary:   rgb(var(--c-plum-rgb) / 1);
+    --plum-gray-text: rgb(var(--c-plum-rgb) / .6);
+    --plum-disabled:  rgb(var(--c-plum-rgb) / .3);
+    --plum-line:      rgb(var(--c-plum-rgb) / .1);
+    --plum-bg:        rgb(var(--c-plum-rgb) / .05);
+
+    /* rampa: white */
+    --white-primary:   rgb(var(--c-white-rgb) / 1);
+    --white-gray-text: rgb(var(--c-white-rgb) / .6);
+    --white-disabled:  rgb(var(--c-white-rgb) / .3);
+    --white-line:      rgb(var(--c-white-rgb) / .1);
+    --white-bg:        rgb(var(--c-white-rgb) / .05);
+  }
+
+  /* ------------------------------------------------------------------------
+     5. TIPOGRAFÍA
+
+     5.1 Familias — ÚNICO punto del código donde se cambian las fuentes.
+         Base.astro carga las de Google Fonts; aquí se declaran las pilas
+         con respaldos reales del sistema (no "serif" a secas).
+     ------------------------------------------------------------------------ */
+  :root {
+    --font-display: "Bodoni Moda", "Bodoni 72", "Didot", "Didot LT STD",
+                    "Playfair Display", "Times New Roman", Georgia, serif;
+    --font-accent:  "Mrs Saint Delafield", "Snell Roundhand", "Apple Chancery",
+                    "URW Chancery L", "Brush Script MT", cursive;
+    --font-text:    "Archivo", "Archivo Expanded", "Helvetica Neue", Helvetica,
+                    Arial, sans-serif;
+
+    /* ejes variables */
+    --font-text-stretch: 112%;   /* Archivo, eje wdth → Expanded */
+    --font-display-opsz: 96;     /* Bodoni Moda, eje opsz (6–96): contraste máximo a gran tamaño */
+    --font-display-weight: 400;
+    --font-display-weight-strong: 500;
+  }
+
+  /* ------------------------------------------------------------------------
+     5.2 Escala — tamaño (--fs), interlínea (--lh) y tracking (--ls) por token.
+         Los tamaños son píxeles de diseño a 1600px. La interlínea es un
+         número sin unidad (fracción del tamaño) para que escale sola.
+
+         Carácter del sistema: los display por debajo del 100 % (las líneas
+         casi se tocan); las etiquetas diminutas con muchísimo tracking.
+         El contraste 192 / 9 es la firma.
+     ------------------------------------------------------------------------ */
+  :root {
+    /* display (Didone), en mayúsculas */
+    --fs-h1: calc(192 * var(--u)); --lh-h1: .875; --ls-h1: -.024em;
+    --fs-h2: calc(136 * var(--u)); --lh-h2: .882; --ls-h2: -.024em;
+    --fs-h3: calc(96  * var(--u)); --lh-h3: .917; --ls-h3: -.024em;
+    --fs-h4: calc(63  * var(--u)); --lh-h4: .889; --ls-h4: -.016em;
+    --fs-h5: calc(40  * var(--u)); --lh-h5: 1;    --ls-h5: -.008em;
+    --fs-h6: calc(28  * var(--u)); --lh-h6: 1;    --ls-h6: 0;
+
+    /* acento (script). Nunca va solo: siempre montado sobre un display */
+    --fs-a1: calc(192 * var(--u)); --lh-a1: 1;    --ls-a1: 0;
+    --fs-a2: calc(120 * var(--u)); --lh-a2: 1;    --ls-a2: 0;
+
+    /* caption en display, mayúsculas con tracking extremo */
+    --fs-c1: calc(25  * var(--u)); --lh-c1: 1.12; --ls-c1: .8em;
+
+    /* etiquetas (texto, mayúsculas) */
+    --fs-l1: calc(11  * var(--u)); --lh-l1: 1.45; --ls-l1: .048em;
+    --fs-l2: calc(9   * var(--u)); --lh-l2: 1.33; --ls-l2: .32em;
+
+    /* párrafo (texto) */
+    --fs-p1: calc(13  * var(--u)); --lh-p1: 1.38; --ls-p1: -.024em;
+    --fs-p2: calc(11  * var(--u)); --lh-p2: 1.45; --ls-p2: -.024em;
+  }
+
+  /* Móvil: el brief solo fija la escala de escritorio. Estos valores son
+     PROPUESTA (píxeles a 416px): los display bajan para no romper línea
+     cada dos letras; los párrafos suben por legibilidad en pantalla táctil. */
+  @media (max-width: 991px) {
+    :root {
+      --fs-h1: calc(72 * var(--u));
+      --fs-h2: calc(56 * var(--u));
+      --fs-h3: calc(44 * var(--u));
+      --fs-h4: calc(34 * var(--u));
+      --fs-h5: calc(26 * var(--u));
+      --fs-h6: calc(20 * var(--u));
+      --fs-a1: calc(72 * var(--u));
+      --fs-a2: calc(48 * var(--u));
+      --fs-c1: calc(18 * var(--u));
+      --fs-l1: calc(11 * var(--u));
+      --fs-l2: calc(10 * var(--u));
+      --fs-p1: calc(15 * var(--u));
+      --fs-p2: calc(13 * var(--u));
+      --font-display-opsz: 48;
+    }
+  }
+
+  /* ------------------------------------------------------------------------
+     6. REJILLA
+       escritorio: 10 col × 136 · gap 16 · márgenes 48 → 1600
+       móvil:       4 col ×  80 · gap 16 · márgenes 24 →  416
+       celda vertical: 96 (escritorio) · 80 (móvil)
+
+     Nota: para anchos usa % o la rejilla, nunca 100vw. En Windows el
+     scrollbar resta ~17px al ancho útil y 100vw provoca scroll horizontal.
+     ------------------------------------------------------------------------ */
+  :root {
+    --cols:   10;
+    --col:    var(--sp-136);
+    --gap:    var(--sp-16);
+    --margin: var(--sp-48);
+    --row:    var(--sp-96);
+  }
+
+  @media (max-width: 991px) {
+    :root {
+      --cols:   4;
+      --col:    var(--sp-80);
+      --margin: var(--sp-24);
+      --row:    var(--sp-80);
+    }
+  }
+
+  /* ------------------------------------------------------------------------
+     7. MOVIMIENTO
+     Los easings existen dos veces a propósito: aquí como cubic-bezier para
+     transiciones CSS (hover, cambio de tema del header) y en gsap.ts como
+     CustomEase "era" / "eraOut" con las mismas curvas. Si cambia uno,
+     cambia el otro.
+     ------------------------------------------------------------------------ */
+  :root {
+    --ease-era:     cubic-bezier(.65, 0, .35, 1);   /* principal */
+    --ease-era-out: cubic-bezier(.16, 1, .3, 1);    /* salidas y reveals */
+
+    --d-micro:   .3s;    /* hover, swaps de texto */
+    --d-el:      .8s;    /* entrada de un elemento */
+    --d-section: 1.2s;   /* reveal de sección, barrido día/noche */
+    --d-page:    1.6s;   /* transición de página y salida del preloader */
+
+    --stagger-char: .04s;
+    --stagger-line: .08s;
+  }
+
+  /* Reduced motion: las transiciones CSS se anulan aquí; los módulos GSAP
+     leen ctx.reducedMotion y montan en estado final. */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --d-micro:   0s;
+      --d-el:      0s;
+      --d-section: 0s;
+      --d-page:    0s;
+      --stagger-char: 0s;
+      --stagger-line: 0s;
+    }
+  }
+
+  /* ------------------------------------------------------------------------
+     8. CAPAS, TRAZOS, FOCO, RADIOS
+     Los únicos px legítimos del sistema viven aquí: bordes de 1px,
+     outline de foco y sombras.
+     ------------------------------------------------------------------------ */
+  :root {
+    /* z-index: escala con huecos para no pelear después */
+    --z-content:      1;
+    --z-progress:     900;
+    --z-header:       1000;
+    --z-menu:         1100;
+    --z-transition:   10500;
+    --z-preloader:    11000;
+    --z-rotate:       12000;
+    --z-grid-overlay: 20000;
+
+    /* trazos */
+    --hairline: 1px;
+
+    /* foco: no depende del tema, contrasta sobre las cuatro superficies */
+    --focus-ring:        2px solid var(--c-alert);
+    --focus-ring-offset: 3px;
+
+    /* sombras */
+    --shadow-soft: 0 24px 64px rgb(var(--c-ink-rgb) / .18);
+
+    /* radios */
+    --r-arch: 50% 50% 0 0;   /* el arco: motivo estructural */
+    --r-pill: 100vmax;
+    --r-full: 50%;
+  }
+}

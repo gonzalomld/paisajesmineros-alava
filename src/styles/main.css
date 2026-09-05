@@ -1,0 +1,20 @@
+/* ==========================================================================
+   main.css — orquesta la cascada
+   El orden de @layer se declara UNA vez y aquí. Cada fichero envuelve su
+   contenido en su propia capa (@layer tokens { … }), así la cascada no
+   depende de cómo resuelva el bundler los @import.
+
+     vendor      CSS de terceros (Lenis). Va debajo de todo: como html está
+                 en 1vw, cualquier rem ajeno se descoloca; aislarlo aquí
+                 permite neutralizarlo desde base sin !important.
+     reset       normalización mínima
+     tokens      valores (tokens.css)
+     themes      superficies → semánticos (themes.css)
+     base        html, body, foco, tipografía por defecto
+     components  componentes
+     utilities   utilidades (.grid, .col-*, visually-hidden…)
+   ========================================================================== */
+@layer vendor, reset, tokens, themes, base, components, utilities;
+
+@import './reset.css';
+@import './tokens.css';

@@ -1,0 +1,28 @@
+{
+  "name": "asfaltokia",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Paisajes Mineros de Asfaltos Naturales de Montaña Alavesa — sitio de marca (Astro 5 + GSAP + Lenis)",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^5.18.2",
+    "gsap": "^3.15.0",
+    "lenis": "^1.3.26",
+    "sharp": "^0.34.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,72 @@
+---
+/**
+ * Página temporal de arranque. Se sustituye por Base.astro + Hero en cuanto
+ * se valide la estructura de tokens.css y registry.ts.
+ * Muestra la unidad fluida en acción: cada barra mide su token a 1600px de
+ * ancho y escala en proporción al redimensionar.
+ */
+import '../styles/main.css';
+
+const samples = [8, 16, 24, 48, 96, 136, 192, 272] as const;
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Asfaltokia — cimientos</title>
+  </head>
+  <body>
+    <main class="check">
+      <p class="check__label">Sistema de unidades fluidas — --u = 1 px de diseño</p>
+      <ul class="check__list">
+        {samples.map((n) => (
+          <li class="check__item" style={`--w: var(--sp-${n})`}>
+            <span class="check__bar"></span>
+            <span class="check__name">--sp-{n}</span>
+          </li>
+        ))}
+      </ul>
+    </main>
+  </body>
+</html>
+
+<style>
+  /* Estilos de la página de comprobación: consumen solo tokens. */
+  .check {
+    padding: var(--margin);
+    color: var(--c-ink);
+    background: var(--c-bone);
+    font-family: var(--font-text);
+    font-size: var(--fs-p1);
+    line-height: var(--lh-p1);
+  }
+  .check__label {
+    font-size: var(--fs-l1);
+    line-height: var(--lh-l1);
+    letter-spacing: var(--ls-l1);
+    text-transform: uppercase;
+    color: var(--ink-gray-text);
+    margin-block-end: var(--sp-24);
+  }
+  .check__list {
+    display: grid;
+    gap: var(--sp-8);
+  }
+  .check__item {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-12);
+  }
+  .check__bar {
+    width: var(--w);
+    height: var(--sp-8);
+    background: var(--c-ink);
+  }
+  .check__name {
+    font-size: var(--fs-l2);
+    letter-spacing: var(--ls-l2);
+    color: var(--ink-gray-text);
+  }
+</style>
