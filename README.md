@@ -85,8 +85,10 @@ src/
   components/global/          Preloader, Header, Footer, PageTransition, RotateDevice
   components/ui/              ButtonPill, ButtonCircle, Marquee, ArchMask, ScrollProgress
   components/sections/        Hero, Puertas, Cita, Concepto, Ubicacion, Llegar, Cielo, MapaVivo,
-                              Experiencias, Cifras, ArcoTexto, Estacion, Galeria, Asfalto, Cierre
+                              Experiencias, Estratos, QueVeras, ArcoTexto, Estacion, Galeria,
+                              Asfalto, Miradores, Cierre
   components/ui/Canto.astro   fragmento de roca con máscara irregular (el «decorado»)
+  components/ui/Vimeo.astro   reproductor de Vimeo perezoso (iframe solo al pulsar)
   styles/                     vendor, reset, tokens, themes, base, typography, components,
                               utilities, main; mapbox.css (subconjunto vendor de Mapbox GL)
   scripts/core/               gsap, lenis, registry, lifecycle, transitions, dom, anim
@@ -102,6 +104,32 @@ tools/gpx-to-geojson.mjs      GPX → src/data/routes (node tools/gpx-to-geojson
 tools/make-clouds.mjs         tiras de nubes con alfa por ruido fractal (node tools/make-clouds.mjs)
 tools/make-cantos.mjs         máscaras de borde irregular para los cantos (node tools/make-cantos.mjs)
 ```
+
+Módulos de scroll añadidos en la Fase 03: `horizontal` (sección fijada que
+se recorre en horizontal, con `containerAnimation` para lo que hay dentro),
+`estratos` (la bajada en el tiempo), `arcText` (texto en media luna sobre el
+arco), `highlight` (líneas que se encienden), `carousel` (galería con
+inercia), `asfalto` (la secuencia de la palabra), `clouds`, `drift` y `vimeo`.
+
+## Rendimiento del scroll
+
+Lo más caro de la página es el mapa. Medido con una traza de Chromium (CPU
+×4) recorriendo la home con la rueda: fuera del mapa, los frames se mantienen
+por debajo de los 50 ms bajo esa penalización (≈ 12 ms reales); en el mapa,
+la creación y el render por frame dominan. Por eso el mapa:
+
+- se crea en un hueco de inactividad (`requestIdleCallback`) cuando la
+  sección se acerca, no en mitad de un gesto de scroll;
+- dibuja la ruta con `line-trim-offset` (un uniform) y no con un
+  `line-gradient` nuevo por frame (que regenera una textura);
+- mueve la cámara como mucho a 30 fps y solo si el progreso cambió;
+- activa el terreno 3D solo en equipos con margen (≥ 8 núcleos, ≥ 8 GB, sin
+  ahorro de datos) y limita el canvas a `devicePixelRatio` 1.5;
+- apaga las capas que no aportan (edificios, portales).
+
+ScrollTrigger va con `limitCallbacks` e `ignoreMobileResize`, y vuelve a
+medir cuando llegan las fuentes. Para repetir la medición:
+`node scratchpad/perf.mjs` (Playwright + CDP; ver el script).
 
 ## Medios en movimiento, sin vídeo
 

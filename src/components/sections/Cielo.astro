@@ -3,10 +3,12 @@
  * Cielo — escena 08a: el territorio desde el aire, a sangre, con nubes
  * que cruzan el cielo (tiras con alfa generadas en tools/make-clouds.mjs)
  * y se funden con el fondo de la página. Sustituye al vídeo aéreo de la
- * referencia hasta que haya dron.
+ * referencia hasta que haya dron. Sobre él, el vídeo de Izki de la
+ * Diputación (Vimeo), que solo se carga al pulsar (ui/Vimeo.astro).
  * IMAGEN: Peña del Castillo, Izki (Wikimedia Commons, provisional).
  */
 import { Picture } from 'astro:assets';
+import Vimeo from '@/components/ui/Vimeo.astro';
 import { home } from '@/content/home';
 import land from '@/assets/photos/hero-cielo-abierto.jpg';
 import nubes1 from '@/assets/decor/nubes-1.png';
@@ -15,19 +17,21 @@ const { cielo } = home;
 ---
 <section class="section theme-light cielo" data-bg="light" data-theme-trigger data-clouds aria-label={cielo.caption}>
   <div class="cielo__frame" data-reveal="slide" data-reveal-start="top 80%">
-    <div class="cielo__img" data-parallax="w">
-      <div data-parallax="img">
-        <Picture src={land} formats={['avif', 'webp']} widths={[800, 1200, 1600, 2000, 2400]} sizes="100vw" alt={cielo.alt} loading="lazy" />
+    <Vimeo id={cielo.video.id} hash={cielo.video.hash} title={cielo.video.title} lines={cielo.video.play} class="cielo__video">
+      <div class="cielo__img" data-parallax="w">
+        <div data-parallax="img">
+          <Picture src={land} formats={['avif', 'webp']} widths={[800, 1200, 1600, 2000, 2400]} sizes="100vw" alt={cielo.alt} loading="lazy" />
+        </div>
       </div>
-    </div>
-    <div class="cielo__clouds cielo__clouds--far" data-cloud="0.55" aria-hidden="true">
-      <img src={nubes2.src} width={nubes2.width} height={nubes2.height} alt="" loading="lazy" decoding="async" />
-      <img src={nubes2.src} width={nubes2.width} height={nubes2.height} alt="" loading="lazy" decoding="async" />
-    </div>
-    <div class="cielo__clouds cielo__clouds--near" data-cloud="1" aria-hidden="true">
-      <img src={nubes1.src} width={nubes1.width} height={nubes1.height} alt="" loading="lazy" decoding="async" />
-      <img src={nubes1.src} width={nubes1.width} height={nubes1.height} alt="" loading="lazy" decoding="async" />
-    </div>
+      <div class="cielo__clouds cielo__clouds--far" data-cloud="0.55" aria-hidden="true">
+        <img src={nubes2.src} width={nubes2.width} height={nubes2.height} alt="" loading="lazy" decoding="async" />
+        <img src={nubes2.src} width={nubes2.width} height={nubes2.height} alt="" loading="lazy" decoding="async" />
+      </div>
+      <div class="cielo__clouds cielo__clouds--near" data-cloud="1" aria-hidden="true">
+        <img src={nubes1.src} width={nubes1.width} height={nubes1.height} alt="" loading="lazy" decoding="async" />
+        <img src={nubes1.src} width={nubes1.width} height={nubes1.height} alt="" loading="lazy" decoding="async" />
+      </div>
+    </Vimeo>
   </div>
   <p class="cielo__caption l2 t-muted" data-reveal="p">{cielo.caption}</p>
 </section>
@@ -43,6 +47,10 @@ const { cielo } = home;
       height: var(--vh-real);
       overflow: hidden;
       background: var(--bg);
+    }
+    .cielo__video {
+      position: absolute;
+      inset: 0;
     }
     .cielo__img {
       position: absolute;

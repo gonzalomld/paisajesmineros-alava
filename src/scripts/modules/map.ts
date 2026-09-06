@@ -2,15 +2,23 @@
  * map.ts — data-map: el mapa vivo.
  *
  * Un mapa Mapbox a sangre, fijado en pantalla durante tres alturas de
- * scroll. La ruta se dibuja con el scroll (line-gradient sobre
- * line-progress), un punto avanza por la cabeza del trazado y la cámara lo
+ * scroll. La ruta se dibuja con el scroll (line-trim-offset), un punto
+ * avanza por la cabeza del trazado y la cámara lo
  * sigue con inclinación y un giro lento. El conmutador (data-tabs) cambia
  * de ruta y reinicia el dibujo. Los datos viajan en un <script type=
  * "application/json" data-map-data> dentro de la sección.
  *
  * Mapbox GL se importa en diferido cuando la sección está a una pantalla
- * de distancia: hasta entonces no cuesta ni un byte ni una carga de mapa.
- * Su CSS es un subconjunto propio en la capa vendor (styles/mapbox.css).
+ * de distancia y se crea en un hueco de inactividad, para no robar frames
+ * al scroll. Su CSS es un subconjunto propio en la capa vendor.
+ *
+ * Rendimiento (el mapa es lo más caro de la página):
+ * · la ruta se dibuja con line-trim-offset (un uniform) y no con un
+ *   line-gradient nuevo por frame (que regenera una textura);
+ * · la cámara se mueve como mucho a 30 fps y solo si el progreso cambió;
+ * · el terreno 3D solo en equipos con margen (núcleos, memoria, sin
+ *   ahorro de datos) y el canvas a un devicePixelRatio máximo de 1.5;
+ * · capas que no aportan (edificios, números de portal…) se apagan.
  */
 import type { Map as MapboxMap, Marker, LngLatLike } from 'mapbox-gl';
 import '../../styles/mapbox.css';
@@ -82,6 +90,10 @@ function restyle(map: MapboxMap): void {
           map.setPaintProperty(id, 'background-color', INK);
           break;
         case 'fill':
+          if (/building|structure|housenum/.test(id)) {
+            map.setLayoutProperty(id, 'visibility', 'none');
+            break;
+          }
           if (/water/.test(id)) map.setPaintProperty(id, 'fill-color', WATER);
           else if (/park|landcover|landuse|national|wetland|wood|forest/.test(id)) map.setPaintProperty(id, 'fill-color', LAND_SOFT);
           else if (/building/.test(id)) map.setPaintProperty(id, 'fill-color', LAND);
@@ -155,6 +167,9 @@ export default defineModule({
     let progress = 0;
     let frame = 0;
     let destroyed = false;
+    let lastRendered = -1;
+    let lastTime = 0;
+    const FRAME_MS = 33; // 30 fps de cámara como máximo
     const reduced = ctx.reducedMotion;
     const zoom = ctx.isMobile ? 12.6 : 13.3;
 
@@ -167,13 +182,13 @@ export default defineModule({
       const meters = total() * p;
       const at = pointAt(route, meters);
       if (map?.getLayer('route-line')) {
-        const stop = Math.min(0.9999, Math.max(0.0001, p));
-        map.setPaintProperty('route-line', 'line-gradient', ['step', ['line-progress'], SKY, stop, 'rgba(181,206,219,0)']);
+        map.setPaintProperty('route-line', 'line-trim-offset', [Math.min(1, Math.max(0, p)), 1]);
       }
       headMarker?.setLngLat(at as LngLatLike);
       if (map && !reduced) {
         map.jumpTo({ center: at as LngLatLike, zoom, pitch: 52, bearing: -18 + p * 46 });
       }
+      lastRendered = p;
       el.classList.toggle('is-moving', p > 0.06);
       for (const clip of profileClips) clip.style.clipPath = `inset(0 ${(1 - p) * 100}% 0 0)`;
       if (kmOut) kmOut.textContent = (meters / 1000).toFixed(1).replace('.', ',');
@@ -188,7 +203,20 @@ export default defineModule({
       }
     };
     const schedule = (): void => {
-      if (!frame) frame = window.requestAnimationFrame(render);
+      if (frame) return;
+      frame = window.requestAnimationFrame((t) => {
+        if (Math.abs(progress - lastRendered) < 0.0008 && lastRendered >= 0) {
+          frame = 0;
+          return;
+        }
+        if (t - lastTime < FRAME_MS) {
+          frame = 0;
+          window.setTimeout(schedule, FRAME_MS - (t - lastTime));
+          return;
+        }
+        lastTime = t;
+        render();
+      });
     };
 
     /* ---- fuente de la ruta ---- */
@@ -203,33 +231,57 @@ export default defineModule({
     };
 
     /* ---- creación en diferido ---- */
+    const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
+    const capable =
+      !ctx.isMobile &&
+      (nav.hardwareConcurrency ?? 4) >= 8 &&
+      (nav.deviceMemory ?? 8) >= 8 &&
+      !nav.connection?.saveData;
+
     const create = async (): Promise<void> => {
       const mapboxgl = (await import('mapbox-gl')).default;
       if (destroyed) return;
       mapboxgl.accessToken = data.token;
-      map = new mapboxgl.Map({
-        container: canvas,
-        style: data.style,
-        center: pointAt(route, 0) as LngLatLike,
-        zoom: reduced ? 12 : zoom,
-        pitch: reduced ? 0 : 52,
-        bearing: reduced ? 0 : -18,
-        interactive: false,
-        attributionControl: false,
-        logoPosition: 'bottom-right',
-        antialias: false,
-        fadeDuration: 0,
-        language: 'es',
-      });
+      /* Mapbox lee window.devicePixelRatio al crear el canvas: se limita a
+         1.5 durante la creación (en pantallas 2x son la mitad de píxeles). */
+      const realDpr = window.devicePixelRatio;
+      const cappedDpr = Math.min(realDpr, 1.5);
+      if (cappedDpr !== realDpr) {
+        Object.defineProperty(window, 'devicePixelRatio', { configurable: true, get: () => cappedDpr });
+      }
+      try {
+        map = new mapboxgl.Map({
+          container: canvas,
+          style: data.style,
+          center: pointAt(route, 0) as LngLatLike,
+          zoom: reduced ? 12 : zoom,
+          pitch: reduced ? 0 : 52,
+          bearing: reduced ? 0 : -18,
+          interactive: false,
+          attributionControl: false,
+          logoPosition: 'bottom-right',
+          antialias: false,
+          fadeDuration: 0,
+          language: 'es',
+          renderWorldCopies: false,
+          crossSourceCollisions: false,
+          maxTileCacheSize: 60,
+          performanceMetricsCollection: false,
+        });
+      } finally {
+        if (cappedDpr !== realDpr) {
+          Object.defineProperty(window, 'devicePixelRatio', { configurable: true, get: () => realDpr });
+        }
+      }
       /* Atribución siempre desplegada (sin el botón del modo compacto). */
       map.addControl(new mapboxgl.AttributionControl({ compact: false }), 'bottom-right');
       map.on('load', () => {
         if (!map || destroyed) return;
         map.resize();
         restyle(map);
-        if (!ctx.isMobile && !reduced) {
-          map.addSource('dem', { type: 'raster-dem', url: 'mapbox://mapbox.mapbox-terrain-dem-v1', tileSize: 512, maxzoom: 14 });
-          map.setTerrain({ source: 'dem', exaggeration: 1.35 });
+        if (capable && !reduced) {
+          map.addSource('dem', { type: 'raster-dem', url: 'mapbox://mapbox.mapbox-terrain-dem-v1', tileSize: 512, maxzoom: 12 });
+          map.setTerrain({ source: 'dem', exaggeration: 1.3 });
         }
         map.addSource('route', {
           type: 'geojson',
@@ -248,7 +300,7 @@ export default defineModule({
           type: 'line',
           source: 'route',
           layout: { 'line-cap': 'round', 'line-join': 'round' },
-          paint: { 'line-width': 3, 'line-gradient': ['step', ['line-progress'], SKY, 0.0001, 'rgba(181,206,219,0)'] },
+          paint: { 'line-width': 3, 'line-color': SKY, 'line-trim-offset': [0, 1] },
         });
         /* POIs: el mismo marcador del hero */
         markers = data.pois.map((poi) => {
@@ -267,14 +319,21 @@ export default defineModule({
     };
 
     /* Crea el mapa cuando la sección se acerca (una pantalla). */
+    const idle = (fn: () => void): void => {
+      const ric = (window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number }).requestIdleCallback;
+      if (ric) ric(fn, { timeout: 1500 });
+      else window.setTimeout(fn, 200);
+    };
     const io = new IntersectionObserver(
       ([entry]) => {
         if (entry?.isIntersecting) {
           io.disconnect();
-          void create();
+          idle(() => {
+            if (!destroyed) void create();
+          });
         }
       },
-      { rootMargin: '100% 0px' },
+      { rootMargin: '120% 0px' },
     );
     io.observe(el);
 

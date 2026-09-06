@@ -1,0 +1,255 @@
+---
+/**
+ * Estratos — escena 10: la bajada. Un número enorme retrocede en el tiempo
+ * mientras bajas, con el índice de paradas a la derecha y la nota de cada
+ * una; el fondo se oscurece con la profundidad y las líneas de estrato
+ * suben a contracorriente (estratos.ts). Sustituye a las cifras: los
+ * mismos datos, contados como un descenso.
+ */
+import ArchMask from '@/components/ui/ArchMask.astro';
+import { home } from '@/content/home';
+const { estratos } = home;
+const stops = estratos.stops;
+---
+<section class="section theme-dark estratos" data-bg="dark" data-theme-trigger data-arch data-estratos aria-labelledby="estratos-title">
+  <ArchMask />
+  <div class="estratos__stage" data-estratos-stage>
+    <div class="estratos__lines" aria-hidden="true">
+      {Array.from({ length: 7 }).map((_, i) => <span class="estratos__line" style={`--i:${i}`} data-estratos-line />)}
+    </div>
+    <div class="estratos__center">
+      <p class="l2 estratos__eyebrow">{estratos.eyebrow}</p>
+      <p class="l1 estratos__label"><span data-estratos-prefix>Año</span> · <span data-estratos-label>{stops[0]?.label}</span></p>
+      <h2 id="estratos-title" class="estratos__value"><span data-estratos-value>{stops[0]?.value}</span></h2>
+      <p class="l2 estratos__suffix" data-estratos-suffix aria-hidden="true"></p>
+      <p class="p1 estratos__note" data-estratos-note>{stops[0]?.note}</p>
+      <p class="l2 estratos__hint" aria-hidden="true"><span class="estratos__arrow">▼</span> {estratos.hint}</p>
+    </div>
+    <ol class="estratos__index" aria-label="Paradas del descenso">
+      {
+        stops.map((s, i) => (
+          <li class={`estratos__stop l2 ${i === 0 ? 'is-active' : ''}`} data-estratos-stop>
+            <span class="estratos__stop-label">{s.label}</span>
+            <span class="estratos__stop-value">{s.unit === 'year' ? s.value : `hace ${s.value} M`}</span>
+            <span class="estratos__dot" aria-hidden="true" />
+          </li>
+        ))
+      }
+    </ol>
+    <p class="l2 estratos__count" aria-hidden="true"><span data-estratos-count>01 / {String(stops.length).padStart(2, '0')}</span></p>
+    <span class="estratos__depth" aria-hidden="true"><span data-estratos-depth></span></span>
+  </div>
+  <script is:inline type="application/json" data-estratos-data set:html={JSON.stringify(stops)} />
+</section>
+
+<style>
+  @layer components {
+    .estratos {
+      color: var(--fg);
+    }
+    .estratos__stage {
+      position: relative;
+      height: var(--vh-real);
+      overflow: hidden;
+    }
+    .estratos__lines {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .estratos__line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + var(--i) * 55%);
+      height: 1px;
+      background: rgb(var(--fg-rgb) / calc(0.06 + var(--i) * 0.015));
+      will-change: transform;
+    }
+    .estratos__center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding-inline: var(--margin);
+    }
+    .estratos__eyebrow {
+      position: absolute;
+      top: var(--sp-144);
+      color: var(--fg-muted);
+    }
+    .estratos__label {
+      color: var(--fg-muted);
+      margin-bottom: var(--sp-8);
+    }
+    .estratos__value {
+      margin: 0;
+      font-family: var(--font-display);
+      font-variation-settings: 'opsz' var(--font-display-opsz);
+      font-weight: 400;
+      font-size: calc(300 * var(--u));
+      line-height: 0.9;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .estratos__suffix {
+      min-height: var(--lh-l2);
+      margin-top: var(--sp-8);
+      color: var(--fg-muted);
+    }
+    .estratos__note {
+      max-width: 40ch;
+      margin-top: var(--sp-24);
+      color: var(--fg-muted);
+    }
+    .estratos__hint {
+      position: absolute;
+      bottom: var(--sp-64);
+      color: var(--fg-muted);
+    }
+    .estratos__arrow {
+      display: inline-block;
+      font-size: 0.7em;
+      animation: estratos-bob 2.4s var(--ease-era) infinite;
+    }
+    @keyframes estratos-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(0.35em); }
+    }
+    .estratos__index {
+      position: absolute;
+      right: var(--margin);
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-12);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      text-align: right;
+    }
+    .estratos__stop {
+      display: grid;
+      grid-template-columns: auto auto var(--sp-12);
+      align-items: center;
+      column-gap: var(--sp-12);
+      color: var(--fg-muted);
+      transition: color var(--d-micro) var(--ease-era);
+    }
+    .estratos__stop-value {
+      font-variant-numeric: tabular-nums;
+      color: rgb(var(--fg-rgb) / 0.35);
+      transition: color var(--d-micro) var(--ease-era);
+    }
+    .estratos__dot {
+      position: relative;
+      width: var(--sp-8);
+      height: var(--sp-8);
+      border-radius: 50%;
+      background: rgb(var(--fg-rgb) / 0.3);
+      transition: background-color var(--d-micro) var(--ease-era), transform var(--d-micro) var(--ease-era);
+    }
+    .estratos__dot::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      width: 1px;
+      height: var(--sp-12);
+      background: rgb(var(--fg-rgb) / 0.15);
+    }
+    .estratos__stop:last-child .estratos__dot::after {
+      display: none;
+    }
+    .estratos__stop.is-active {
+      color: var(--c-sky);
+    }
+    .estratos__stop.is-active .estratos__stop-value {
+      color: var(--c-sky);
+    }
+    .estratos__stop.is-active .estratos__dot {
+      background: var(--c-sky);
+      transform: scale(1.5);
+    }
+    .estratos__stop.is-past {
+      color: var(--fg);
+    }
+    .estratos__count {
+      position: absolute;
+      left: var(--margin);
+      bottom: var(--sp-64);
+      color: var(--fg-muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .estratos__depth {
+      position: absolute;
+      left: var(--margin);
+      top: var(--sp-144);
+      bottom: var(--sp-144);
+      width: 1px;
+      background: rgb(var(--fg-rgb) / 0.12);
+    }
+    .estratos__depth > span {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: var(--c-sky);
+      transform: scaleY(0);
+      transform-origin: top center;
+    }
+    @media (max-width: 991px) {
+      .estratos__eyebrow {
+        top: var(--sp-96);
+        padding-inline: var(--margin);
+      }
+      .estratos__value {
+        font-size: calc(120 * var(--u));
+      }
+      .estratos__note {
+        font-size: var(--fs-p2);
+        line-height: var(--lh-p2);
+        max-width: 30ch;
+      }
+      .estratos__index {
+        right: auto;
+        left: var(--margin);
+        top: auto;
+        bottom: var(--sp-96);
+        transform: none;
+        gap: var(--sp-6);
+        text-align: left;
+      }
+      .estratos__stop {
+        grid-template-columns: var(--sp-8) auto auto;
+      }
+      .estratos__stop-label {
+        order: 2;
+      }
+      .estratos__stop-value {
+        order: 3;
+      }
+      .estratos__dot {
+        order: 1;
+      }
+      .estratos__dot::after {
+        display: none;
+      }
+      .estratos__hint {
+        bottom: var(--sp-40);
+        left: var(--margin);
+        right: auto;
+      }
+      .estratos__count {
+        display: none;
+      }
+      .estratos__depth {
+        display: none;
+      }
+    }
+  }
+</style>

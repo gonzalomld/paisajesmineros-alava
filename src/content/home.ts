@@ -23,7 +23,7 @@ export interface Experiencia {
 
 export const home = {
   puertas: {
-    ring: 'Tres puertas al asfalto · ',
+    arc: 'Tres puertas al asfalto',
     eyebrow: 'Un centro, una mina, una ruta',
     items: [
       {
@@ -90,6 +90,8 @@ export const home = {
 
   experiencias: {
     eyebrow: 'Planifica',
+    intro: 'Un centro, una mina y una ruta: tres maneras de entrar en la montaña.',
+    hint: 'Sigue bajando para recorrerlas',
     items: [
       {
         id: 'asfaltokia',
@@ -130,6 +132,8 @@ export const home = {
   cielo: {
     caption: 'Montaña Alavesa · Parque Natural de Izki',
     alt: 'Peña del Castillo sobre los bosques del Parque Natural de Izki, bajo un cielo con nubes',
+    /* Vídeo de Vimeo: «Parque Natural de Izki», Arabako Foru Aldundia (1 min 29 s). */
+    video: { id: '1012453058', hash: '50956c9266', title: 'Parque Natural de Izki, vídeo de la Diputación Foral de Álava', play: ['Ver', 'el vídeo'] },
   },
 
   galeria: {
@@ -158,9 +162,34 @@ export const home = {
     credit: 'Mina Lucía · Atauri · Fotografía de Quintas',
   },
 
-  cifras: {
-    statement: 'Desde 1855 se extrajo aquí asfalto natural. Hoy, 39 kilómetros de ruta unen tres centros de interpretación y una estación de 1928.',
-    items: ['1855 · Primera explotación, en Loza', '1872 · Se abre Mina Lucía', '1928 · Estación de Atauri', '39 km · La ruta'],
+  estratos: {
+    eyebrow: 'Cuanto más bajas, más atrás en el tiempo',
+    display: 'Sigue bajando',
+    hint: 'Sigue bajando',
+    /* unit: year (año) · ma (millones de años, en negativo = hacia atrás) */
+    stops: [
+      { label: 'Hoy', value: 2026, unit: 'year', note: 'Asfaltokia abre sus puertas en la antigua estación de Atauri.' },
+      { label: 'La estación', value: 1928, unit: 'year', note: 'El ferrocarril Vasco-Navarro llega a Atauri. El trenico une Vitoria con Estella.' },
+      { label: 'Mina Lucía', value: 1872, unit: 'year', note: 'Se abre la mina que hoy se visita con casco, siglo y medio después.' },
+      { label: 'Loza', value: 1855, unit: 'year', note: 'Primera explotación de asfalto natural en la comarca.' },
+      { label: 'Las calizas', value: 100, unit: 'ma', note: 'Cretácico. Bajo un mar poco profundo se forman las rocas que hoy guardan el asfalto.' },
+      { label: 'El diapiro', value: 200, unit: 'ma', note: 'Triásico. Las sales que, millones de años después, empujarán hacia la superficie y dejarán el asfalto en su borde.' },
+    ],
+  } as const,
+
+  queVeras: {
+    eyebrow: 'En la visita',
+    items: ['Galerías entibadas de 1872', 'Vetas de asfalto en la roca', 'El diapiro de Maeztu, explicado', 'La estación de 1928, por dentro', 'Un vuelo virtual sobre Izki'],
+    quote: 'Tres turnos cada sábado y domingo, con reserva previa.',
+    cta: { label: 'Reservar en el 945 405 424', href: 'tel:+34945405424' },
+  },
+
+  miradores: {
+    display: 'Tres miradores',
+    script: 'sobre Izki',
+    text: 'Desde la última planta de la estación, el Parque Natural de Izki se abre en tres ventanas: el robledal, el diapiro y la vía verde.',
+    cta: { label: 'Planifica tu visita', href: '/contacto' },
+    alt: 'Mirador sobre los bosques del Parque Natural de Izki',
   },
 
   arco: {

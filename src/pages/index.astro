@@ -15,11 +15,13 @@ import Llegar from '@/components/sections/Llegar.astro';
 import Cielo from '@/components/sections/Cielo.astro';
 import MapaVivo from '@/components/sections/MapaVivo.astro';
 import Experiencias from '@/components/sections/Experiencias.astro';
-import Cifras from '@/components/sections/Cifras.astro';
+import Estratos from '@/components/sections/Estratos.astro';
+import QueVeras from '@/components/sections/QueVeras.astro';
 import ArcoTexto from '@/components/sections/ArcoTexto.astro';
 import Estacion from '@/components/sections/Estacion.astro';
 import Galeria from '@/components/sections/Galeria.astro';
 import Asfalto from '@/components/sections/Asfalto.astro';
+import Miradores from '@/components/sections/Miradores.astro';
 import Cierre from '@/components/sections/Cierre.astro';
 import { site } from '@/content/site';
 import dayImg from '@/assets/photos/hero-cielo-abierto.jpg';
@@ -43,10 +45,12 @@ const imagesrcset = preload.map((img) => `${img.src} ${img.attributes.width}w`).
   <Cielo />
   <MapaVivo />
   <Experiencias />
-  <Cifras />
+  <Estratos />
+  <QueVeras />
   <ArcoTexto />
   <Estacion />
   <Galeria />
   <Asfalto />
+  <Miradores />
   <Cierre />
 </Base>

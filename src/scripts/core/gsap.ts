@@ -13,6 +13,10 @@ import { InertiaPlugin } from 'gsap/InertiaPlugin';
 
 gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase, DrawSVGPlugin, Draggable, InertiaPlugin);
 
+/* Menos trabajo por frame: callbacks solo en cambios relevantes y sin
+   refresh por el resize de la barra de direcciones en móvil. */
+ScrollTrigger.config({ limitCallbacks: true, ignoreMobileResize: true });
+
 /* Las mismas curvas que --ease-era / --ease-era-out en tokens.css */
 CustomEase.create('era', '0.65, 0, 0.35, 1');
 CustomEase.create('eraOut', '0.16, 1, 0.3, 1');

@@ -1,9 +1,11 @@
 ---
 /**
- * Experiencias — escena 09: slider con los datos prácticos de cada
- * experiencia (dónde, cuándo, cómo reservar) y su llamada a la acción.
- * IMÁGENES: exposición del centro (asfaltokia.eus, provisional), grupo
- * en galería y camino con casco (Quintas, definitivas).
+ * Experiencias — escena 09: la sección que, fijada, se recorre en
+ * horizontal con el scroll vertical (horizontal.ts). Un panel de entrada
+ * y tres paneles con los datos prácticos de cada experiencia y su llamada
+ * a la acción. Es la escena que convierte.
+ * IMÁGENES: estación (asfaltokia.eus, provisional), grupo en galería y
+ * camino con casco (Quintas, definitivas).
  */
 import { Image } from 'astro:assets';
 import ButtonPill from '@/components/ui/ButtonPill.astro';
@@ -17,85 +19,164 @@ const images = {
   mina: { src: imgMina, alt: 'Grupo de visitantes con casco en una galería de Mina Lucía' },
   ruta: { src: imgRuta, alt: 'Visitantes recorriendo el camino hacia Mina Lucía con el casco en la mano' },
 } as const;
-const { items } = home.experiencias;
+const { items, eyebrow, intro, hint } = home.experiencias;
 ---
-<section class="section theme-light experiencias" data-bg="light" data-theme-trigger aria-labelledby="experiencias-title">
-  <div class="container">
-    <p id="experiencias-title" class="l2 t-muted" data-reveal="p">{home.experiencias.eyebrow}</p>
-    <div class="slider experiencias__slider" data-slider data-slider-auto="8">
-      <div class="slider__stack">
-        {
-          items.map((item, i) => (
-            <article class="slide" data-slide aria-roledescription="diapositiva" aria-label={`${i + 1} de ${items.length}`}>
-              <h3 class="h2 experiencias__title"><span data-part="h" set:html={item.display.join('<br />')} /></h3>
-              <div class="grid experiencias__grid">
-                <dl class="col-3 specs experiencias__specs" data-part="p">
-                  {item.specs.map(([k, v]) => (
-                    <div><dt class="l2">{k}</dt><dd class="p1">{v}</dd></div>
-                  ))}
-                </dl>
-                <figure class="col-3 start-4 slide__figure experiencias__figure" data-part="slide">
-                  <div><Image src={images[item.id as keyof typeof images].src} alt={images[item.id as keyof typeof images].alt} widths={[480, 800, 1200]} sizes="(max-width: 991px) 100vw, 26vw" /></div>
-                </figure>
-                <div class="col-3 start-8 experiencias__body">
-                  <p class="p1" data-part="line">{item.text}</p>
-                  <div data-part="p"><ButtonPill label={item.cta.label} href={item.cta.href} /></div>
-                </div>
+<section class="section theme-light experiencias" data-bg="light" data-theme-trigger data-horizontal aria-labelledby="experiencias-title">
+  <div class="experiencias__screen" data-horizontal-screen>
+    <div class="experiencias__track" data-horizontal-track>
+      <div class="experiencias__panel experiencias__panel--intro">
+        <p class="l2 t-muted" data-hreveal>{eyebrow}</p>
+        <h2 id="experiencias-title" class="h3 experiencias__intro" data-hreveal>{intro}</h2>
+        <p class="l2 t-muted experiencias__hint" data-hreveal>{hint} <span aria-hidden="true">→</span></p>
+      </div>
+      {
+        items.map((item, i) => (
+          <article class="experiencias__panel" aria-label={`${i + 1} de ${items.length}`}>
+            <figure class="experiencias__figure" data-hreveal>
+              <div data-horizontal-parallax>
+                <Image src={images[item.id as keyof typeof images].src} alt={images[item.id as keyof typeof images].alt} widths={[600, 1000, 1400]} sizes="(max-width: 991px) 88vw, 32vw" loading="lazy" />
               </div>
-            </article>
-          ))
-        }
-      </div>
-      <div class="slider__nav">
-        <button class="slider__btn" type="button" data-slider-prev aria-label="Anterior">
-          <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M11 6H1M5 1 1 6l4 5" fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke"></path></svg>
-        </button>
-        <span class="slider__count l2" aria-live="polite"><span data-slider-current>01</span> / <span data-slider-total>03</span></span>
-        <span class="slider__progress" aria-hidden="true"><span data-slider-progress></span></span>
-        <button class="slider__btn" type="button" data-slider-next aria-label="Siguiente">
-          <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6h10M7 1l4 5-4 5" fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke"></path></svg>
-        </button>
-      </div>
+            </figure>
+            <div class="experiencias__body">
+              <span class="c1 experiencias__num" data-hreveal>{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="h2 experiencias__title" data-hreveal set:html={item.display.join('<br />')} />
+              <dl class="specs experiencias__specs" data-hreveal>
+                {item.specs.map(([k, v]) => (
+                  <div><dt class="l2">{k}</dt><dd class="p1">{v}</dd></div>
+                ))}
+              </dl>
+              <p class="p1 experiencias__text" data-hreveal>{item.text}</p>
+              <div data-hreveal><ButtonPill label={item.cta.label} href={item.cta.href} /></div>
+            </div>
+          </article>
+        ))
+      }
     </div>
   </div>
 </section>
 
 <style>
   @layer components {
-    .experiencias {
-      padding-block: var(--sp-160);
-    }
-    .experiencias__slider {
-      margin-top: var(--sp-24);
-    }
-    .experiencias__title {
+    .experiencias__screen {
+      height: var(--vh-real);
       overflow: hidden;
-      margin-bottom: var(--sp-64);
     }
-    .experiencias__grid {
-      row-gap: var(--sp-40);
-      align-items: start;
+    .experiencias__track {
+      display: flex;
+      align-items: center;
+      gap: calc(var(--col) * 1 + var(--gap) * 2);
+      width: max-content;
+      height: 100%;
+      padding-inline: var(--margin) calc(var(--margin) * 2);
+      will-change: transform;
+    }
+    .experiencias__panel {
+      flex: none;
+      width: calc(var(--col) * 7 + var(--gap) * 6);
+      display: grid;
+      grid-template-columns: calc(var(--col) * 3 + var(--gap) * 2) 1fr;
+      column-gap: var(--gap);
+      align-items: center;
+    }
+    .experiencias__panel--intro {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: var(--sp-24);
+      width: calc(var(--col) * 5 + var(--gap) * 4);
+    }
+    .experiencias__hint {
+      margin-top: var(--sp-48);
     }
     .experiencias__figure {
+      margin: 0;
+      overflow: hidden;
       aspect-ratio: 4 / 5;
+      max-height: calc(var(--vh-real) - var(--sp-192));
+    }
+    .experiencias__figure > div {
+      width: 116%;
+      height: 100%;
+      margin-left: -8%;
+    }
+    .experiencias__figure :global(img) {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
     .experiencias__body {
       display: flex;
       flex-direction: column;
-      gap: var(--sp-32);
-      padding-top: var(--sp-8);
+      align-items: flex-start;
+      gap: var(--sp-24);
+      padding-left: var(--sp-16);
+    }
+    .experiencias__num {
+      color: var(--fg-muted);
+    }
+    .experiencias__title {
+      font-size: calc(88 * var(--u));
+    }
+    .experiencias__intro {
+      font-size: calc(64 * var(--u));
+      line-height: 1;
+    }
+    .experiencias__text {
+      max-width: 36ch;
+      color: var(--fg-muted);
+    }
+    .experiencias__specs {
+      width: 100%;
+      max-width: calc(var(--col) * 3 + var(--gap) * 2);
+    }
+    /* reduced motion: sin pin, los paneles en columna */
+    .is-static .experiencias__screen {
+      height: auto;
+      overflow: visible;
+    }
+    .is-static .experiencias__track {
+      flex-direction: column;
+      align-items: stretch;
+      width: auto;
+      gap: var(--sp-120);
+      padding-block: var(--sp-120);
     }
     @media (max-width: 991px) {
-      .experiencias {
-        padding-block: var(--sp-120);
+      .experiencias__track {
+        gap: var(--sp-32);
+        padding-inline: var(--margin);
+        align-items: stretch;
+        padding-top: var(--sp-96);
       }
-      .experiencias__title {
-        font-size: calc(56 * var(--u));
-        margin-bottom: var(--sp-32);
+      .experiencias__panel,
+      .experiencias__panel--intro {
+        width: calc(var(--col) * 4 + var(--gap) * 3);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: var(--sp-16);
       }
       .experiencias__figure {
-        grid-column: 1 / -1;
-        aspect-ratio: 4 / 3;
+        width: 100%;
+        aspect-ratio: 3 / 2;
+        max-height: 34vh;
+      }
+      .experiencias__body {
+        gap: var(--sp-12);
+        padding-left: 0;
+      }
+      .experiencias__title {
+        font-size: calc(52 * var(--u));
+      }
+      .experiencias__intro {
+        font-size: calc(40 * var(--u));
+      }
+      .experiencias__text {
+        font-size: var(--fs-p2);
+        line-height: var(--lh-p2);
+      }
+      .experiencias__hint {
+        margin-top: var(--sp-24);
       }
     }
   }

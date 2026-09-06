@@ -1,6 +1,6 @@
 ---
 /**
- * Puertas — escenas 02 y 03: el arco de sección con el texto circular
+ * Puertas — escenas 02 y 03: el arco de sección con el texto en media luna
  * alrededor del símbolo y, debajo, el slider de las tres puertas
  * (Asfaltokia, Mina Lucía, la ruta).
  * IMÁGENES: la de Asfaltokia es la foto histórica de la estación de
@@ -20,26 +20,28 @@ const images = {
   mina: { src: imgMina, alt: 'Visitantes con casco ante una veta de asfalto en Mina Lucía' },
   ruta: { src: imgRuta, alt: 'El trenico recreado en Antoñana, sede del Centro del Ferrocarril Vasco-Navarro' },
 } as const;
-const ring = home.puertas.ring.toUpperCase();
 const { items } = home.puertas;
 ---
 <section class="section theme-sky puertas" data-bg="sky" data-theme-trigger data-arch aria-labelledby="puertas-title">
   <ArchMask />
   <div class="container">
-    <div class="puertas__ring" data-circle-text="70">
-      <svg viewBox="0 0 400 400" aria-hidden="true" focusable="false">
+    <div class="puertas__arc" data-arc-text="1180">
+      <svg viewBox="0 0 1600 560" preserveAspectRatio="xMidYMin meet" aria-hidden="true" focusable="false">
         <defs>
-          <path id="puertas-circle" d="M200,200 m-152,0 a152,152 0 1,1 304,0 a152,152 0 1,1 -304,0"></path>
+          <path id="puertas-arc" d="M 800,900 m -760,0 a 760,760 0 1,1 1520,0 a 760,760 0 1,1 -1520,0"></path>
         </defs>
-        <g data-circle-ring>
-          <text class="puertas__ring-text">
-            <textPath href="#puertas-circle" textLength="955" lengthAdjust="spacing">{ring}{ring}</textPath>
-          </text>
-        </g>
+        <text class="puertas__arc-text" text-anchor="middle">
+          <textPath href="#puertas-arc" startOffset="25%" lengthAdjust="spacing" textLength="820">{home.puertas.arc}</textPath>
+        </text>
       </svg>
-      <span class="puertas__symbol brand-symbol" style={`--symbol: url(${symbol.src})`}></span>
-      <h2 id="puertas-title" class="sr-only">Tres puertas al asfalto</h2>
+      <h2 id="puertas-title" class="sr-only">{home.puertas.arc}</h2>
     </div>
+    <p class="puertas__lockup" data-reveal="p" data-reveal-start="top 45%" aria-hidden="true">
+      <span class="l1">Montaña</span>
+      <span class="puertas__symbol brand-symbol" style={`--symbol: url(${symbol.src})`}></span>
+      <span class="l1">Alavesa</span>
+    </p>
+    <span class="puertas__rule" data-reveal="ctn" data-reveal-start="top 45%" aria-hidden="true"></span>
 
     <p class="l2 t-muted t-center puertas__eyebrow" data-reveal="p">{home.puertas.eyebrow}</p>
 
@@ -86,32 +88,53 @@ const { items } = home.puertas;
     .puertas {
       padding-block: var(--sp-120) var(--sp-160);
     }
-    .puertas__ring {
-      position: relative;
-      width: calc(var(--col) * 3 + var(--gap) * 2);
-      margin: 0 auto;
-      color: var(--fg);
+    .puertas {
+      /* Flex: el margen negativo del arco de texto no se fusiona con la sección. */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    .puertas__ring svg {
+    /* La media luna vive sobre el borde de la sección, dentro del arco
+       que sube sobre el hero; arcText.ts la revela cuando el arco la envuelve. */
+    .puertas__arc {
+      position: relative;
+      width: calc(var(--col) * 10 + var(--gap) * 9);
+      margin: calc(var(--vh-real) * -0.46) auto 0;
+      color: var(--fg);
+      pointer-events: none;
+    }
+    .puertas__arc svg {
+      display: block;
       width: 100%;
       height: auto;
       overflow: visible;
     }
-    .puertas__ring-text {
+    .puertas__arc-text {
       font-family: var(--font-display);
-      font-variation-settings: 'opsz' 24;
-      font-size: 26px;
-      letter-spacing: 0.3em;
+      font-variation-settings: 'opsz' 96;
+      font-size: 64px; /* unidades del viewBox: escala con el ancho */
+      letter-spacing: 0.02em;
       text-transform: uppercase;
       fill: currentColor;
     }
+    .puertas__lockup {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--sp-24);
+      margin: calc(var(--sp-32) * -1) 0 0;
+    }
     .puertas__symbol {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: var(--sp-72);
-      height: var(--sp-72);
-      transform: translate(-50%, -50%);
+      width: var(--sp-48);
+      height: var(--sp-48);
+    }
+    .puertas__rule {
+      display: block;
+      width: 1px;
+      height: var(--sp-120);
+      margin: var(--sp-40) auto 0;
+      background: var(--line);
+      transform-origin: top center;
     }
     .puertas__eyebrow {
       margin-top: var(--sp-64);
@@ -142,12 +165,19 @@ const { items } = home.puertas;
       .puertas {
         padding-block: var(--sp-96) var(--sp-120);
       }
+      .puertas__arc {
+        width: 150%;
+        margin: calc(var(--vh-real) * -0.3) 0 0 -25%;
+      }
+      .puertas__arc-text {
+        font-size: 84px;
+      }
+      .puertas__rule {
+        height: var(--sp-64);
+      }
       /* «ASFALTOKIA» ocupa 6 em en Bodoni: a 56 cabe en 390 de ancho. */
       .puertas__title {
         font-size: calc(56 * var(--u));
-      }
-      .puertas__ring {
-        width: calc(var(--col) * 3 + var(--gap) * 2);
       }
       .puertas__figure {
         grid-column: 1 / span 2;

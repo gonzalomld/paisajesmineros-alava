@@ -1,0 +1,104 @@
+---
+/**
+ * Miradores — escena 17: texto grande sobre una imagen a sangre con la
+ * llamada a planificar la visita. El arco plum del cierre sube encima.
+ * IMAGEN: mirador de Izki (Wikimedia Commons, provisional).
+ */
+import { Picture } from 'astro:assets';
+import ButtonPill from '@/components/ui/ButtonPill.astro';
+import { home } from '@/content/home';
+import img from '@/assets/photos/izki-mirador.jpg';
+const { miradores } = home;
+---
+<section class="section theme-dark miradores" data-bg="dark" data-theme-trigger aria-labelledby="miradores-title">
+  <div class="miradores__bg" data-parallax="w" aria-hidden="true">
+    <div data-parallax="img">
+      <Picture src={img} formats={['avif', 'webp']} widths={[800, 1400, 2000, 2400]} sizes="100vw" alt="" loading="lazy" />
+    </div>
+  </div>
+  <div class="container miradores__inner">
+    <h2 id="miradores-title" class="miradores__lockup">
+      <span class="h1" data-reveal="h">{miradores.display}</span>
+      <span class="a1 miradores__script" data-reveal="p" data-reveal-delay="0.5" data-reveal-duration="0.6">{miradores.script}</span>
+    </h2>
+    <div class="miradores__foot">
+      <p class="p1 miradores__text" data-reveal="line">{miradores.text}</p>
+      <div data-reveal="p"><ButtonPill label={miradores.cta.label} href={miradores.cta.href} /></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  @layer components {
+    .miradores {
+      position: relative;
+      /* Más de una pantalla: el arco plum del cierre sube por encima y no
+         debe tapar el texto mientras aún se lee. */
+      min-height: calc(var(--vh-real) * 1.35);
+      display: flex;
+      align-items: flex-end;
+      padding-block: var(--sp-192) var(--sp-120);
+      color: var(--c-bone);
+      overflow: hidden;
+    }
+    .miradores__bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+    .miradores__bg :global(img) {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .miradores__bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgb(var(--c-ink-rgb) / 0.35), rgb(var(--c-ink-rgb) / 0.05) 45%, rgb(var(--c-ink-rgb) / 0.75));
+    }
+    .miradores__inner {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+    }
+    .miradores__lockup {
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+    }
+    .miradores__script {
+      margin-top: calc(var(--fs-a1) * -0.45);
+      margin-left: calc(var(--col) * 4);
+      color: var(--c-sky);
+    }
+    .miradores__foot {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: var(--sp-32);
+      margin-top: var(--sp-64);
+    }
+    .miradores__text {
+      max-width: 42ch;
+      color: rgb(var(--c-bone-rgb) / 0.8);
+    }
+    @media (max-width: 991px) {
+      .miradores {
+        padding-block: var(--sp-144) var(--sp-96);
+      }
+      /* «MIRADORES» no cabe a 96 en 390 de ancho. */
+      .miradores__lockup .h1 {
+        font-size: calc(64 * var(--u));
+      }
+      .miradores__script {
+        margin-left: var(--col);
+      }
+      .miradores__foot {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: var(--sp-40);
+      }
+    }
+  }
+</style>

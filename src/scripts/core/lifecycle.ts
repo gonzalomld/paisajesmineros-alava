@@ -35,6 +35,11 @@ import clouds from '../modules/clouds';
 import drift from '../modules/drift';
 import carousel from '../modules/carousel';
 import asfalto from '../modules/asfalto';
+import arcText from '../modules/arcText';
+import horizontal from '../modules/horizontal';
+import estratos from '../modules/estratos';
+import highlight from '../modules/highlight';
+import vimeo from '../modules/vimeo';
 
 const REVEAL_GUARD_MS = 5000;
 
@@ -75,6 +80,11 @@ function registerModules(): void {
   register('indexCounter', indexCounter);
   register('map', map);
   register('asfalto', asfalto);
+  register('horizontal', horizontal);
+  register('estratos', estratos);
+  register('arcText', arcText);
+  register('highlight', highlight);
+  register('vimeo', vimeo);
   register('clouds', clouds);
   register('drift', drift);
   register('carousel', carousel);

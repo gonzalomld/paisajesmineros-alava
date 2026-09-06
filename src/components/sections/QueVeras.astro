@@ -1,0 +1,135 @@
+---
+/**
+ * Qué verás — escena 11: cinco cosas que se ven en la visita, en display,
+ * sobre la foto del grupo en la galería a sangre. Cada línea se enciende
+ * al pasar por el centro de la pantalla (highlight.ts) o al pasar el ratón.
+ * IMAGEN: MinaLucia4 (definitiva).
+ */
+import { Picture } from 'astro:assets';
+import ButtonPill from '@/components/ui/ButtonPill.astro';
+import { home } from '@/content/home';
+import img from '@/assets/photos/mina-lucia-galeria.jpg';
+const { queVeras } = home;
+---
+<section class="section theme-dark queveras" data-bg="dark" data-theme-trigger aria-labelledby="queveras-title">
+  <div class="queveras__bg" data-parallax="w" aria-hidden="true">
+    <div data-parallax="img">
+      <Picture src={img} formats={['avif', 'webp']} widths={[800, 1400, 2000]} sizes="100vw" alt="" loading="lazy" />
+    </div>
+  </div>
+  <div class="container queveras__inner">
+    <p id="queveras-title" class="l2 queveras__eyebrow" data-reveal="p">{queVeras.eyebrow}</p>
+    <ol class="queveras__list" data-highlight>
+      {
+        queVeras.items.map((item, i) => (
+          <li class="queveras__item h3" data-highlight-item data-reveal="h" data-reveal-delay={String(i * 0.06)}>
+            <span class="queveras__num l2">{String(i + 1).padStart(2, '0')}</span>
+            {item}
+          </li>
+        ))
+      }
+    </ol>
+    <div class="queveras__foot" data-reveal="p">
+      <p class="p1 queveras__quote">{queVeras.quote}</p>
+      <ButtonPill label={queVeras.cta.label} href={queVeras.cta.href} />
+    </div>
+  </div>
+</section>
+
+<style>
+  @layer components {
+    .queveras {
+      position: relative;
+      min-height: var(--vh-real);
+      padding-block: var(--sp-192) var(--sp-120);
+      color: var(--c-bone);
+      overflow: hidden;
+    }
+    .queveras__bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+    .queveras__bg :global(img) {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.55) saturate(0.85);
+    }
+    .queveras__bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgb(var(--c-ink-rgb) / 0.55), rgb(var(--c-ink-rgb) / 0.15) 40%, rgb(var(--c-ink-rgb) / 0.7));
+    }
+    .queveras__inner {
+      position: relative;
+      z-index: 1;
+    }
+    .queveras__eyebrow {
+      color: rgb(var(--c-bone-rgb) / 0.62);
+      margin-bottom: var(--sp-48);
+    }
+    .queveras__list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .queveras__item {
+      position: relative;
+      padding: var(--sp-20) 0 var(--sp-20) var(--sp-72);
+      border-top: var(--hairline) solid rgb(var(--c-bone-rgb) / 0.18);
+      color: rgb(var(--c-bone-rgb) / 0.3);
+      transition: color var(--d-el) var(--ease-era), padding-left var(--d-el) var(--ease-era);
+      cursor: default;
+    }
+    .queveras__item:last-child {
+      border-bottom: var(--hairline) solid rgb(var(--c-bone-rgb) / 0.18);
+    }
+    .queveras__num {
+      position: absolute;
+      left: 0;
+      top: var(--sp-28);
+      color: rgb(var(--c-bone-rgb) / 0.4);
+      transition: color var(--d-el) var(--ease-era);
+    }
+    .queveras__item.is-lit {
+      color: var(--c-bone);
+    }
+    .queveras__item.is-lit .queveras__num {
+      color: var(--c-sky);
+    }
+    @media (hover: hover) and (min-width: 992px) {
+      .queveras__item:hover {
+        color: var(--c-bone);
+        padding-left: var(--sp-96);
+      }
+    }
+    .queveras__foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-32);
+      margin-top: var(--sp-64);
+    }
+    .queveras__quote {
+      max-width: 36ch;
+      color: rgb(var(--c-bone-rgb) / 0.75);
+    }
+    @media (max-width: 991px) {
+      .queveras {
+        padding-block: var(--sp-120) var(--sp-96);
+      }
+      .queveras__item {
+        padding: var(--sp-16) 0 var(--sp-16) var(--sp-40);
+      }
+      .queveras__num {
+        top: var(--sp-20);
+      }
+      .queveras__foot {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  }
+</style>

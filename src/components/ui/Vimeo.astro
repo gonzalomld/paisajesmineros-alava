@@ -1,0 +1,94 @@
+---
+/**
+ * Vimeo — reproductor perezoso: no carga el iframe hasta que se pulsa.
+ * El póster lo pone quien lo usa (va debajo, en el mismo marco); aquí
+ * solo el botón y el hueco del iframe (vimeo.ts).
+ *
+ *   id, hash    del enlace de Vimeo (…/video/ID?h=HASH)
+ *   title       título accesible del iframe
+ *   lines       texto del botón, en líneas
+ */
+interface Props {
+  id: string;
+  hash?: string;
+  title: string;
+  lines: readonly string[];
+  class?: string;
+  /* Astro pasa aquí el data-astro-cid del padre para que su CSS alcance al marco. */
+  [key: `data-${string}`]: string | undefined;
+}
+const { id, hash, title, lines, class: cls = '', ...rest } = Astro.props;
+---
+<div class={`vimeo ${cls}`} data-vimeo={id} data-vimeo-hash={hash} data-vimeo-title={title} {...rest}>
+  <slot />
+  <div class="vimeo__frame" data-vimeo-frame></div>
+  <button class="vimeo__play" type="button" data-vimeo-play data-magnetic="0.25" aria-label={`${lines.join(' ')}: ${title}`}>
+    <span class="vimeo__label l1" aria-hidden="true">{lines.map((l) => <span>{l}</span>)}</span>
+  </button>
+</div>
+
+<style>
+  @layer components {
+    .vimeo {
+      position: relative;
+    }
+    .vimeo__frame {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      background: var(--c-ink);
+      opacity: 0;
+      visibility: hidden;
+    }
+    .vimeo__frame :global(iframe) {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+    .vimeo__play {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      z-index: 4;
+      display: grid;
+      place-items: center;
+      width: var(--sp-160);
+      height: var(--sp-160);
+      padding: 0;
+      border: var(--hairline) solid rgb(var(--c-bone-rgb) / 0.6);
+      border-radius: 50%;
+      background: rgb(var(--c-ink-rgb) / 0.25);
+      color: var(--c-bone);
+      cursor: pointer;
+      transform: translate(-50%, -50%);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      transition: background-color var(--d-micro) var(--ease-era), border-color var(--d-micro) var(--ease-era);
+      will-change: transform;
+    }
+    .vimeo__label {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
+      text-align: center;
+    }
+    @media (hover: hover) and (min-width: 992px) {
+      .vimeo__play:hover {
+        background: rgb(var(--c-bone-rgb) / 0.92);
+        color: var(--c-ink);
+        border-color: transparent;
+      }
+    }
+    .vimeo__play:focus-visible {
+      outline: var(--focus-ring);
+      outline-offset: 4px;
+    }
+    @media (max-width: 991px) {
+      .vimeo__play {
+        width: var(--sp-120);
+        height: var(--sp-120);
+      }
+    }
+  }
+</style>
