@@ -25,9 +25,11 @@ const { items, eyebrow, intro, hint } = home.experiencias;
   <div class="experiencias__screen" data-horizontal-screen>
     <div class="experiencias__track" data-horizontal-track>
       <div class="experiencias__panel experiencias__panel--intro">
-        <p class="l2 t-muted" data-hreveal>{eyebrow}</p>
-        <h2 id="experiencias-title" class="h3 experiencias__intro" data-hreveal>{intro}</h2>
-        <p class="l2 t-muted experiencias__hint" data-hreveal>{hint} <span aria-hidden="true">→</span></p>
+        <!-- El panel de entrada ya está en pantalla al fijar la sección: se
+             revela con el disparador vertical normal, no con el horizontal. -->
+        <p class="l2 t-muted" data-reveal="p" data-reveal-start="top 85%">{eyebrow}</p>
+        <h2 id="experiencias-title" class="h3 experiencias__intro" data-reveal="line" data-reveal-start="top 85%">{intro}</h2>
+        <p class="l2 t-muted experiencias__hint" data-reveal="p" data-reveal-start="top 85%" data-reveal-delay="0.4">{hint} <span aria-hidden="true">→</span></p>
       </div>
       {
         items.map((item, i) => (
