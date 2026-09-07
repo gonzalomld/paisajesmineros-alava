@@ -9,7 +9,19 @@ npm run build    # astro check + build estático en dist/
 npm run preview
 ```
 
-Páginas: `/` (hero + espaciador de prueba), `/descubrir` y `/contacto` (placeholders para validar la transición), `/_kit` (sistema de diseño, fuera del sitemap). `Ctrl+G` muestra la rejilla.
+Páginas: `/` (la pieza entera) y `/_kit` (sistema de diseño, fuera del
+sitemap). `Ctrl+G` muestra la rejilla.
+
+Es una sola página: no hay secciones internas propias. Lo que antes eran
+`/descubrir` y `/contacto` son ahora enlaces a la web oficial del centro,
+**asfaltokia.eus**, repartidos por el recorrido (hero, experiencias,
+estación, miradores, cierre, cabecera, menú y pie). Los enlaces externos
+salen en una pestaña nueva y lo dicen en su nombre accesible: `lib/links.ts`
+resuelve `target`, `rel` y la etiqueta a partir del `href`.
+
+El dominio del sitio es de minube; `astro.config.mjs` lo toma de `SITE_URL`
+y, si falta, usa la URL de Vercel. `vercel.json` redirige las dos rutas
+retiradas a la home.
 
 ## El sistema de unidades fluidas
 
@@ -94,7 +106,8 @@ src/
                               utilities, main; mapbox.css (subconjunto vendor de Mapbox GL)
   scripts/core/               gsap, lenis, registry, lifecycle, transitions, dom, anim
   scripts/modules/            un fichero por data-attribute
-  content/site.ts             brief, navegación, hero, contacto, footer
+  content/site.ts             brief, navegación, hero, contacto, pie, web oficial
+  lib/links.ts                enlaces externos (target, rel y nombre accesible)
   content/home.ts             textos de cada escena de la home
   content/map.ts              token de Mapbox, estilo base, puntos de interés
   data/routes/*.json          las dos rutas (GeoJSON simplificado + perfil + estadísticas)

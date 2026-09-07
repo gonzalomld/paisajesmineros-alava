@@ -4,6 +4,7 @@
  * dos líneas centrada y dos arcos SVG (stroke-dasharray) que rotan en
  * sentidos opuestos de forma continua. Magnético; la etiqueta hace swap.
  */
+import { externalAttrs, linkLabel } from '@/lib/links';
 interface Props {
   href: string;
   lines: readonly [string, string];
@@ -12,7 +13,14 @@ interface Props {
 }
 const { href, lines, label = lines.join(' '), class: className } = Astro.props;
 ---
-<a class:list={['btn-circle', className]} href={href} aria-label={label} data-magnetic="0.25" data-text-swap-trigger>
+<a
+  class:list={['btn-circle', className]}
+  href={href}
+  {...externalAttrs(href)}
+  aria-label={linkLabel(label, href)}
+  data-magnetic="0.25"
+  data-text-swap-trigger
+>
   <span class="btn-circle__inner" data-magnetic-inner>
     <span class="btn-circle__label l1" data-text-swap aria-hidden="true">
       <span class="swap">

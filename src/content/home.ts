@@ -102,7 +102,7 @@ export const home = {
           ['Domingos y festivos', '10:00 – 14:30'],
         ],
         text: 'Un vuelo virtual sobre las minas y el diapiro, una planta que es un libro abierto sobre el asfalto natural y tres miradores hacia el Parque Natural de Izki.',
-        cta: { label: 'Planifica tu visita', href: '/contacto' },
+        cta: { label: 'Planifica tu visita', href: 'https://asfaltokia.eus/' },
       },
       {
         id: 'mina',
@@ -188,7 +188,7 @@ export const home = {
     display: 'Tres miradores',
     script: 'sobre Izki',
     text: 'Desde la última planta de la estación, el Parque Natural de Izki se abre en tres ventanas: el robledal, el diapiro y la vía verde.',
-    cta: { label: 'Planifica tu visita', href: '/contacto' },
+    cta: { label: 'Planifica tu visita', href: 'https://asfaltokia.eus/' },
     alt: 'Mirador sobre los bosques del Parque Natural de Izki',
   },
 
@@ -207,7 +207,7 @@ export const home = {
       ['Última planta', 'Sala Alejandro Mendizábal, el ingeniero de las estaciones del Vasco-Navarro. Un espacio para conferencias y encuentros.'],
     ],
     extra: 'Tres miradores exteriores hacia el Parque Natural de Izki.',
-    cta: { label: 'Planifica tu visita', href: '/contacto' },
+    cta: { label: 'Planifica tu visita', href: 'https://asfaltokia.eus/' },
   },
 
   cierre: {

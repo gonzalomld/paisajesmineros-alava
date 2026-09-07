@@ -12,6 +12,7 @@
 import type { Theme } from '@/content/site';
 import { site } from '@/content/site';
 import Minube from '@/components/ui/Minube.astro';
+import { externalAttrs, isExternal, linkLabel } from '@/lib/links';
 import symbol from '@/assets/brand/asfaltokia-simbolo.png';
 
 interface Props {
@@ -42,7 +43,7 @@ const { primary, secondary } = site.nav;
     </div>
 
     <nav class="header__nav b-desk" aria-label="Principal">
-      <a class="header__primary h6" href={primary.href} data-text-swap>
+      <a class="header__primary h6" href={primary.href} {...externalAttrs(primary.href)} aria-label={isExternal(primary.href) ? linkLabel(primary.label, primary.href) : undefined} data-text-swap>
         <span class="swap">
           <span class="swap__text">{primary.lines[0]}<br />{primary.lines[1]}</span>
           <span class="swap__text swap__text--clone" aria-hidden="true">{primary.lines[0]}<br />{primary.lines[1]}</span>
@@ -52,7 +53,7 @@ const { primary, secondary } = site.nav;
         {
           secondary.map((item) => (
             <li>
-              <a class="header__link l1" href={item.href} data-text-swap>
+              <a class="header__link l1" href={item.href} {...externalAttrs(item.href)} aria-label={isExternal(item.href) ? linkLabel(item.label, item.href) : undefined} data-text-swap>
                 <span class="swap">
                   <span class="swap__text">{item.label}</span>
                   <span class="swap__text swap__text--clone" aria-hidden="true">{item.label}</span>
@@ -76,12 +77,12 @@ const { primary, secondary } = site.nav;
       <p class="menu__eyebrow l2" data-menu-item>{site.brand.product} · {site.brand.name}</p>
       <ul class="menu__list">
         <li data-menu-item>
-          <a class="menu__link h3" href={primary.href}>{primary.lines[0]} {primary.lines[1]}</a>
+          <a class="menu__link h3" href={primary.href} {...externalAttrs(primary.href)} aria-label={isExternal(primary.href) ? linkLabel(primary.label, primary.href) : undefined}>{primary.lines[0]} {primary.lines[1]}</a>
         </li>
         {
           secondary.map((item) => (
             <li data-menu-item>
-              <a class="menu__link h3" href={item.href}>{item.label}</a>
+              <a class="menu__link h3" href={item.href} {...externalAttrs(item.href)} aria-label={isExternal(item.href) ? linkLabel(item.label, item.href) : undefined}>{item.label}</a>
             </li>
           ))
         }

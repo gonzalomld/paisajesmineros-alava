@@ -7,6 +7,7 @@ import { site } from '@/content/site';
 import { Image } from 'astro:assets';
 import ArchMask from '@/components/ui/ArchMask.astro';
 import Minube from '@/components/ui/Minube.astro';
+import { externalAttrs, isExternal, linkLabel } from '@/lib/links';
 import logo from '@/assets/brand/asfaltokia-logo-blanco.png';
 const year = new Date().getFullYear();
 ---
@@ -27,12 +28,23 @@ const year = new Date().getFullYear();
         <ul class="p2">
           {site.footer.hours.map((h) => <li>{h}</li>)}
         </ul>
+        <p class="p2 footer__official">
+          <a href={site.official.href} {...externalAttrs(site.official.href)} aria-label={linkLabel(`Web oficial, ${site.official.label}`, site.official.href)}>{site.official.label}</a>
+        </p>
       </div>
       <nav class="col-3 footer__block" aria-label="Pie">
         <p class="l2 t-muted">Navegación</p>
         <ul class="footer__links l1">
-          <li><a href={site.nav.primary.href}>{site.nav.primary.label}</a></li>
-          {site.nav.secondary.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+          <li>
+            <a href={site.nav.primary.href} {...externalAttrs(site.nav.primary.href)} aria-label={isExternal(site.nav.primary.href) ? linkLabel(site.nav.primary.label, site.nav.primary.href) : undefined}>{site.nav.primary.label}</a>
+          </li>
+          {
+            site.nav.secondary.map((item) => (
+              <li>
+                <a href={item.href} {...externalAttrs(item.href)} aria-label={isExternal(item.href) ? linkLabel(item.label, item.href) : undefined}>{item.label}</a>
+              </li>
+            ))
+          }
         </ul>
       </nav>
     </div>
@@ -86,6 +98,9 @@ const year = new Date().getFullYear();
       color: var(--fg);
       text-decoration: underline;
       text-underline-offset: 0.2em;
+    }
+    .footer__official a {
+      border-bottom: var(--hairline) solid currentColor;
     }
     .footer__minube {
       --minube-w: var(--sp-72);

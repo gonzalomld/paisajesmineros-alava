@@ -19,7 +19,8 @@ export const site = {
     /** Centro de interpretación */
     center: 'Asfaltokia',
     claim: 'Ruta de los paisajes mineros',
-    domain: 'https://asfaltokia.eus',
+    /** Solo como respaldo del canonical si faltara Astro.site. */
+    domain: 'https://paisajesmineros.vercel.app',
     lang: 'es',
     altLang: 'eu',
   },
@@ -30,16 +31,22 @@ export const site = {
       'Asfaltokia, Mina Lucía y la Ruta de los Asfaltos Naturales: los paisajes mineros de Montaña Alavesa, en Álava. Un fenómeno geológico único que se visita despacio.',
   },
 
+  /** La web oficial del centro: adonde mandamos a quien quiere ir. */
+  official: {
+    href: 'https://asfaltokia.eus/',
+    label: 'asfaltokia.eus',
+  },
+
   cta: {
-    primary: { label: 'Planifica tu visita', lines: ['Planifica', 'tu visita'] as const, href: '/contacto' },
-    secondary: { label: 'Quiero saber más', href: '/descubrir' },
+    primary: { label: 'Planifica tu visita', lines: ['Planifica', 'tu visita'] as const, href: 'https://asfaltokia.eus/' },
+    secondary: { label: 'Quiero saber más', href: 'https://asfaltokia.eus/' },
   },
 
   nav: {
-    primary: { label: 'Planifica tu visita', lines: ['Planifica', 'tu visita'] as const, href: '/contacto' },
+    primary: { label: 'Planifica tu visita', lines: ['Planifica', 'tu visita'] as const, href: 'https://asfaltokia.eus/' },
     secondary: [
-      { label: 'Descubrir', href: '/descubrir' },
-      { label: 'Contacto', href: '/contacto' },
+      { label: 'La ruta', href: '#mapa' },
+      { label: 'Reservar', href: 'tel:+34945405424' },
     ],
   },
 
