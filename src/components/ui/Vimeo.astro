@@ -2,7 +2,12 @@
 /**
  * Vimeo — reproductor perezoso: no carga el iframe hasta que se pulsa.
  * El póster lo pone quien lo usa (va debajo, en el mismo marco); aquí
- * solo el botón y el hueco del iframe (vimeo.ts).
+ * solo el botón, el hueco del iframe y la salida (vimeo.ts).
+ *
+ * El estado lo lleva la clase .is-playing, no una animación: el botón
+ * es magnético y magnetic.ts sobrescribe los tweens del elemento al
+ * salir el puntero, así que un fundido con GSAP se quedaba a medias y
+ * el botón seguía encima del vídeo.
  *
  *   id, hash    del enlace de Vimeo (…/video/ID?h=HASH)
  *   title       título accesible del iframe
@@ -14,7 +19,7 @@ interface Props {
   title: string;
   lines: readonly string[];
   class?: string;
-  /* Astro pasa aquí el data-astro-cid del padre para que su CSS alcance al marco. */
+  /* Astro pasa aquí el data-astro-cid del padre. */
   [key: `data-${string}`]: string | undefined;
 }
 const { id, hash, title, lines, class: cls = '', ...rest } = Astro.props;
@@ -24,6 +29,12 @@ const { id, hash, title, lines, class: cls = '', ...rest } = Astro.props;
   <div class="vimeo__frame" data-vimeo-frame></div>
   <button class="vimeo__play" type="button" data-vimeo-play data-magnetic="0.25" aria-label={`${lines.join(' ')}: ${title}`}>
     <span class="vimeo__label l1" aria-hidden="true">{lines.map((l) => <span>{l}</span>)}</span>
+  </button>
+  <button class="vimeo__close l1" type="button" data-vimeo-close aria-label="Cerrar el vídeo" tabindex="-1" aria-hidden="true">
+    <span aria-hidden="true">Cerrar</span>
+    <svg class="vimeo__x" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+      <path d="M1 1l10 10M11 1L1 11" fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke"></path>
+    </svg>
   </button>
 </div>
 
@@ -39,6 +50,7 @@ const { id, hash, title, lines, class: cls = '', ...rest } = Astro.props;
       background: var(--c-ink);
       opacity: 0;
       visibility: hidden;
+      transition: opacity var(--d-section) var(--ease-era), visibility var(--d-section);
     }
     .vimeo__frame :global(iframe) {
       width: 100%;
@@ -64,7 +76,10 @@ const { id, hash, title, lines, class: cls = '', ...rest } = Astro.props;
       transform: translate(-50%, -50%);
       backdrop-filter: blur(6px);
       -webkit-backdrop-filter: blur(6px);
-      transition: background-color var(--d-micro) var(--ease-era), border-color var(--d-micro) var(--ease-era);
+      transition:
+        background-color var(--d-micro) var(--ease-era),
+        border-color var(--d-micro) var(--ease-era),
+        opacity var(--d-el) var(--ease-era);
       will-change: transform;
     }
     .vimeo__label {
@@ -80,14 +95,79 @@ const { id, hash, title, lines, class: cls = '', ...rest } = Astro.props;
         border-color: transparent;
       }
     }
-    .vimeo__play:focus-visible {
+    .vimeo__play:focus-visible,
+    .vimeo__close:focus-visible {
       outline: var(--focus-ring);
       outline-offset: 4px;
     }
+
+    /* salida: solo mientras hay vídeo */
+    /* Arriba a la derecha: abajo están los controles del reproductor, y
+       más arriba, la navegación de la cabecera. */
+    .vimeo__close {
+      position: absolute;
+      right: var(--margin);
+      top: var(--sp-144);
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      gap: var(--sp-8);
+      padding: var(--sp-12) var(--sp-20);
+      border: var(--hairline) solid rgb(var(--c-bone-rgb) / 0.5);
+      border-radius: 999px;
+      background: rgb(var(--c-ink-rgb) / 0.55);
+      color: var(--c-bone);
+      cursor: pointer;
+      /* Opacidad y pointer-events, no visibility: un elemento oculto con
+         visibility no acepta el foco en el mismo tick en que se muestra. */
+      opacity: 0;
+      pointer-events: none;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      transition:
+        background-color var(--d-micro) var(--ease-era),
+        color var(--d-micro) var(--ease-era),
+        opacity var(--d-el) var(--ease-era);
+    }
+    .vimeo__x {
+      width: var(--sp-10);
+      height: var(--sp-10);
+    }
+    @media (hover: hover) and (min-width: 992px) {
+      .vimeo__close:hover {
+        background: var(--c-bone);
+        color: var(--c-ink);
+        border-color: transparent;
+      }
+    }
+
+    /* con el vídeo puesto: el marco entra, el botón y el decorado salen */
+    .vimeo.is-playing .vimeo__frame {
+      opacity: 1;
+      visibility: visible;
+    }
+    .vimeo.is-playing .vimeo__play {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .vimeo.is-playing .vimeo__close {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    /* las nubes del cielo (o cualquier decorado en movimiento del slot) */
+    .vimeo.is-playing :global([data-cloud]) {
+      opacity: 0;
+      transition: opacity var(--d-el) var(--ease-era);
+    }
+
     @media (max-width: 991px) {
       .vimeo__play {
         width: var(--sp-120);
         height: var(--sp-120);
+      }
+      .vimeo__close {
+        top: var(--sp-96);
+        padding: var(--sp-8) var(--sp-16);
       }
     }
   }
