@@ -14,6 +14,7 @@ import { initLenis, getLenis, scrollToTop } from './lenis';
 import { register, mountAll, destroyAll, markReady, summary } from './registry';
 import { initPageTransitions } from './transitions';
 import { runPreloader } from '../modules/preloader';
+import { initAnalytics } from './analytics';
 
 import themeSwitch from '../modules/themeSwitch';
 import scrollReveal from '../modules/scrollReveal';
@@ -133,6 +134,7 @@ function boot(): void {
   document.documentElement.classList.add('js');
   setViewportUnit();
 
+  initAnalytics();
   initLenis();
   restoreRoot();
   registerModules();
