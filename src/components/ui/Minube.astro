@@ -1,0 +1,34 @@
+---
+/**
+ * Minube — el logotipo del editor del sitio. Dos versiones del mismo
+ * archivo: la de color para superficies claras y otra con el texto en bone
+ * (tools/make-minube-bone.mjs) para ink y plum. Se funden entre sí según
+ * el tema del ancestro, con la misma duración que el color del header.
+ * Los estilos viven en styles/components.css, porque dependen del tema
+ * que declara el padre.
+ */
+import { Image } from 'astro:assets';
+import { site } from '@/content/site';
+import color from '@/assets/brand/minube-logo.png';
+import bone from '@/assets/brand/minube-logo-bone.png';
+interface Props {
+  class?: string;
+  /** Texto que precede al logotipo (en el pie). */
+  label?: string;
+  /* Astro pasa aquí el data-astro-cid del padre: sin él, el <style> del
+     header y del pie no alcanzaría a este enlace (--minube-w). */
+  [key: `data-${string}`]: string | undefined;
+}
+const { class: cls = '', label, ...rest } = Astro.props;
+const { editor } = site;
+/* El nombre accesible lo da el enlace: las dos imágenes son decorativas
+   (una de ellas siempre está oculta) y el rótulo va en aria-hidden. */
+const aria = `${label ? `${label} ` : ''}${editor.alt}, se abre en una pestaña nueva`;
+---
+<a class={`minube ${cls}`} href={editor.href} target="_blank" rel="noopener" aria-label={aria} {...rest}>
+  {label && <span class="minube__label l2" aria-hidden="true">{label}</span>}
+  <span class="minube__marks" aria-hidden="true">
+    <Image class="minube__img minube__img--color" src={color} alt="" widths={[194]} loading="lazy" />
+    <Image class="minube__img minube__img--bone" src={bone} alt="" widths={[194]} loading="lazy" />
+  </span>
+</a>

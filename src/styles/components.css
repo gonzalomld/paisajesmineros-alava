@@ -196,6 +196,50 @@
     box-shadow: 0 0 0 var(--sp-6) rgb(var(--c-bone-rgb) / 0.18);
   }
 
+  /* ------------------------------------------------------------------
+     Logotipo de minube (ui/Minube.astro). Dos versiones apiladas: la de
+     color y la de texto bone. Manda el tema del ancestro (data-theme en el
+     header, .theme-* en las secciones), y el cambio se funde con la misma
+     duración que el color del header.
+     ------------------------------------------------------------------ */
+  .minube {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-8);
+    color: var(--fg-muted);
+  }
+  .minube__marks {
+    position: relative;
+    display: block;
+    width: var(--minube-w, var(--sp-88));
+    aspect-ratio: 194 / 47;
+  }
+  .minube__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: opacity 0.4s var(--ease-era);
+  }
+  .minube__img--bone {
+    opacity: 0;
+  }
+  :is([data-theme='dark'], [data-theme='plum'], .theme-dark, .theme-plum) .minube__img--color {
+    opacity: 0;
+  }
+  :is([data-theme='dark'], [data-theme='plum'], .theme-dark, .theme-plum) .minube__img--bone {
+    opacity: 1;
+  }
+  @media (hover: hover) and (min-width: 992px) {
+    .minube {
+      transition: opacity var(--d-micro) var(--ease-era);
+    }
+    .minube:hover {
+      opacity: 0.7;
+    }
+  }
+
   /* Mapbox: la atribución y el logotipo son obligatorios; se integran discretos. */
   .mapboxgl-map {
     font: var(--fs-l2) / 1.6 var(--font-text);

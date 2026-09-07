@@ -42,6 +42,17 @@ Baja resolución: valen para tarjetas pequeñas, no a sangre. Pedir originales.
 | `web-geologia-img-1.jpg` | Reserva (antes en El concepto; ahora son cantos de la veta) |
 | resto `web-*.jpg` | Reserva |
 
+## Logotipo de minube
+
+| Fichero | Uso |
+|---|---|
+| `brand/minube-logo.png` (194×47) | Header y pie, sobre superficies claras |
+| `brand/minube-logo-bone.png` | Lo mismo sobre ink y plum: el texto pasa a bone y la nube se queda verde. Se genera con `node tools/make-minube-bone.mjs` |
+
+Tal como lo facilitó minube, recortado a su caja. A 194 px de ancho cubre el
+tamaño al que se usa (80 px de diseño); conviene pedir el vector para
+pantallas grandes con densidad doble.
+
 ## Generadas (sin origen fotográfico)
 
 | Fichero | Uso | Cómo |

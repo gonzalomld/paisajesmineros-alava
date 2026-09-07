@@ -89,6 +89,7 @@ src/
                               Asfalto, Miradores, Cierre
   components/ui/Canto.astro   fragmento de roca con máscara irregular (el «decorado»)
   components/ui/Vimeo.astro   reproductor de Vimeo perezoso (iframe solo al pulsar)
+  components/ui/Minube.astro  logotipo del editor; conmuta color/bone según el tema
   styles/                     vendor, reset, tokens, themes, base, typography, components,
                               utilities, main; mapbox.css (subconjunto vendor de Mapbox GL)
   scripts/core/               gsap, lenis, registry, lifecycle, transitions, dom, anim
@@ -103,6 +104,7 @@ public/gpx/                   los GPX originales, descargables desde el mapa
 tools/gpx-to-geojson.mjs      GPX → src/data/routes (node tools/gpx-to-geojson.mjs)
 tools/make-clouds.mjs         tiras de nubes con alfa por ruido fractal (node tools/make-clouds.mjs)
 tools/make-cantos.mjs         máscaras de borde irregular para los cantos (node tools/make-cantos.mjs)
+tools/make-minube-bone.mjs    variante del logotipo de minube para fondos oscuros
 ```
 
 Módulos de scroll añadidos en la Fase 03: `horizontal` (sección fijada que

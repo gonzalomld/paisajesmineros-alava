@@ -2,6 +2,7 @@
 /**
  * Header — fijo, siempre visible, sin fondo. Tres zonas:
  *   izquierda: insignia circular (logotipo + nombre en textPath girando)
+ *              y, tras una línea, el logotipo de minube, que publica el sitio
  *   derecha:   enlace principal en display a dos líneas con subrayado y
  *              dos enlaces secundarios en l1
  *   móvil:     botón de menú → overlay a pantalla completa con revelado en arco
@@ -10,6 +11,7 @@
  */
 import type { Theme } from '@/content/site';
 import { site } from '@/content/site';
+import Minube from '@/components/ui/Minube.astro';
 import symbol from '@/assets/brand/asfaltokia-simbolo.png';
 
 interface Props {
@@ -21,19 +23,23 @@ const { primary, secondary } = site.nav;
 ---
 <div class="header-root" transition:persist="header">
   <header class="header" data-header data-theme-target data-theme={theme}>
-    <a class="header__badge" href="/" aria-label={`${site.brand.product} de ${site.brand.name}, inicio`} data-magnetic="0.2">
-      <span class="header__badge-inner" data-magnetic-inner>
-        <svg class="header__ring" viewBox="0 0 100 100" aria-hidden="true" focusable="false" data-badge-ring>
-          <defs>
-            <path id="header-ring-path" d="M50,50 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"></path>
-          </defs>
-          <text class="header__ring-text">
-            <textPath href="#header-ring-path" textLength="251" lengthAdjust="spacing">{ring}{ring}</textPath>
-          </text>
-        </svg>
-        <span class="header__mark brand-symbol" style={`--symbol: url(${symbol.src})`} aria-hidden="true"></span>
-      </span>
-    </a>
+    <div class="header__brand">
+      <a class="header__badge" href="/" aria-label={`${site.brand.product} de ${site.brand.name}, inicio`} data-magnetic="0.2">
+        <span class="header__badge-inner" data-magnetic-inner>
+          <svg class="header__ring" viewBox="0 0 100 100" aria-hidden="true" focusable="false" data-badge-ring>
+            <defs>
+              <path id="header-ring-path" d="M50,50 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"></path>
+            </defs>
+            <text class="header__ring-text">
+              <textPath href="#header-ring-path" textLength="251" lengthAdjust="spacing">{ring}{ring}</textPath>
+            </text>
+          </svg>
+          <span class="header__mark brand-symbol" style={`--symbol: url(${symbol.src})`} aria-hidden="true"></span>
+        </span>
+      </a>
+      <span class="header__sep" aria-hidden="true"></span>
+      <Minube class="header__minube" />
+    </div>
 
     <nav class="header__nav b-desk" aria-label="Principal">
       <a class="header__primary h6" href={primary.href} data-text-swap>
@@ -143,6 +149,22 @@ const { primary, secondary } = site.nav;
       transform: translate(-50%, -50%);
     }
 
+    /* marca: la insignia y, tras una línea, el logotipo del editor */
+    .header__brand {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-16);
+    }
+    .header__sep {
+      width: 1px;
+      height: var(--sp-32);
+      background: currentColor;
+      opacity: 0.25;
+    }
+    .header__minube {
+      --minube-w: var(--sp-80);
+    }
+
     /* navegación */
     .header__nav {
       display: flex;
@@ -245,6 +267,15 @@ const { primary, secondary } = site.nav;
       .header__badge {
         width: var(--sp-72);
         height: var(--sp-72);
+      }
+      .header__brand {
+        gap: var(--sp-12);
+      }
+      .header__sep {
+        height: var(--sp-24);
+      }
+      .header__minube {
+        --minube-w: var(--sp-52);
       }
     }
   }

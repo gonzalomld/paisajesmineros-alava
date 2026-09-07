@@ -6,6 +6,7 @@
 import { site } from '@/content/site';
 import { Image } from 'astro:assets';
 import ArchMask from '@/components/ui/ArchMask.astro';
+import Minube from '@/components/ui/Minube.astro';
 import logo from '@/assets/brand/asfaltokia-logo-blanco.png';
 const year = new Date().getFullYear();
 ---
@@ -37,6 +38,7 @@ const year = new Date().getFullYear();
     </div>
     <div class="footer__legal l2 t-muted">
       <span>© {year} {site.brand.center} · {site.brand.full}</span>
+      <Minube class="footer__minube" label={site.editor.credit} />
       <ul class="footer__legal-links">
         {site.footer.legal.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
       </ul>
@@ -84,6 +86,9 @@ const year = new Date().getFullYear();
       color: var(--fg);
       text-decoration: underline;
       text-underline-offset: 0.2em;
+    }
+    .footer__minube {
+      --minube-w: var(--sp-72);
     }
     .footer__legal {
       display: flex;

@@ -83,6 +83,14 @@ export const site = {
     mina: { days: 'Sábados y domingos', shifts: ['10:00', '11:15', '12:30'] },
   },
 
+  /** Quien publica el sitio; su logotipo va en el header y en el pie. */
+  editor: {
+    name: 'minube',
+    href: 'https://www.minube.com',
+    alt: 'minube',
+    credit: 'Un proyecto de',
+  },
+
   footer: {
     place: 'Antigua estación del ferrocarril vasco-navarro · Atauri, Montaña Alavesa',
     hours: ['Sábados 10:00 – 18:00', 'Domingos y festivos 10:00 – 14:30'],
