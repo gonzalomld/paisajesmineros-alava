@@ -1,15 +1,17 @@
 ---
 /**
- * Estación — escena 13: panel plum con la fotografía histórica de la
- * estación y el dibujo de su fachada; a la derecha, el centro contado
+ * Estación — escena 13: panel plum con la fotografía del edificio
+ * rehabilitado y el dibujo de su fachada; a la derecha, el centro contado
  * planta a planta.
- * IMÁGENES: foto histórica y dibujo de asfaltokia.eus (provisionales, en
- * baja resolución). Sustituir por fotografía actual del edificio.
+ * La foto va en duotono plum: entra en color y en el panel granate
+ * desentonaba con el resto de la pieza.
+ * IMÁGENES: estación de Atauri, definitiva. El dibujo sigue siendo el de
+ * asfaltokia.eus, en baja resolución.
  */
 import { Image } from 'astro:assets';
 import ButtonPill from '@/components/ui/ButtonPill.astro';
 import { home } from '@/content/home';
-import foto from '@/assets/photos/web-atauri-galeria-1.jpg';
+import foto from '@/assets/photos/estacion-atauri.jpg';
 import dibujo from '@/assets/brand/estacion-atauri-dibujo.png';
 const { estacion } = home;
 ---
@@ -18,7 +20,7 @@ const { estacion } = home;
     <div class="grid estacion__grid">
       <div class="col-4 estacion__panel theme-plum" data-reveal="ctn">
         <figure class="estacion__foto" data-parallax="w">
-          <div data-parallax="img"><Image src={foto} alt="La estación de Atauri con los panes de asfalto apilados junto a la vía, fotografía histórica" widths={[480, 800]} sizes="(max-width: 991px) 100vw, 30vw" /></div>
+          <div data-parallax="img"><Image src={foto} alt="La estación de Atauri rehabilitada, con su rótulo de azulejos, hoy sede de Asfaltokia" widths={[600, 900, 1200]} sizes="(max-width: 991px) 100vw, 30vw" /></div>
         </figure>
         <Image class="estacion__dibujo" src={dibujo} alt="" width={350} height={362} aria-hidden="true" />
         <p class="l2 estacion__caption">Estación de Atauri · 1928</p>
@@ -61,16 +63,32 @@ const { estacion } = home;
       gap: var(--sp-24);
     }
     .estacion__foto {
-      aspect-ratio: 8 / 5;
+      position: relative;
+      /* Cuadrada y encuadrada arriba: cabe el edificio entero, del alero al
+         zócalo, sin que el panel se dispare de alto sobre la columna de texto. */
+      aspect-ratio: 1 / 1;
       overflow: hidden;
     }
     .estacion__foto img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      object-position: 50% 26%;
+      filter: grayscale(1) contrast(1.12) brightness(0.8);
+    }
+    /* Duotono: el plum sobre la foto en gris tiñe el tono sin tocar el
+       valor, así la fotografía vive dentro del panel en lugar de encima. */
+    .estacion__foto::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--c-plum);
+      mix-blend-mode: color;
+      opacity: 0.85;
+      pointer-events: none;
     }
     .estacion__dibujo {
-      width: 60%;
+      width: 52%;
       height: auto;
       align-self: flex-end;
       filter: invert(1);

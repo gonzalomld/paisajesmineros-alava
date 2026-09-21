@@ -3,20 +3,19 @@
  * Puertas — escenas 02 y 03: el arco de sección con el texto en media luna
  * alrededor del símbolo y, debajo, el slider de las tres puertas
  * (Asfaltokia, Mina Lucía, la ruta).
- * IMÁGENES: la de Asfaltokia es la foto histórica de la estación de
- * asfaltokia.eus (provisional, 480px); las otras dos son de la serie de
- * Mina Lucía y del tren de Antoñana (definitivas).
+ * IMÁGENES: la estación de Atauri rehabilitada, la serie de Mina Lucía y
+ * el tren de Antoñana. Las tres, definitivas.
  */
 import { Image } from 'astro:assets';
 import ArchMask from '@/components/ui/ArchMask.astro';
 import { home } from '@/content/home';
 import symbol from '@/assets/brand/asfaltokia-simbolo.png';
-import imgAsfaltokia from '@/assets/photos/web-atauri-galeria-1.jpg';
+import imgAsfaltokia from '@/assets/photos/estacion-atauri.jpg';
 import imgMina from '@/assets/photos/casco-veta.jpg';
 import imgRuta from '@/assets/photos/tren-antonana.jpg';
 
 const images = {
-  asfaltokia: { src: imgAsfaltokia, alt: 'La estación de Atauri en los años del asfalto, con los panes apilados junto a la vía' },
+  asfaltokia: { src: imgAsfaltokia, alt: 'La estación de Atauri rehabilitada, con su rótulo de azulejos, hoy sede de Asfaltokia' },
   mina: { src: imgMina, alt: 'Visitantes con casco ante una veta de asfalto en Mina Lucía' },
   ruta: { src: imgRuta, alt: 'El trenico recreado en Antoñana, sede del Centro del Ferrocarril Vasco-Navarro' },
 } as const;
@@ -56,7 +55,7 @@ const { items } = home.puertas;
                 </h3>
                 <figure class="col-2 start-2 slide__figure puertas__figure" data-part="slide">
                   <div>
-                    <Image src={images[item.id].src} alt={images[item.id].alt} widths={[400, 800]} sizes="(max-width: 991px) 60vw, 18vw" />
+                    <Image src={images[item.id].src} alt={images[item.id].alt} widths={[400, 800, 1200]} sizes="(max-width: 991px) 60vw, 18vw" />
                   </div>
                 </figure>
                 <div class="col-4 start-5 puertas__body">

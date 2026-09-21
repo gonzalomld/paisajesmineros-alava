@@ -5,18 +5,18 @@
  * y tres paneles con los datos prácticos de cada experiencia y su llamada
  * a la acción. Es la escena que convierte: solo datos, porque la
  * descripción de cada puerta ya se ha contado una vez en Puertas.
- * IMÁGENES: estación (asfaltokia.eus, provisional), grupo en galería y
- * camino con casco (Quintas, definitivas).
+ * IMÁGENES: la estación de Atauri, el grupo en galería y el camino con
+ * casco (Quintas). Las tres, definitivas.
  */
 import { Image } from 'astro:assets';
 import ButtonPill from '@/components/ui/ButtonPill.astro';
 import { home } from '@/content/home';
-import imgAsfaltokia from '@/assets/photos/web-atauri-galeria-1.jpg';
+import imgAsfaltokia from '@/assets/photos/estacion-atauri.jpg';
 import imgMina from '@/assets/photos/grupo-galeria.jpg';
 import imgRuta from '@/assets/photos/camino-casco.jpg';
 
 const images = {
-  asfaltokia: { src: imgAsfaltokia, alt: 'La estación de Atauri, sede de Asfaltokia' },
+  asfaltokia: { src: imgAsfaltokia, alt: 'La estación de Atauri rehabilitada, sede de Asfaltokia' },
   mina: { src: imgMina, alt: 'Grupo de visitantes con casco en una galería de Mina Lucía' },
   ruta: { src: imgRuta, alt: 'Visitantes recorriendo el camino hacia Mina Lucía con el casco en la mano' },
 } as const;
