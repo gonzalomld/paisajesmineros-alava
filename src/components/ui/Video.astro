@@ -1,6 +1,7 @@
 ---
 /**
- * Vimeo — reproductor perezoso: no carga el iframe hasta que se pulsa.
+ * Video — reproductor perezoso de YouTube (nocookie) o Vimeo: no carga el
+ * iframe hasta que se pulsa.
  * El póster lo pone quien lo usa (va debajo, en el mismo marco); aquí
  * solo el botón, el hueco del iframe y la salida (vimeo.ts).
  *
@@ -9,11 +10,13 @@
  * salir el puntero, así que un fundido con GSAP se quedaba a medias y
  * el botón seguía encima del vídeo.
  *
- *   id, hash    del enlace de Vimeo (…/video/ID?h=HASH)
+ *   provider    'youtube' (por defecto) o 'vimeo'
+ *   id, hash    identificador del vídeo (hash solo en Vimeo)
  *   title       título accesible del iframe
  *   lines       texto del botón, en líneas
  */
 interface Props {
+  provider?: 'youtube' | 'vimeo';
   id: string;
   hash?: string;
   title: string;
@@ -22,15 +25,15 @@ interface Props {
   /* Astro pasa aquí el data-astro-cid del padre. */
   [key: `data-${string}`]: string | undefined;
 }
-const { id, hash, title, lines, class: cls = '', ...rest } = Astro.props;
+const { provider = 'youtube', id, hash, title, lines, class: cls = '', ...rest } = Astro.props;
 ---
-<div class={`vimeo ${cls}`} data-vimeo={id} data-vimeo-hash={hash} data-vimeo-title={title} {...rest}>
+<div class={`vimeo ${cls}`} data-video={id} data-video-provider={provider} data-video-hash={hash} data-video-title={title} {...rest}>
   <slot />
-  <div class="vimeo__frame" data-vimeo-frame></div>
-  <button class="vimeo__play" type="button" data-vimeo-play data-magnetic="0.25" aria-label={`${lines.join(' ')}: ${title}`}>
+  <div class="vimeo__frame" data-video-frame></div>
+  <button class="vimeo__play" type="button" data-video-play data-magnetic="0.25" aria-label={`${lines.join(' ')}: ${title}`}>
     <span class="vimeo__label l1" aria-hidden="true">{lines.map((l) => <span>{l}</span>)}</span>
   </button>
-  <button class="vimeo__close l1" type="button" data-vimeo-close aria-label="Cerrar el vídeo" tabindex="-1" aria-hidden="true">
+  <button class="vimeo__close l1" type="button" data-video-close aria-label="Cerrar el vídeo" tabindex="-1" aria-hidden="true">
     <span aria-hidden="true">Cerrar</span>
     <svg class="vimeo__x" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
       <path d="M1 1l10 10M11 1L1 11" fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke"></path>

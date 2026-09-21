@@ -124,7 +124,9 @@
 
      Cada superficie expone la misma rampa semántica con alfas fijos:
        primary    100 %  texto y trazos principales
-       gray-text   60 %  texto secundario
+       gray-text   72 %  texto secundario (a 60 % no llegaba a 4.5:1
+                         sobre bone ni sobre sky: el gris era el punto
+                         flojo de lectura de toda la pieza)
        disabled    30 %  estados inactivos
        line        10 %  reglas y divisiones
        bg           5 %  fondos sutiles de bloque
@@ -155,35 +157,35 @@
 
     /* rampa: bone */
     --bone-primary:   rgb(var(--c-bone-rgb) / 1);
-    --bone-gray-text: rgb(var(--c-bone-rgb) / .6);
+    --bone-gray-text: rgb(var(--c-bone-rgb) / .72);
     --bone-disabled:  rgb(var(--c-bone-rgb) / .3);
     --bone-line:      rgb(var(--c-bone-rgb) / .1);
     --bone-bg:        rgb(var(--c-bone-rgb) / .05);
 
     /* rampa: ink */
     --ink-primary:    rgb(var(--c-ink-rgb) / 1);
-    --ink-gray-text:  rgb(var(--c-ink-rgb) / .6);
+    --ink-gray-text:  rgb(var(--c-ink-rgb) / .72);
     --ink-disabled:   rgb(var(--c-ink-rgb) / .3);
     --ink-line:       rgb(var(--c-ink-rgb) / .1);
     --ink-bg:         rgb(var(--c-ink-rgb) / .05);
 
     /* rampa: sky */
     --sky-primary:    rgb(var(--c-sky-rgb) / 1);
-    --sky-gray-text:  rgb(var(--c-sky-rgb) / .6);
+    --sky-gray-text:  rgb(var(--c-sky-rgb) / .72);
     --sky-disabled:   rgb(var(--c-sky-rgb) / .3);
     --sky-line:       rgb(var(--c-sky-rgb) / .1);
     --sky-bg:         rgb(var(--c-sky-rgb) / .05);
 
     /* rampa: plum */
     --plum-primary:   rgb(var(--c-plum-rgb) / 1);
-    --plum-gray-text: rgb(var(--c-plum-rgb) / .6);
+    --plum-gray-text: rgb(var(--c-plum-rgb) / .72);
     --plum-disabled:  rgb(var(--c-plum-rgb) / .3);
     --plum-line:      rgb(var(--c-plum-rgb) / .1);
     --plum-bg:        rgb(var(--c-plum-rgb) / .05);
 
     /* rampa: white */
     --white-primary:   rgb(var(--c-white-rgb) / 1);
-    --white-gray-text: rgb(var(--c-white-rgb) / .6);
+    --white-gray-text: rgb(var(--c-white-rgb) / .72);
     --white-disabled:  rgb(var(--c-white-rgb) / .3);
     --white-line:      rgb(var(--c-white-rgb) / .1);
     --white-bg:        rgb(var(--c-white-rgb) / .05);
@@ -218,7 +220,15 @@
 
          Carácter del sistema: los display por debajo del 100 % (las líneas
          casi se tocan); las etiquetas diminutas con muchísimo tracking.
-         El contraste 192 / 9 es la firma.
+         El contraste entre el titular enorme y la etiqueta mínima es la firma.
+
+         EXCEPCIÓN AL «NI UN PX», y la única en tipografía: los tamaños de
+         lectura (párrafos, etiquetas, campos) llevan un suelo en píxeles
+         reales con max(). Lo demás escala linealmente con el ancho, que es
+         lo que quieres en un titular; en el texto corrido no: con la escala
+         pura, un portátil de 1280 dejaba el párrafo en 10,4 px. El suelo
+         entra por debajo de ~1500 px de ancho y en móviles estrechos, justo
+         donde el texto dejaba de leerse cómodo.
      ------------------------------------------------------------------------ */
   :root {
     /* display (Didone), en mayúsculas */
@@ -237,12 +247,20 @@
     --fs-c1: calc(25  * var(--u)); --lh-c1: 1.12; --ls-c1: .8em;
 
     /* etiquetas (texto, mayúsculas) */
-    --fs-l1: calc(11  * var(--u)); --lh-l1: 1.45; --ls-l1: .048em;
-    --fs-l2: calc(9   * var(--u)); --lh-l2: 1.33; --ls-l2: .32em;
+    --fs-l1: max(12px, calc(12.5 * var(--u))); --lh-l1: 1.5; --ls-l1: .048em;
+    --fs-l2: max(10px, calc(10.5 * var(--u))); --lh-l2: 1.4; --ls-l2: .28em;
 
-    /* párrafo (texto) */
-    --fs-p1: calc(13  * var(--u)); --lh-p1: 1.38; --ls-p1: -.024em;
-    --fs-p2: calc(11  * var(--u)); --lh-p2: 1.45; --ls-p2: -.024em;
+    /* párrafo (texto). Tracking a cero: el negativo apretaba una Archivo
+       Expanded de 13 px y era media razón de que costase leerla. */
+    --fs-p1: max(15px, calc(16 * var(--u))); --lh-p1: 1.58; --ls-p1: 0;
+    --fs-p2: max(13px, calc(14 * var(--u))); --lh-p2: 1.6;  --ls-p2: .004em;
+
+    /* opsz del display por nivel: el eje óptico de un Didone decide si las
+       finas se ven. A 96 (el corte de titular) un h5 de 40 o un h6 de 28
+       pierden los trazos finos y cuestan más de leer que el h1. */
+    --opsz-h4: 72;
+    --opsz-h5: 40;
+    --opsz-h6: 28;
   }
 
   /* Móvil (píxeles a 416px). Valores tomados de la referencia, que define
@@ -260,6 +278,9 @@
       --fs-a2: calc(72 * var(--u));
       --fs-c1: calc(19 * var(--u)); --lh-c1: 1.263;
       --font-display-opsz: 48;
+      --opsz-h4: 40;
+      --opsz-h5: 28;
+      --opsz-h6: 28;
     }
   }
 
@@ -270,7 +291,7 @@
   }
   @media (max-width: 991px) {
     :root {
-      --fs-input: calc(16 * var(--u));
+      --fs-input: max(16px, calc(16 * var(--u)));
     }
   }
 

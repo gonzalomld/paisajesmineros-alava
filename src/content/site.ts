@@ -46,7 +46,7 @@ export const site = {
     primary: { label: 'Planifica tu visita', lines: ['Planifica', 'tu visita'] as const, href: 'https://asfaltokia.eus/' },
     secondary: [
       { label: 'La ruta', href: '#mapa' },
-      { label: 'Reservar', href: 'tel:+34945405424' },
+      { label: 'Reservar', href: 'tel:+34639310779' },
     ],
   },
 
@@ -84,8 +84,8 @@ export const site = {
   },
 
   contact: {
-    phone: '945 405 424',
-    phoneHref: 'tel:+34945405424',
+    phone: '639 310 779',
+    phoneHref: 'tel:+34639310779',
     phoneNote: 'Reserva de visitas guiadas a Mina Lucía',
     mina: { days: 'Sábados y domingos', shifts: ['10:00', '11:15', '12:30'] },
   },

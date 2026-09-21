@@ -17,7 +17,6 @@ export interface Experiencia {
   id: string;
   display: readonly string[];
   specs: ReadonlyArray<readonly [string, string]>;
-  text: string;
   cta: { label: string; href: string };
 }
 
@@ -42,7 +41,7 @@ export const home = {
         id: 'ruta',
         display: ['La', 'ruta'],
         label: '39 kilómetros entre tres centros',
-        text: 'Un itinerario interpretativo une el centro del ferrocarril en Antoñana, el del Parque Natural de Izki en Korres y Asfaltokia en Atauri. A pie o en bici, casi siete kilómetros discurren bajo el bosque.',
+        text: 'Un itinerario de 15 kilómetros une el centro de interpretación de la Vía Verde del Ferrocarril Vasco-Navarro en Antoñana, el del Parque Natural de Izki en Korres y Asfaltokia en Atauri. A pie o en bici, en total, la ruta ofrece 39 kilómetros de patrimonio y naturaleza.',
       },
     ] as const satisfies readonly Puerta[],
   },
@@ -50,6 +49,8 @@ export const home = {
   cita: {
     text: 'Aquí la roca es negra y brilla. El asfalto impregna la caliza a la vista, como hace siglo y medio, y el bosque guarda el silencio de las galerías.',
     where: 'Mina Lucía · Atauri · Parque Natural de Izki',
+    /* El vídeo de Mina Lucía, en YouTube sin cookies. Solo se carga al pulsar. */
+    video: { provider: 'youtube', id: 'v61m5uqU0V0', title: 'Mina Lucía, vídeo de la visita', play: ['Ver', 'el vídeo'] },
   },
 
   concepto: {
@@ -62,7 +63,7 @@ export const home = {
     display: ['Montaña', 'Alavesa'],
     tag: 'Álava · Euskadi',
     sub: 'Entre el Parque Natural de Izki y la Vía Verde del Vasco-Navarro',
-    text: 'En el sudeste de Álava, la menos poblada de las siete cuadrillas guarda villas medievales como Antoñana, Peñacerrada o Lagrán, robledales y humedales protegidos desde 1998, y el trazado del trenico, el ferrocarril que entre 1889 y 1967 unió pueblos del País Vasco y Navarra.',
+    text: 'En el sudeste de Álava, la menos poblada de las siete cuadrillas, guarda villas medievales como Antoñana, Peñacerrada o Lagrán; robledales y humedales protegidos desde 1998; y el antiguo trazado del «trenico», el ferrocarril que funcionó en la comarca entre 1927 y 1967 en su camino entre Bergara (Gipuzkoa) y Estella (Navarra).',
   },
 
   llegar: {
@@ -90,7 +91,7 @@ export const home = {
 
   experiencias: {
     eyebrow: 'Planifica',
-    intro: 'Un centro, una mina y una ruta: tres maneras de entrar en la montaña.',
+    intro: 'Un centro, una mina y una ruta: horarios, turnos y distancias.',
     hint: 'Sigue bajando para recorrerlas',
     items: [
       {
@@ -101,7 +102,6 @@ export const home = {
           ['Sábados', '10:00 – 18:00'],
           ['Domingos y festivos', '10:00 – 14:30'],
         ],
-        text: 'Un vuelo virtual sobre las minas y el diapiro, una planta que es un libro abierto sobre el asfalto natural y tres miradores hacia el Parque Natural de Izki.',
         cta: { label: 'Planifica tu visita', href: 'https://asfaltokia.eus/' },
       },
       {
@@ -110,10 +110,9 @@ export const home = {
         specs: [
           ['Visitas guiadas', 'Sábados y domingos'],
           ['Turnos', '10:00 · 11:15 · 12:30'],
-          ['Reserva previa', '945 405 424'],
+          ['Reserva previa', '639 310 779'],
         ],
-        text: 'Las visitas guiadas nos reencuentran con el pasado y con unos modos de vida desconocidos para la mayoría. Con el casco puesto, la galería explica sola siglo y medio de trabajo.',
-        cta: { label: 'Reservar visita', href: 'tel:+34945405424' },
+        cta: { label: 'Reservar visita', href: 'tel:+34639310779' },
       },
       {
         id: 'ruta',
@@ -123,7 +122,6 @@ export const home = {
           ['Centros', 'Antoñana · Korres · Atauri'],
           ['Cómo', 'A pie o en bici'],
         ],
-        text: 'Por la Vía Verde del Vasco-Navarro y bajo el bosque de Izki, con paradas en la fábrica de Leorza, el poblado de San Ildefonso y las minas de San Román.',
         cta: { label: 'Ver el mapa', href: '#mapa' },
       },
     ] as const satisfies readonly Experiencia[],
@@ -132,8 +130,6 @@ export const home = {
   cielo: {
     caption: 'Montaña Alavesa · Parque Natural de Izki',
     alt: 'Peña del Castillo sobre los bosques del Parque Natural de Izki, bajo un cielo con nubes',
-    /* Vídeo de Vimeo: «Parque Natural de Izki», Arabako Foru Aldundia (1 min 29 s). */
-    video: { id: '1012453058', hash: '50956c9266', title: 'Parque Natural de Izki, vídeo de la Diputación Foral de Álava', play: ['Ver', 'el vídeo'] },
   },
 
   galeria: {
@@ -143,8 +139,8 @@ export const home = {
     items: [
       { file: 'galeria-01', caption: 'La entrada, entibada en madera', alt: 'Entrada de Mina Lucía con la galería entibada en madera' },
       { file: 'galeria-02', caption: 'Galerías desde 1872', alt: 'Galería de Mina Lucía en penumbra con luces al fondo' },
-      { file: 'galeria-03', caption: 'En fila, con los frontales', alt: 'Visitantes con casco recorren una galería entibada' },
-      { file: 'galeria-04', caption: 'La sala grande', alt: 'Sala amplia excavada en la roca de Mina Lucía' },
+      { file: 'galeria-03', caption: 'En fila, con los frontales', alt: 'Visitantes con casco recorren una galería de la mina' },
+      { file: 'galeria-04', caption: 'Cámaras y pilares: así se sostiene la mina', alt: 'Sala amplia excavada en la roca de Mina Lucía, sostenida por pilares de roca' },
       { file: 'galeria-05', caption: 'La pasarela', alt: 'Un grupo de visitantes en la pasarela de madera de la mina' },
       { file: 'galeria-06', caption: 'El grupo, a la luz de los cascos', alt: 'Grupo de visitantes con cascos en una galería' },
       { file: 'galeria-07', caption: 'El guía y la piedra', alt: 'El guía explica junto a una pila de rocas de asfalto' },
@@ -169,28 +165,15 @@ export const home = {
     /* unit: year (año) · ma (millones de años, en negativo = hacia atrás) */
     stops: [
       { label: 'Hoy', value: 2026, unit: 'year', note: 'Asfaltokia abre sus puertas en la antigua estación de Atauri.' },
-      { label: 'La estación', value: 1928, unit: 'year', note: 'El ferrocarril Vasco-Navarro llega a Atauri. El trenico une Vitoria con Estella.' },
-      { label: 'Mina Lucía', value: 1872, unit: 'year', note: 'Se abre la mina que hoy se visita con casco, siglo y medio después.' },
-      { label: 'Loza', value: 1855, unit: 'year', note: 'Primera explotación de asfalto natural en la comarca.' },
+      { label: 'La estación', value: 1928, unit: 'year', note: 'El ferrocarril Vasco-Navarro llega a Atauri. El «trenico» une Bergara con Estella.' },
+      { label: 'Mina Lucía', value: 1872, unit: 'year', note: 'Comienza a explotarse la mina que hoy se visita con casco, siglo y medio después.' },
+      { label: 'San Ildefonso', value: 1856, unit: 'year', note: 'Primera explotación registrada de asfalto natural.' },
       { label: 'Las calizas', value: 100, unit: 'ma', note: 'Cretácico. Bajo un mar poco profundo se forman las rocas que hoy guardan el asfalto.' },
       { label: 'El diapiro', value: 200, unit: 'ma', note: 'Triásico. Las sales que, millones de años después, empujarán hacia la superficie y dejarán el asfalto en su borde.' },
     ],
   } as const,
 
-  queVeras: {
-    eyebrow: 'En la visita',
-    items: ['Galerías entibadas de 1872', 'Vetas de asfalto en la roca', 'El diapiro de Maeztu, explicado', 'La estación de 1928, por dentro', 'Un vuelo virtual sobre Izki'],
-    quote: 'Tres turnos cada sábado y domingo, con reserva previa.',
-    cta: { label: 'Reservar en el 945 405 424', href: 'tel:+34945405424' },
-  },
 
-  miradores: {
-    display: 'Tres miradores',
-    script: 'sobre Izki',
-    text: 'Desde la última planta de la estación, el Parque Natural de Izki se abre en tres ventanas: el robledal, el diapiro y la vía verde.',
-    cta: { label: 'Planifica tu visita', href: 'https://asfaltokia.eus/' },
-    alt: 'Mirador sobre los bosques del Parque Natural de Izki',
-  },
 
   arco: {
     display: 'Un lugar para',
@@ -218,7 +201,7 @@ export const home = {
       'Sábados 10:00 – 18:00 · Domingos y festivos 10:00 – 14:30',
     ],
     phoneLabel: 'Visitas a Mina Lucía',
-    phone: '945 405 424',
-    phoneHref: 'tel:+34945405424',
+    phone: '639 310 779',
+    phoneHref: 'tel:+34639310779',
   },
 } as const;

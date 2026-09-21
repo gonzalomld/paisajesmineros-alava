@@ -1,23 +1,28 @@
 ---
 /**
- * Cita — escena 04: galería entibada de Mina Lucía a sangre, con parallax,
- * y una frase editorial en display sobre la imagen.
+ * Cita — escena 04: una galería de Mina Lucía a sangre, con parallax, una
+ * frase editorial en display y el vídeo de la mina, que solo se carga al
+ * pulsar (ui/Video.astro).
  */
 import { Image } from 'astro:assets';
+import Video from '@/components/ui/Video.astro';
 import { home } from '@/content/home';
 import img from '@/assets/photos/galeria-entibada.jpg';
+const { video } = home.cita;
 ---
 <section class="section theme-dark cita" data-bg="dark" data-theme-trigger aria-label="Mina Lucía">
-  <div class="cita__media" data-parallax="w">
-    <div data-parallax="img">
-      <Image src={img} alt="Galería entibada con madera en Mina Lucía, iluminada por las linternas de los visitantes" widths={[832, 1280, 1600, 2400]} sizes="100vw" />
+  <Video provider={video.provider} id={video.id} title={video.title} lines={video.play} class="cita__video">
+    <div class="cita__media" data-parallax="w">
+      <div data-parallax="img">
+        <Image src={img} alt="Galería de Mina Lucía iluminada por las linternas de los visitantes" widths={[832, 1280, 1600, 2400]} sizes="100vw" />
+      </div>
+      <div class="cita__shade" aria-hidden="true"></div>
     </div>
-    <div class="cita__shade" aria-hidden="true"></div>
-  </div>
-  <div class="container cita__content">
-    <p class="cita__text h4 t-center t-balance" data-reveal="line">“{home.cita.text}”</p>
-    <p class="l2 t-center cita__where" data-reveal="p" data-reveal-delay="0.3">{home.cita.where}</p>
-  </div>
+    <div class="container cita__content">
+      <p class="cita__text h4 t-center t-balance" data-reveal="line">“{home.cita.text}”</p>
+      <p class="l2 t-center cita__where" data-reveal="p" data-reveal-delay="0.3">{home.cita.where}</p>
+    </div>
+  </Video>
 </section>
 
 <style>
@@ -28,6 +33,12 @@ import img from '@/assets/photos/galeria-entibada.jpg';
       display: grid;
       place-items: center;
       overflow: hidden;
+    }
+    .cita__video {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
     }
     .cita__media {
       position: absolute;

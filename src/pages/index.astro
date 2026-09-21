@@ -1,6 +1,6 @@
 ---
 /**
- * Home — Fase 02: el hero y las once escenas de contenido, en el orden del
+ * Home — Fase 02: el hero y las catorce escenas de contenido, en el orden del
  * storyboard. Cada sección declara su superficie (data-bg) para el header
  * y, cuando entra con arco, data-arch.
  */
@@ -16,12 +16,10 @@ import Cielo from '@/components/sections/Cielo.astro';
 import MapaVivo from '@/components/sections/MapaVivo.astro';
 import Experiencias from '@/components/sections/Experiencias.astro';
 import Estratos from '@/components/sections/Estratos.astro';
-import QueVeras from '@/components/sections/QueVeras.astro';
 import ArcoTexto from '@/components/sections/ArcoTexto.astro';
 import Estacion from '@/components/sections/Estacion.astro';
 import Galeria from '@/components/sections/Galeria.astro';
 import Asfalto from '@/components/sections/Asfalto.astro';
-import Miradores from '@/components/sections/Miradores.astro';
 import Cierre from '@/components/sections/Cierre.astro';
 import { site } from '@/content/site';
 import dayImg from '@/assets/photos/hero-cielo-abierto.jpg';
@@ -46,11 +44,9 @@ const imagesrcset = preload.map((img) => `${img.src} ${img.attributes.width}w`).
   <MapaVivo />
   <Experiencias />
   <Estratos />
-  <QueVeras />
   <ArcoTexto />
   <Estacion />
   <Galeria />
   <Asfalto />
-  <Miradores />
   <Cierre />
 </Base>

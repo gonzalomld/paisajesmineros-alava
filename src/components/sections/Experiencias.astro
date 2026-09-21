@@ -3,7 +3,8 @@
  * Experiencias — escena 09: la sección que, fijada, se recorre en
  * horizontal con el scroll vertical (horizontal.ts). Un panel de entrada
  * y tres paneles con los datos prácticos de cada experiencia y su llamada
- * a la acción. Es la escena que convierte.
+ * a la acción. Es la escena que convierte: solo datos, porque la
+ * descripción de cada puerta ya se ha contado una vez en Puertas.
  * IMÁGENES: estación (asfaltokia.eus, provisional), grupo en galería y
  * camino con casco (Quintas, definitivas).
  */
@@ -47,7 +48,6 @@ const { items, eyebrow, intro, hint } = home.experiencias;
                   <div><dt class="l2">{k}</dt><dd class="p1">{v}</dd></div>
                 ))}
               </dl>
-              <p class="p1 experiencias__text" data-hreveal>{item.text}</p>
               <div data-hreveal><ButtonPill label={item.cta.label} href={item.cta.href} /></div>
             </div>
           </article>
@@ -123,10 +123,6 @@ const { items, eyebrow, intro, hint } = home.experiencias;
       font-size: calc(64 * var(--u));
       line-height: 1;
     }
-    .experiencias__text {
-      max-width: 36ch;
-      color: var(--fg-muted);
-    }
     .experiencias__specs {
       width: 100%;
       max-width: calc(var(--col) * 3 + var(--gap) * 2);
@@ -172,10 +168,6 @@ const { items, eyebrow, intro, hint } = home.experiencias;
       }
       .experiencias__intro {
         font-size: calc(40 * var(--u));
-      }
-      .experiencias__text {
-        font-size: var(--fs-p2);
-        line-height: var(--lh-p2);
       }
       .experiencias__hint {
         margin-top: var(--sp-24);

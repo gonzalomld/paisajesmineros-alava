@@ -19,9 +19,11 @@
   .h1 { font-size: var(--fs-h1); line-height: var(--lh-h1); letter-spacing: var(--ls-h1); }
   .h2 { font-size: var(--fs-h2); line-height: var(--lh-h2); letter-spacing: var(--ls-h2); }
   .h3 { font-size: var(--fs-h3); line-height: var(--lh-h3); letter-spacing: var(--ls-h3); }
-  .h4 { font-size: var(--fs-h4); line-height: var(--lh-h4); letter-spacing: var(--ls-h4); }
-  .h5 { font-size: var(--fs-h5); line-height: var(--lh-h5); letter-spacing: var(--ls-h5); }
-  .h6 { font-size: var(--fs-h6); line-height: var(--lh-h6); letter-spacing: var(--ls-h6); }
+  /* del h4 hacia abajo el opsz baja con el tamaño: a 96 las finas del
+     Bodoni desaparecen y el titular pequeño se lee peor que el enorme. */
+  .h4 { font-size: var(--fs-h4); line-height: var(--lh-h4); letter-spacing: var(--ls-h4); font-variation-settings: "opsz" var(--opsz-h4); }
+  .h5 { font-size: var(--fs-h5); line-height: var(--lh-h5); letter-spacing: var(--ls-h5); font-variation-settings: "opsz" var(--opsz-h5); }
+  .h6 { font-size: var(--fs-h6); line-height: var(--lh-h6); letter-spacing: var(--ls-h6); font-variation-settings: "opsz" var(--opsz-h6); }
 
   /* caption display: tracking .8em y opsz bajo para que no se afile */
   .c1 {

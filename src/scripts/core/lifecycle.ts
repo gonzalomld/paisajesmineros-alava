@@ -39,8 +39,7 @@ import asfalto from '../modules/asfalto';
 import arcText from '../modules/arcText';
 import horizontal from '../modules/horizontal';
 import estratos from '../modules/estratos';
-import highlight from '../modules/highlight';
-import vimeo from '../modules/vimeo';
+import video from '../modules/video';
 
 const REVEAL_GUARD_MS = 5000;
 
@@ -84,8 +83,7 @@ function registerModules(): void {
   register('horizontal', horizontal);
   register('estratos', estratos);
   register('arcText', arcText);
-  register('highlight', highlight);
-  register('vimeo', vimeo);
+  register('video', video);
   register('clouds', clouds);
   register('drift', drift);
   register('carousel', carousel);

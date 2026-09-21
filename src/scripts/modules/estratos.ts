@@ -1,9 +1,13 @@
 /**
  * estratos.ts — data-estratos: la bajada. Sección fijada varias pantallas
  * en la que un número enorme retrocede en el tiempo mientras bajas (2026
- * → 1928 → 1872 → 1855 → hace 100 millones de años → hace 200), con un
+ * → 1928 → 1872 → 1856 → hace 100 millones de años → hace 200), con un
  * índice de paradas a la derecha, la nota de cada parada y el fondo que se
  * oscurece con la profundidad. Las líneas de estrato suben a contracorriente.
+ *
+ * El número salta de parada en parada; nunca muestra valores intermedios,
+ * que no significan nada, y cambia a la vez que la etiqueta, la nota y el
+ * índice, para que los tres digan siempre lo mismo.
  *
  *   [data-estratos]                      la sección (lleva el JSON de paradas)
  *     [data-estratos-stage]              lo que se fija
@@ -28,9 +32,7 @@ interface Stop {
 const DEEP = '#0A1225';
 
 function fmt(v: number, unit: Stop['unit']): string {
-  if (unit === 'year') return String(Math.round(v));
-  const m = Math.abs(v);
-  return `${(m < 10 ? m.toFixed(1) : String(Math.round(m))).replace('.', ',')} M`;
+  return unit === 'year' ? String(v) : `${v} M`;
 }
 
 export default defineModule({
@@ -58,9 +60,14 @@ export default defineModule({
     if (n < 2) return;
 
     let active = -1;
-    let lastText = '';
+
+    /* Una parada por tramo de scroll. El número grande, la etiqueta, la nota
+       y el índice cambian a la vez y siempre coinciden: antes el valor se
+       interpolaba y enseñaba años que no existen (1981 entre 2026 y 1928)
+       mientras el texto seguía en la parada anterior. */
     const setActive = (i: number): void => {
       if (i === active) return;
+      const previo = active;
       active = i;
       const s = data[i];
       if (!s) return;
@@ -70,55 +77,46 @@ export default defineModule({
       });
       if (label) label.textContent = s.label;
       if (count) count.textContent = `${String(i + 1).padStart(2, '0')} / ${String(n).padStart(2, '0')}`;
+      if (prefix) prefix.textContent = s.unit === 'year' ? 'Año' : 'Hace';
+      if (suffix) suffix.textContent = s.unit === 'year' ? '' : 'millones de años';
+
+      const texto = fmt(s.value, s.unit);
+      const bajando = i > previo;
+      if (ctx.reducedMotion || previo < 0) {
+        value.textContent = texto;
+        if (note) note.textContent = s.note;
+        return;
+      }
+      /* el número sale por donde va el scroll y entra el nuevo por el otro lado */
+      gsap.to(value, {
+        yPercent: bajando ? -30 : 30,
+        autoAlpha: 0,
+        duration: 0.22,
+        ease: 'era',
+        overwrite: true,
+        onComplete: () => {
+          value.textContent = texto;
+          gsap.fromTo(value, { yPercent: bajando ? 30 : -30, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.45, ease: 'eraOut' });
+        },
+      });
       if (note) {
-        if (ctx.reducedMotion) note.textContent = s.note;
-        else {
-          gsap.to(note, {
-            autoAlpha: 0,
-            y: -8,
-            duration: 0.25,
-            ease: 'era',
-            overwrite: true,
-            onComplete: () => {
-              note.textContent = s.note;
-              gsap.fromTo(note, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'era' });
-            },
-          });
-        }
+        gsap.to(note, {
+          autoAlpha: 0,
+          y: -8,
+          duration: 0.22,
+          ease: 'era',
+          overwrite: true,
+          onComplete: () => {
+            note.textContent = s.note;
+            gsap.fromTo(note, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.45, ease: 'era' });
+          },
+        });
       }
     };
+
     const show = (p: number): void => {
-      const t = p * (n - 1);
-      const seg = Math.min(n - 2, Math.floor(t));
-      const k = t - seg;
-      const a = data[seg];
-      const b = data[seg + 1];
-      if (!a || !b) return;
-      let text: string;
-      let pre: string;
-      let suf: string;
-      if (a.unit === 'year' && b.unit === 'year') {
-        text = fmt(a.value + (b.value - a.value) * k, 'year');
-        pre = 'Año';
-        suf = '';
-      } else if (a.unit === 'year') {
-        /* de 1855 a hace 100 millones: cuenta millones desde cero */
-        const m = b.value * k;
-        text = k < 0.02 ? fmt(a.value, 'year') : fmt(m, 'ma');
-        pre = k < 0.02 ? 'Año' : 'Hace';
-        suf = k < 0.02 ? '' : 'millones de años';
-      } else {
-        text = fmt(a.value + (b.value - a.value) * k, 'ma');
-        pre = 'Hace';
-        suf = 'millones de años';
-      }
-      if (text !== lastText) {
-        lastText = text;
-        value.textContent = text;
-        if (prefix) prefix.textContent = pre;
-        if (suffix) suffix.textContent = suf;
-      }
-      setActive(Math.round(t));
+      /* n tramos iguales: dentro de cada uno, la parada no cambia */
+      setActive(Math.min(n - 1, Math.floor(p * n * 0.999)));
       if (depth) depth.style.transform = `scaleY(${p})`;
     };
 
