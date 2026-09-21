@@ -4,21 +4,25 @@
  * alrededor del símbolo y, debajo, el slider de las tres puertas
  * (Asfaltokia, Mina Lucía, la ruta).
  * IMÁGENES: la estación de Atauri rehabilitada, la serie de Mina Lucía y
- * el tren de Antoñana. Las tres, definitivas.
+ * las ruinas de la fábrica en la ruta. Las tres, definitivas.
+ * La de la ruta entra apaisada en una ranura vertical: `foco` decide qué
+ * parte del encuadre se queda al recortar.
  */
 import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import ArchMask from '@/components/ui/ArchMask.astro';
-import { home } from '@/content/home';
+import { home, type Puerta } from '@/content/home';
 import symbol from '@/assets/brand/asfaltokia-simbolo.png';
 import imgAsfaltokia from '@/assets/photos/estacion-atauri.jpg';
 import imgMina from '@/assets/photos/casco-veta.jpg';
-import imgRuta from '@/assets/photos/tren-antonana.jpg';
+import imgRuta from '@/assets/photos/ruta-ruinas-fabrica.jpg';
 
-const images = {
+/* foco: qué parte del encuadre sobrevive al recorte vertical. */
+const images: Record<Puerta['id'], { src: ImageMetadata; alt: string; foco?: string; widths?: number[] }> = {
   asfaltokia: { src: imgAsfaltokia, alt: 'La estación de Atauri rehabilitada, con su rótulo de azulejos, hoy sede de Asfaltokia' },
   mina: { src: imgMina, alt: 'Visitantes con casco ante una veta de asfalto en Mina Lucía' },
-  ruta: { src: imgRuta, alt: 'El trenico recreado en Antoñana, sede del Centro del Ferrocarril Vasco-Navarro' },
-} as const;
+  ruta: { src: imgRuta, alt: 'Ruinas de piedra de una antigua fábrica de asfalto en el bosque, con un panel interpretativo de la ruta', foco: '46% 42%', widths: [400, 700] },
+};
 const { items } = home.puertas;
 ---
 <section class="section theme-sky puertas" data-bg="sky" data-theme-trigger data-arch aria-labelledby="puertas-title">
@@ -53,9 +57,9 @@ const { items } = home.puertas;
                 <h3 class="col-10 h2 t-center puertas__title">
                   <span data-part="h" set:html={item.display.join('<br />')} />
                 </h3>
-                <figure class="col-2 start-2 slide__figure puertas__figure" data-part="slide">
+                <figure class="col-2 start-2 slide__figure puertas__figure" data-part="slide" style={`--foco: ${images[item.id].foco ?? '50% 50%'}`}>
                   <div>
-                    <Image src={images[item.id].src} alt={images[item.id].alt} widths={[400, 800, 1200]} sizes="(max-width: 991px) 60vw, 18vw" />
+                    <Image src={images[item.id].src} alt={images[item.id].alt} widths={images[item.id].widths ?? [400, 800, 1200]} sizes="(max-width: 991px) 60vw, 18vw" />
                   </div>
                 </figure>
                 <div class="col-4 start-5 puertas__body">
@@ -149,6 +153,9 @@ const { items } = home.puertas;
     }
     .puertas__figure {
       aspect-ratio: 3 / 4;
+    }
+    .puertas__figure :global(img) {
+      object-position: var(--foco, 50% 50%);
     }
     .puertas__body {
       display: flex;

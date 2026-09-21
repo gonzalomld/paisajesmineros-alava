@@ -101,10 +101,6 @@ export const site = {
   footer: {
     place: 'Antigua estación del ferrocarril vasco-navarro · Atauri, Montaña Alavesa',
     hours: ['Sábados 10:00 – 18:00', 'Domingos y festivos 10:00 – 14:30'],
-    legal: [
-      { label: 'Aviso legal', href: '#' },
-      { label: 'Privacidad', href: '#' },
-    ],
   },
 } as const;
 
