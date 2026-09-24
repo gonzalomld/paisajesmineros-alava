@@ -14,6 +14,9 @@
  *   id, hash    identificador del vídeo (hash solo en Vimeo)
  *   title       título accesible del iframe
  *   lines       texto del botón, en líneas
+ *   inline      el botón va en el flujo, detrás del contenido del slot,
+ *               en vez de flotar en el centro. Cuando el póster lleva
+ *               texto centrado, el botón centrado se le pone encima.
  */
 interface Props {
   provider?: 'youtube' | 'vimeo';
@@ -21,16 +24,17 @@ interface Props {
   hash?: string;
   title: string;
   lines: readonly string[];
+  inline?: boolean;
   class?: string;
   /* Astro pasa aquí el data-astro-cid del padre. */
   [key: `data-${string}`]: string | undefined;
 }
-const { provider = 'youtube', id, hash, title, lines, class: cls = '', ...rest } = Astro.props;
+const { provider = 'youtube', id, hash, title, lines, inline = false, class: cls = '', ...rest } = Astro.props;
 ---
 <div class={`vimeo ${cls}`} data-video={id} data-video-provider={provider} data-video-hash={hash} data-video-title={title} {...rest}>
   <slot />
   <div class="vimeo__frame" data-video-frame></div>
-  <button class="vimeo__play" type="button" data-video-play data-magnetic="0.25" aria-label={`${lines.join(' ')}: ${title}`}>
+  <button class:list={['vimeo__play', inline && 'vimeo__play--inline']} type="button" data-video-play data-magnetic="0.25" aria-label={`${lines.join(' ')}: ${title}`}>
     <span class="vimeo__label l1" aria-hidden="true">{lines.map((l) => <span>{l}</span>)}</span>
   </button>
   <button class="vimeo__close l1" type="button" data-video-close aria-label="Cerrar el vídeo" tabindex="-1" aria-hidden="true">
@@ -84,6 +88,13 @@ const { provider = 'youtube', id, hash, title, lines, class: cls = '', ...rest }
         border-color var(--d-micro) var(--ease-era),
         opacity var(--d-el) var(--ease-era);
       will-change: transform;
+    }
+    /* En el flujo: lo coloca la caja de quien lo usa, no el centro del marco. */
+    .vimeo__play--inline {
+      position: relative;
+      left: auto;
+      top: auto;
+      transform: none;
     }
     .vimeo__label {
       display: flex;

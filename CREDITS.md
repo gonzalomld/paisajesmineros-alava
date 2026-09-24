@@ -70,8 +70,9 @@ pantallas grandes con densidad doble.
 
 | Origen | Uso |
 |---|---|
-| YouTube `v61m5uqU0V0` · «Mina Lucía», facilitado por el cliente | La cita bajo tierra: se carga al pulsar (ui/Video.astro), en `youtube-nocookie.com` |
-| Vimeo 1012453058 · «Parque Natural de Izki», Arabako Foru Aldundia | Retirado a petición del cliente: lo sustituye el de Mina Lucía |
+| Vimeo `1012460121` (h=38045a9802) · «Mina Lucía», facilitado por el cliente | La cita bajo tierra: se carga al pulsar (ui/Video.astro), con `dnt=1` |
+| YouTube `v61m5uqU0V0` | Descartado: el que nos pasaron como de Mina Lucía era de fauna de Izki |
+| Vimeo 1012453058 · «Parque Natural de Izki», Arabako Foru Aldundia | Retirado a petición del cliente |
 
 ## Marca
 

@@ -24,7 +24,7 @@ const { ubicacion } = home;
       </figure>
       <div class="col-4 start-2 ubicacion__body">
         <p class="l1" data-reveal="p">{ubicacion.sub}</p>
-        <p class="p1 t-muted" data-reveal="line">{ubicacion.text}</p>
+        <p class="p1 t-muted" data-reveal="p">{ubicacion.text}</p>
       </div>
     </div>
   </div>
@@ -42,6 +42,17 @@ const { ubicacion } = home;
     .ubicacion__title {
       position: relative;
       padding-left: var(--sp-40);
+      /* Contenedor de consulta: el título se mide contra ESTA caja, no
+         contra la ventana, así que puede pedir que se le ajuste. */
+      container-type: inline-size;
+    }
+    /* «MONTAÑA» mide 4,95 em en Bodoni; con la etiqueta girada robando
+       --sp-40, a --fs-h1 se salía de la columna en todos los anchos (94 px
+       a 1600, y en móvil se comía la última A contra el borde). 19cqw deja
+       el ancho justo con un 5 % de aire, sin tamaños a ojo por dispositivo. */
+    .ubicacion__title .h1 {
+      font-size: var(--fs-h1);
+      font-size: min(var(--fs-h1), 19cqw);
     }
     .ubicacion__tag {
       position: absolute;
@@ -74,9 +85,10 @@ const { ubicacion } = home;
         margin-top: 0;
         aspect-ratio: 4 / 3;
       }
-      /* "MONTAÑA" (7 caracteres) no cabe a 96px en 416: píxeles de diseño a 416 */
-      .ubicacion__title .h1 {
-        font-size: calc(80 * var(--u));
+      /* El canal de la etiqueta girada se estrecha: el título gana ancho
+         y, con él, tamaño, porque se ajusta a la caja. */
+      .ubicacion__title {
+        padding-left: var(--sp-28);
       }
     }
   }

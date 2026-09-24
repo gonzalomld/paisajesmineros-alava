@@ -49,8 +49,10 @@ export const home = {
   cita: {
     text: 'Aquí la roca es negra y brilla. El asfalto impregna la caliza a la vista, como hace siglo y medio, y el bosque guarda el silencio de las galerías.',
     where: 'Mina Lucía · Atauri · Parque Natural de Izki',
-    /* El vídeo de Mina Lucía, en YouTube sin cookies. Solo se carga al pulsar. */
-    video: { provider: 'youtube', id: 'v61m5uqU0V0', title: 'Mina Lucía, vídeo de la visita', play: ['Ver', 'el vídeo'] },
+    /* El vídeo de Mina Lucía, en Vimeo sin seguimiento (dnt=1). Solo se
+       carga al pulsar. El de YouTube que probamos antes resultó ser de
+       fauna de Izki, no de la mina. */
+    video: { provider: 'vimeo', id: '1012460121', hash: '38045a9802', title: 'Mina Lucía, vídeo de la visita', play: ['Ver', 'el vídeo'] },
   },
 
   concepto: {
@@ -145,7 +147,7 @@ export const home = {
       { file: 'galeria-06', caption: 'El grupo, a la luz de los cascos', alt: 'Grupo de visitantes con cascos en una galería' },
       { file: 'galeria-07', caption: 'El guía y la piedra', alt: 'El guía explica junto a una pila de rocas de asfalto' },
       { file: 'galeria-08', caption: 'Las vetas, de cerca', alt: 'Dos niñas observan las vetas de asfalto en la pared' },
-      { file: 'galeria-09', caption: 'Una roca en las manos', alt: 'Dos niñas con casco examinan una roca de asfalto' },
+      { file: 'galeria-09', caption: 'Vestigios de la vida minera en las manos', alt: 'Dos niñas con casco examinan una roca de asfalto' },
       { file: 'galeria-10', caption: 'Asfalto natural', alt: 'Una niña sostiene un trozo de roca impregnada de asfalto' },
       { file: 'galeria-11', caption: 'El camino a la mina', alt: 'Camino hacia Mina Lucía con un casco en primer plano' },
       { file: 'galeria-12', caption: 'Por el bosque de Izki', alt: 'Un grupo llega a la mina por el bosque' },

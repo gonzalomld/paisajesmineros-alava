@@ -2,7 +2,8 @@
 /**
  * Cita — escena 04: una galería de Mina Lucía a sangre, con parallax, una
  * frase editorial en display y el vídeo de la mina, que solo se carga al
- * pulsar (ui/Video.astro).
+ * pulsar (ui/Video.astro). El botón va debajo de la cita, no encima: la
+ * frase también está centrada y el botón centrado la tapaba.
  */
 import { Image } from 'astro:assets';
 import Video from '@/components/ui/Video.astro';
@@ -11,7 +12,7 @@ import img from '@/assets/photos/galeria-entibada.jpg';
 const { video } = home.cita;
 ---
 <section class="section theme-dark cita" data-bg="dark" data-theme-trigger aria-label="Mina Lucía">
-  <Video provider={video.provider} id={video.id} title={video.title} lines={video.play} class="cita__video">
+  <Video provider={video.provider} id={video.id} hash={video.hash} title={video.title} lines={video.play} inline class="cita__video">
     <div class="cita__media" data-parallax="w">
       <div data-parallax="img">
         <Image src={img} alt="Galería de Mina Lucía iluminada por las linternas de los visitantes" widths={[832, 1280, 1600, 2400]} sizes="100vw" />
@@ -38,7 +39,11 @@ const { video } = home.cita;
       position: absolute;
       inset: 0;
       display: grid;
-      place-items: center;
+      /* Dos filas en el flujo —la cita y el botón—, del alto de su
+         contenido y centradas como grupo. */
+      align-content: center;
+      justify-items: center;
+      gap: var(--sp-40);
     }
     .cita__media {
       position: absolute;
@@ -56,7 +61,7 @@ const { video } = home.cita;
       flex-direction: column;
       align-items: center;
       gap: var(--sp-32);
-      padding-block: var(--sp-160);
+      padding-block: var(--sp-120) 0;
     }
     .cita__text {
       max-width: calc(var(--col) * 7 + var(--gap) * 6);
@@ -67,8 +72,15 @@ const { video } = home.cita;
       color: var(--fg-muted);
     }
     @media (max-width: 991px) {
+      .cita {
+        /* La cita es larga en pantalla estrecha: que quepa con el botón. */
+        padding-block: var(--sp-96);
+      }
       .cita__content {
-        padding-block: var(--sp-120);
+        padding-block: var(--sp-24) 0;
+      }
+      .cita__video {
+        gap: var(--sp-32);
       }
     }
   }
